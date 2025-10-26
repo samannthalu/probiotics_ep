@@ -18,5 +18,9 @@ nrow(eightydata)
 
 install.packages("dplyr")
 library(dplyr)
-sixmdata<-sixmdata%>%select(Sampleid,wave,age_months,B_SEX,C4a4,C2ad,D1d1,D1d2,D1d3,Fedu,Medu,H13)
-sixmdata<-sixmdata%>%rename(pribioticintake=C4a4,breastfeeding=C2ad,weight=D1d1,height=D1d2,HC=D1d3,Socioeco=H13)
+sixmdata_fixed<-sixmdata%>%select(Sampleid,wave,age_months,B_SEX,C4a4,C2ad,D1d1,D1d2,D1d3,Fedu,Medu,H13)
+sixmdata_fixed<-sixmdata_fixed%>%rename(pribioticintake=C4a4,breastfeeding=C2ad,weight=D1d1,height=D1d2,HC=D1d3,Socioeco=H13)
+str(sixmdata_fixed)
+
+eighteenmdata_fixed<-eighteenmdata%>%select(Sampleid,wave,age_months,B_SEX,D4a4,D1a1,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
+eighteenmdata_fixed<-eighteenmdata_fixed%>%rename(probioticintake=D4a4,breastfeeding=D1a1,dairyintake=D2b,weight=A2_3W,height=A2_3L,HC=A2_3H,Socioeco=F10)
