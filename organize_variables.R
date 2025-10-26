@@ -24,3 +24,6 @@ str(sixmdata_fixed)
 
 eighteenmdata_fixed<-eighteenmdata%>%select(Sampleid,wave,age_months,B_SEX,D4a4,D1a1,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
 eighteenmdata_fixed<-eighteenmdata_fixed%>%rename(probioticintake=D4a4,breastfeeding=D1a1,dairyintake=D2b,weight=A2_3W,height=A2_3L,HC=A2_3H,Socioeco=F10)
+
+threeydata_fixed<-threeydata%>%select(Sampleid,wave,age_months,B_SEX,D6a4,A2_3L,A2_3W,Fedu,Medu,F14)
+threeydata_fixed<-threeydata_fixed%>%rename(probioticintake=D6a4,weight=A2_3W,height=A2_3L,Socioeco=F14)
