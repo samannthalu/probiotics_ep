@@ -4,10 +4,10 @@ library(dplyr)
 library(tidyverse)
 #input data
 sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_6m_simulated.csv")
-eighteenmdata<-read.csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_18m_simulated.csv")
-threeydata<-read.csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_3y_simulated.csv")
-fiveydata<-read.csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_5y_simulated.csv")
-eightydata<-read.csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_8y_simulated.csv")
+eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_18m_simulated.csv")
+threeydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_3y_simulated.csv")
+fiveydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_5y_simulated.csv")
+eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_8y_simulated.csv")
 
 #select and rename variables----
 ##6month----
@@ -43,8 +43,8 @@ threeydata_fixed<-threeydata_fixed%>%
          medu_3y=Medu,
          Socioeco_3y=F14)
 ##5year-old----
-fiveydata_fixed<-fiveydata%>%select
-(Sampleid,wave,age_months,B_SEX,D5ad,A2_2L,A2_2W,D4_8,FEDU_5Y,MEDU_5Y,G13)
+fiveydata_fixed<-fiveydata%>%
+  select(Sampleid,wave,age_months,B_SEX,D5ad,A2_2L,A2_2W,D4_8,FEDU_5Y,MEDU_5Y,G13)
 
 fiveydata_fixed<-fiveydata_fixed%>%
   rename(probioticinkake_5y=D5ad,
@@ -66,3 +66,9 @@ eightydata_fixed<-eightydata_fixed%>%
          fedu_8y=FEDU_8Y,
          medu_8y=MEDU_8Y,
          Socioeco_8y=H13)
+#join data----
+TBCSstimu<-sixmdata_fixed%>%
+  full_join(eighteenmdata_fixed, by="Sampleid")%>%
+  full_join(threeydata_fixed, by="Sampleid")%>%
+  full_join(fiveydata_fixed, by="Sampleid")%>%
+  full_join(eighteenmdata_fixed, by="Sampleid")
