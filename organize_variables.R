@@ -12,7 +12,7 @@ eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_8y
 #select and rename variables----
 ##6month----
 sixmdata_fixed<-sixmdata%>%
-  select(Sampleid,wave,age_months,B_SEX,C4a4,C2ad,D1d1,D1d2,D1d3,Fedu,Medu,H13)
+  select(Sampleid,B_SEX,C4a4,C2ad,D1d1,D1d2,D1d3,Fedu,Medu,H13)
 
 sixmdata_fixed<-sixmdata_fixed%>%
   rename(pribioticintake_6m=C4a4, 
@@ -22,7 +22,7 @@ sixmdata_fixed<-sixmdata_fixed%>%
          HC_6m=D1d3,fedu_6m=Fedu,medu_6m=Medu,Socioeco_6m=H13)
 ##18month----
 eighteenmdata_fixed<-eighteenmdata%>%
-  select(Sampleid,wave,age_months,B_SEX,D4a4,D1a1,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
+  select(Sampleid,D4a4,D1a1,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
 
 eighteenmdata_fixed<-eighteenmdata_fixed%>%
   rename(probioticintake_18m=D4a4,
@@ -33,7 +33,7 @@ eighteenmdata_fixed<-eighteenmdata_fixed%>%
          HC_18m=A2_3H,fedu_18m=Fedu,medu_18m=Medu,Socioeco_18m=F10)
 ##3yeard-old----
 threeydata_fixed<-threeydata%>%
-  select(Sampleid,wave,age_months,B_SEX,D6a4,A2_3L,A2_3W,Fedu,Medu,F14)
+  select(Sampleid,D6a4,A2_3L,A2_3W,Fedu,Medu,F14)
 
 threeydata_fixed<-threeydata_fixed%>%
   rename(probioticintake_3y=D6a4,
@@ -44,7 +44,7 @@ threeydata_fixed<-threeydata_fixed%>%
          Socioeco_3y=F14)
 ##5year-old----
 fiveydata_fixed<-fiveydata%>%
-  select(Sampleid,wave,age_months,B_SEX,D5ad,A2_2L,A2_2W,D4_8,FEDU_5Y,MEDU_5Y,G13)
+  select(Sampleid,D5ad,A2_2L,A2_2W,D4_8,FEDU_5Y,MEDU_5Y,G13)
 
 fiveydata_fixed<-fiveydata_fixed%>%
   rename(probioticinkake_5y=D5ad,
@@ -56,7 +56,7 @@ fiveydata_fixed<-fiveydata_fixed%>%
          Socioeco_5y=G13)
 ##8year-old----
 eightydata_fixed<-eightydata%>%
-  select(Sampleid,wave,age_months,B_SEX,D6ad,A1_1L,A1_1W,D5_8,FEDU_8Y,MEDU_8Y,H13)
+  select(Sampleid,D6ad,A1_1L,A1_1W,D5_8,FEDU_8Y,MEDU_8Y,H13)
 
 eightydata_fixed<-eightydata_fixed%>%
   rename(probioticintake_8y=D6ad,
@@ -71,4 +71,4 @@ TBCSstimu<-sixmdata_fixed%>%
   full_join(eighteenmdata_fixed, by="Sampleid")%>%
   full_join(threeydata_fixed, by="Sampleid")%>%
   full_join(fiveydata_fixed, by="Sampleid")%>%
-  full_join(eighteenmdata_fixed, by="Sampleid")
+  full_join(eightydata_fixed, by="Sampleid")
