@@ -3,11 +3,11 @@ install.packages("tidyverse")
 library(dplyr)
 library(tidyverse)
 #input data
-sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_6m_simulated.csv")
-eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_18m_simulated.csv")
-threeydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_3y_simulated.csv")
-fiveydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_5y_simulated.csv")
-eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_1/TBCS_8y_simulated.csv")
+sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_6m_simulated.csv")
+eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_18m_simulated.csv")
+threeydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_3y_simulated.csv")
+fiveydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_5y_simulated.csv")
+eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_8y_simulated.csv")
 
 #select and rename variables----
 ##6month----
