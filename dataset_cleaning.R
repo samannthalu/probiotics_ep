@@ -1,7 +1,39 @@
 source("organize_variables.R")
 
-str(TBCSstimu)
-
+#fix misclassification----
+##SEX----
+TBCSstimu$B_SEX<-as.factor(TBCSstimu$B_SEX)
+##probiotic intake----
 TBCSstimu$pribioticintake_6m<-as.factor(TBCSstimu$pribioticintake_6m)
+TBCSstimu$probioticintake_18m<-as.factor(TBCSstimu$probioticintake_18m)
+TBCSstimu$probioticintake_3y<-as.factor(TBCSstimu$probioticintake_3y)
+TBCSstimu$probioticinkake_5y<-as.factor(TBCSstimu$probioticinkake_5y)
+TBCSstimu$probioticintake_8y<-as.factor(TBCSstimu$probioticintake_8y)
 
-table(TBCSstimu$medu_8y)
+##father/mother education----
+TBCSstimu$fedu_6m<-as.factor(TBCSstimu$fedu_6m)
+TBCSstimu$medu_6m<-as.factor(TBCSstimu$medu_6m)
+TBCSstimu$fedu_18m<-as.factor(TBCSstimu$fedu_18m)
+TBCSstimu$medu_18m<-as.factor(TBCSstimu$medu_18m)
+TBCSstimu$fedu_3y<-as.factor(TBCSstimu$fedu_3y)
+TBCSstimu$medu_3y<-as.factor(TBCSstimu$medu_3y)
+TBCSstimu$fedu_5y<-as.factor(TBCSstimu$fedu_5y)
+TBCSstimu$medu_5y<-as.factor(TBCSstimu$medu_5y)
+TBCSstimu$fedu_8y<-as.factor(TBCSstimu$fedu_8y)
+TBCSstimu$medu_8y<-as.factor(TBCSstimu$medu_8y)
+
+##Socioeconomic Status----
+TBCSstimu$Socioeco_6m<-as.factor(TBCSstimu$Socioeco_6m)
+TBCSstimu$Socioeco_18m<-as.factor(TBCSstimu$Socioeco_18m)
+TBCSstimu$Socioeco_3y<-as.factor(TBCSstimu$Socioeco_3y)
+TBCSstimu$Socioeco_5y<-as.factor(TBCSstimu$Socioeco_5y)
+TBCSstimu$Socioeco_8y<-as.factor(TBCSstimu$Socioeco_8y)
+
+##breastfeeding----
+TBCSstimu$breastfeeding_6m<-as.factor(TBCSstimu$breastfeeding_6m)
+TBCSstimu$breastfeeding_18m<-as.factor(TBCSstimu$breastfeeding_18m)
+
+##dairy intake----
+TBCSstimu$dairyintake_18m<-as.factor(TBCSstimu$dairyintake_18m)
+TBCSstimu$dairyintake_5y<-as.factor(TBCSstimu$dairyintake_5y)
+TBCSstimu$dairyintake_8y<-as.factor(TBCSstimu$dairyintake_8y)
