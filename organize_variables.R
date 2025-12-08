@@ -1,13 +1,15 @@
 #install package
 install.packages("tidyverse")
+install.packages("arsenal")
 library(dplyr)
 library(tidyverse)
+library(readr)
 #input data
-sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_6m_simulated.csv")
-eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_18m_simulated.csv")
-threeydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_3y_simulated.csv")
-fiveydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_5y_simulated.csv")
-eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V1/TBCS_8y_simulated.csv")
+sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_6m_simulated.csv")
+eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_18m_simulated.csv")
+threeydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_3y_simulated.csv")
+fiveydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_5y_simulated.csv")
+eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_8y_simulated.csv")
 
 #select and rename variables----
 ##6month----
@@ -15,7 +17,7 @@ sixmdata_fixed<-sixmdata%>%
   select(Sampleid,B_SEX,C4a4,C2ad,D1d1,D1d2,D1d3,Fedu,Medu,H13)
 
 sixmdata_fixed<-sixmdata_fixed%>%
-  rename(pribioticintake_6m=C4a4, 
+  rename(probioticintake_6m=C4a4, 
          breastfeeding_6m=C2ad,
          weight_6m=D1d1,
          height_6m=D1d2,
