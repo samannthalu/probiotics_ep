@@ -1,5 +1,5 @@
 source("organize_variables.R")
-
+library("arsenal")
 #fix misclassification----
 ##SEX----
 TBCSstimu$B_SEX<-as.factor(TBCSstimu$B_SEX)
@@ -27,7 +27,7 @@ TBCSstimu$Socioeco_6m<-as.factor(TBCSstimu$Socioeco_6m)
 TBCSstimu$Socioeco_18m<-as.factor(TBCSstimu$Socioeco_18m)
 TBCSstimu$Socioeco_3y<-as.factor(TBCSstimu$Socioeco_3y)
 TBCSstimu$Socioeco_5y<-as.factor(TBCSstimu$Socioeco_5y)
-TBCSstimu$Socioeco_8y<-as.factor(TBCSstimu$Socioeco_8y)
+TBCSstimu$Socioeco_8y<-as.factor(TBCSstimu$Socioeco_8ㄋㄋy)
 
 ##breastfeeding----
 TBCSstimu$breastfeeding_6m<-as.factor(TBCSstimu$breastfeeding_6m)
@@ -37,3 +37,11 @@ TBCSstimu$breastfeeding_18m<-as.factor(TBCSstimu$breastfeeding_18m)
 TBCSstimu$dairyintake_18m<-as.factor(TBCSstimu$dairyintake_18m)
 TBCSstimu$dairyintake_5y<-as.factor(TBCSstimu$dairyintake_5y)
 TBCSstimu$dairyintake_8y<-as.factor(TBCSstimu$dairyintake_8y)
+
+#exposure combine----
+exposrureb45y<-TBCSstimu%>%
+  select(probioticintake_6m,
+         probioticintake_18m,
+         probioticintake_3y,
+         probioticinkake_5y,
+         probioticintake_8y)

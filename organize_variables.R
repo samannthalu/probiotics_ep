@@ -10,7 +10,8 @@ eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBC
 threeydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_3y_simulated.csv")
 fiveydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_5y_simulated.csv")
 eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_8y_simulated.csv")
-
+NHIRD_IPD<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_NHIRD_stimulated/NHIRD_IPD_simulated.csv")
+NHIRD_OPD<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_NHIRD_stimulated/NHIRD_OPD_simulated.csv")
 #select and rename variables----
 ##6month----
 sixmdata_fixed<-sixmdata%>%
