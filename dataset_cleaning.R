@@ -4,10 +4,10 @@ library("arsenal")
 ##SEX----
 TBCSstimu$B_SEX<-as.factor(TBCSstimu$B_SEX)
 ##probiotic intake----
-TBCSstimu$pribioticintake_6m<-as.factor(TBCSstimu$pribioticintake_6m)
+TBCSstimu$pribioticintake_6m<-as.factor(TBCSstimu$probioticintake_6m)
 TBCSstimu$probioticintake_18m<-as.factor(TBCSstimu$probioticintake_18m)
 TBCSstimu$probioticintake_3y<-as.factor(TBCSstimu$probioticintake_3y)
-TBCSstimu$probioticinkake_5y<-as.factor(TBCSstimu$probioticinkake_5y)
+TBCSstimu$probioticinkake_5y<-as.factor(TBCSstimu$probioticintake_5y)
 TBCSstimu$probioticintake_8y<-as.factor(TBCSstimu$probioticintake_8y)
 
 ##father/mother education----
@@ -27,7 +27,7 @@ TBCSstimu$Socioeco_6m<-as.factor(TBCSstimu$Socioeco_6m)
 TBCSstimu$Socioeco_18m<-as.factor(TBCSstimu$Socioeco_18m)
 TBCSstimu$Socioeco_3y<-as.factor(TBCSstimu$Socioeco_3y)
 TBCSstimu$Socioeco_5y<-as.factor(TBCSstimu$Socioeco_5y)
-TBCSstimu$Socioeco_8y<-as.factor(TBCSstimu$Socioeco_8ㄋㄋy)
+TBCSstimu$Socioeco_8y<-as.factor(TBCSstimu$Socioeco_8y)
 
 ##breastfeeding----
 TBCSstimu$breastfeeding_6m<-as.factor(TBCSstimu$breastfeeding_6m)
@@ -43,5 +43,12 @@ exposrureb45y<-TBCSstimu%>%
   select(probioticintake_6m,
          probioticintake_18m,
          probioticintake_3y,
-         probioticinkake_5y,
+         probioticintake_5y,
          probioticintake_8y)
+#change N/A into zero----
+exposureb45y_clean<-exposrureb45y
+  exposrureb45y$probioticintake_6m[is.na(exposureb45y_clean$probioticintake_6m)]<-0
+  exposrureb45y$probioticintake_18m[is.na(exposureb45y_clean$probioticintake_18m)]<-0
+  exposrureb45y$probioticintake_3y[is.na(exposureb45y_clean$probioticintake_3y)]<-0
+  exposrureb45y$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
+  exposrureb45y$probioticintake_8y[is.na(exposureb45y_clean$probioticintake_8y)]<-0

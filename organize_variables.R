@@ -50,7 +50,7 @@ fiveydata_fixed<-fiveydata%>%
   select(Sampleid,D5ad,A2_2L,A2_2W,D4_8,FEDU_5Y,MEDU_5Y,G13)
 
 fiveydata_fixed<-fiveydata_fixed%>%
-  rename(probioticinkake_5y=D5ad,
+  rename(probioticintake_5y=D5ad,
          dairyintake_5y=D4_8,
          weight_5y=A2_2W,
          height_5y=A2_2L,
