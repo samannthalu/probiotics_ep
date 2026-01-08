@@ -39,16 +39,19 @@ TBCSstimu$dairyintake_5y<-as.factor(TBCSstimu$dairyintake_5y)
 TBCSstimu$dairyintake_8y<-as.factor(TBCSstimu$dairyintake_8y)
 
 #exposure combine----
-exposrureb45y<-TBCSstimu%>%
+exposureb45y<-TBCSstimu%>%
   select(probioticintake_6m,
          probioticintake_18m,
          probioticintake_3y,
          probioticintake_5y,
          probioticintake_8y)
+
 #change N/A into zero----
-exposureb45y_clean<-exposrureb45y
-  exposrureb45y$probioticintake_6m[is.na(exposureb45y_clean$probioticintake_6m)]<-0
-  exposrureb45y$probioticintake_18m[is.na(exposureb45y_clean$probioticintake_18m)]<-0
-  exposrureb45y$probioticintake_3y[is.na(exposureb45y_clean$probioticintake_3y)]<-0
-  exposrureb45y$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
-  exposrureb45y$probioticintake_8y[is.na(exposureb45y_clean$probioticintake_8y)]<-0
+exposureb45y_clean<-exposureb45y
+  exposureb45y_clean$probioticintake_6m[is.na(exposureb45y_clean$probioticintake_6m)]<-0
+  exposureb45y_clean$probioticintake_18m[is.na(exposureb45y_clean$probioticintake_18m)]<-0
+  exposureb45y_clean$probioticintake_3y[is.na(exposureb45y_clean$probioticintake_3y)]<-0
+  exposureb45y_clean$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
+  exposureb45y_clean$probioticintake_8y[is.na(exposureb45y_clean$probioticintake_8y)]<-0
+  
+#add up exposure score----
