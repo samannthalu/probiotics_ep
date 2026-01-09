@@ -53,5 +53,17 @@ exposureb45y_clean<-exposureb45y
   exposureb45y_clean$probioticintake_3y[is.na(exposureb45y_clean$probioticintake_3y)]<-0
   exposureb45y_clean$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
   exposureb45y_clean$probioticintake_8y[is.na(exposureb45y_clean$probioticintake_8y)]<-0
-  
+
+#change variables to numeric
+exposureb45y_clean$probioticintake_18m<- as.numeric(as.character(exposureb45y_clean$probioticintake_18m))
+exposureb45y_clean$probioticintake_3y<- as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
+exposureb45y_clean$probioticintake_8y<- as.numeric(as.character(exposureb45y_clean$probioticintake_8y))
 #add up exposure score----
+exposureb45y_clean <- exposureb45y_clean %>%
+  mutate(total = rowSums(across(c(
+        probioticintake_6m,
+        probioticintake_18m,
+        probioticintake_3y,
+        probioticintake_5y,
+        probioticintake_8y)),na.rm = TRUE))
+#
