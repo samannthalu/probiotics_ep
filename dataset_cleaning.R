@@ -41,7 +41,8 @@ TBCSstimu$dairyintake_8y<-as.factor(TBCSstimu$dairyintake_8y)
 #Probioticintake (exposure)----
 ##exposure combine----
 exposureb45y<-TBCSstimu%>%
-  select(probioticintake_6m,
+  select(Sampleid,
+         probioticintake_6m,
          probioticintake_18m,
          probioticintake_3y,
          probioticintake_5y,
