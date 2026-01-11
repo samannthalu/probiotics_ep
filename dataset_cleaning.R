@@ -59,11 +59,14 @@ exposureb45y_clean$probioticintake_18m<- as.numeric(as.character(exposureb45y_cl
 exposureb45y_clean$probioticintake_3y<- as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
 exposureb45y_clean$probioticintake_8y<- as.numeric(as.character(exposureb45y_clean$probioticintake_8y))
 #add up exposure score----
-exposureb45y_clean <- exposureb45y_clean %>%
-  mutate(total = rowSums(across(c(
+exposureb45y_clean<-exposureb45y_clean%>%
+  mutate(total=rowSums(across(c(
         probioticintake_6m,
         probioticintake_18m,
         probioticintake_3y,
         probioticintake_5y,
-        probioticintake_8y)),na.rm = TRUE))
-#
+        probioticintake_8y)),na.rm=TRUE))
+#everuser/neveruser
+exposureb45y_clean<-exposureb45y_clean%>%
+  mutate(probioticintake=case_when(total==0|total>=40~0,
+                                   total>0|total<40~1))
