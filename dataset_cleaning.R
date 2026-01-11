@@ -1,7 +1,7 @@
 source("organize_variables.R")
 library("arsenal")
-#fix misclassification----
-##SEX----
+#Fix misclassification----
+##sex----
 TBCSstimu$B_SEX<-as.factor(TBCSstimu$B_SEX)
 ##probiotic intake----
 TBCSstimu$pribioticintake_6m<-as.factor(TBCSstimu$probioticintake_6m)
@@ -22,7 +22,7 @@ TBCSstimu$medu_5y<-as.factor(TBCSstimu$medu_5y)
 TBCSstimu$fedu_8y<-as.factor(TBCSstimu$fedu_8y)
 TBCSstimu$medu_8y<-as.factor(TBCSstimu$medu_8y)
 
-##Socioeconomic Status----
+##socioeconomic Status----
 TBCSstimu$Socioeco_6m<-as.factor(TBCSstimu$Socioeco_6m)
 TBCSstimu$Socioeco_18m<-as.factor(TBCSstimu$Socioeco_18m)
 TBCSstimu$Socioeco_3y<-as.factor(TBCSstimu$Socioeco_3y)
@@ -38,7 +38,8 @@ TBCSstimu$dairyintake_18m<-as.factor(TBCSstimu$dairyintake_18m)
 TBCSstimu$dairyintake_5y<-as.factor(TBCSstimu$dairyintake_5y)
 TBCSstimu$dairyintake_8y<-as.factor(TBCSstimu$dairyintake_8y)
 
-#exposure combine----
+#Probioticintake (exposure)----
+##exposure combine----
 exposureb45y<-TBCSstimu%>%
   select(probioticintake_6m,
          probioticintake_18m,
@@ -46,7 +47,7 @@ exposureb45y<-TBCSstimu%>%
          probioticintake_5y,
          probioticintake_8y)
 
-#change N/A into zero----
+##change N/A into zero----
 exposureb45y_clean<-exposureb45y
   exposureb45y_clean$probioticintake_6m[is.na(exposureb45y_clean$probioticintake_6m)]<-0
   exposureb45y_clean$probioticintake_18m[is.na(exposureb45y_clean$probioticintake_18m)]<-0
@@ -54,11 +55,12 @@ exposureb45y_clean<-exposureb45y
   exposureb45y_clean$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
   exposureb45y_clean$probioticintake_8y[is.na(exposureb45y_clean$probioticintake_8y)]<-0
 
-#change variables to numeric
-exposureb45y_clean$probioticintake_18m<- as.numeric(as.character(exposureb45y_clean$probioticintake_18m))
-exposureb45y_clean$probioticintake_3y<- as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
-exposureb45y_clean$probioticintake_8y<- as.numeric(as.character(exposureb45y_clean$probioticintake_8y))
-#add up exposure score----
+##change variables to numeric
+exposureb45y_clean$probioticintake_18m<-as.numeric(as.character(exposureb45y_clean$probioticintake_18m))
+exposureb45y_clean$probioticintake_3y<-as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
+exposureb45y_clean$probioticintake_8y<-as.numeric(as.character(exposureb45y_clean$probioticintake_8y))
+
+##add up exposure score----
 exposureb45y_clean<-exposureb45y_clean%>%
   mutate(total=rowSums(across(c(
         probioticintake_6m,
@@ -66,7 +68,8 @@ exposureb45y_clean<-exposureb45y_clean%>%
         probioticintake_3y,
         probioticintake_5y,
         probioticintake_8y)),na.rm=TRUE))
-#everuser/neveruser
+##everuser/neveruser----
 exposureb45y_clean<-exposureb45y_clean%>%
   mutate(probioticintake=case_when(total==0|total>=40~0,
                                    total>0|total<40~1))
+#Early Puberty (outcome)----
