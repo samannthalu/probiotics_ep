@@ -74,3 +74,11 @@ exposureb45y_clean<-exposureb45y_clean%>%
   mutate(probioticintake=case_when(total==0|total>=40~0,
                                    total>0|total<40~1))
 #Early Puberty (outcome)----
+NHIRD_OPD<-NHIRD_OPD%>%
+  mutate(EarlyPuberty_OPD=if_else(
+    if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3),
+           ~ .x %in% c("E301","2591")),1,0))
+NHIRD_IPD<-NHIRD_IPD%>%
+  mutate(EarlyPuberty_IPD=if_else(
+    if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3,ICD9CM_4,ICD9CM_5),
+           ~ .x %in% c("E301","2591")),1,0))
