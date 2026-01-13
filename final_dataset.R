@@ -18,5 +18,5 @@ outcome
 #Combine final dataset
 TBCSstimu_fixed<-TBCSstimu5y%>%
   full_join(exposure,by="Sampleid")%>%
-  full_join(NHIRD_IPD,by="Sampleid")%>%
-  full_join(NHIRD_OPD,by="Sampleid")
+  full_join(IPD_outcome,by="Sampleid")%>%
+  full_join(OPD_outcome,by="Sampleid")
