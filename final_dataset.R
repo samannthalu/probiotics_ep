@@ -13,7 +13,7 @@ IPD_outcome<-NHIRD_IPD%>%
   select(Sampleid,IN_DATE,EarlyPuberty_IPD)
 OPD_outcome<-NHIRD_OPD%>%
   select(Sampleid,FUNC_DATE,EarlyPuberty_OPD)
-###combine NHIRD OPD/IPD outcome(is this neccesary?)
+###combine NHIRD OPD/IPD outcome(is this necessary?)
 outcome
 #Combine final dataset
 TBCSstimu_fixed<-TBCSstimu5y%>%
