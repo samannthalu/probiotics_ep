@@ -1,9 +1,13 @@
 #install package
 install.packages("tidyverse")
 install.packages("arsenal")
+install.packages("table1")
 library(dplyr)
 library(tidyverse)
 library(readr)
+library(table1)
+library(survival)
+library(htmltools)
 #input data
 sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_6m_simulated.csv")
 eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_18m_simulated.csv")
