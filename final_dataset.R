@@ -4,7 +4,7 @@ exposure<-exposureb45y_clean%>%
   select(Sampleid,probioticintake)
 ##covariate selection----
 TBCSstimu5y<-TBCSstimu%>%
-  select(Sampleid,B_SEX,height_5y,weight_5y,dairyintake_5y,fedu_5y,medu_5y)
+  select(Sampleid,B_SEX,height_5y,weight_5y,dairyintake_5y,fedu_5y,medu_5y,Socioeco_5y)
 ###BMI counting----
 TBCSstimu5y<-TBCSstimu5y%>%
   mutate(BMI_5y=weight_5y/(height_5y/100)^2)
@@ -30,15 +30,29 @@ dat1<-TBCSstimu_fixed
 dat1$probioticintake<- 
   factor(dat1$probioticintake,
   levels = c(0, 1),
-  labels = c("No", "Yes"))
+  labels = c("Neverusers", "Everusers"))
 
 dat1$B_SEX<- 
   factor(dat1$B_SEX,
   levels = c(1, 2),
   labels = c("Male", "Female"))
 
-dat1$dairyintake_5y<-factor(dat1$dairyintake_5y)
-dat1$medu_5y<-factor(dat1$medu_5y)
+dat1$dairyintake_5y<-factor(dat1$dairyintake_5y,
+                            levels=c(0,1,2,3,4,5,8,9),
+                            labels=c("Never",
+                                     "less than 1 time a week",
+                                     "1-2 times a week",
+                                     "3 to 5 times a week",
+                                     "everyday/almost everyday",
+                                     "Unsure","Not Applicable",
+                                     "Unknown"))
+dat1$medu_5y<-factor(dat1$medu_5y,
+                     levels=c(1,2,3),
+                     labels=c("Junior High&below",
+                              "Senior High/Vocational",
+                              "University&above"))
+dat1$
+
 dat1$height_5y<-as.numeric(dat1$height_5y)
 dat1$weight_5y<-as.numeric(dat1$weight_5y)
 dat1$BMI_5y<-as.numeric(dat1$BMI_5y)
