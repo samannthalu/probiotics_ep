@@ -51,7 +51,20 @@ dat1$medu_5y<-factor(dat1$medu_5y,
                      labels=c("Junior High&below",
                               "Senior High/Vocational",
                               "University&above"))
-dat1$
+dat1$Socioeco_5y<-factor(dat1$Socioeco_5y,
+                         levels=c(1,2,3,4,5,6,7,8,9,88,98,99),
+                         labels=c("<10,000",
+                                  ">=10,000,<20,000",
+                                  ">=20,000,<30,000",
+                                  ">=30,000,<50,000",
+                                  ">=50,000,<70,000",
+                                  ">=70,000,<100,000",
+                                  ">=100,000,<150,000",
+                                  ">=150,000,<200,000",
+                                  ">=200,000",
+                                  "Not Appliable",
+                                  "Refused/Don't Know",
+                                  "Unknown"))
 
 dat1$height_5y<-as.numeric(dat1$height_5y)
 dat1$weight_5y<-as.numeric(dat1$weight_5y)
@@ -64,7 +77,8 @@ label(dat1$weight_5y)       <- "Weight at age 5 (kg)"
 label(dat1$BMI_5y)          <- "BMI at age 5 (kg/m²)"
 label(dat1$dairyintake_5y)  <- "Dairy intake at age 5"
 label(dat1$medu_5y)         <- "Maternal education level"
+label(dat1$Socioeco_5y)     <- "Average month family income(NT$)"
 
-tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y | probioticintake, 
+tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y | probioticintake, 
         data = dat1)
 save_html(tab1, "table1.html")
