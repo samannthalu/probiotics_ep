@@ -1,0 +1,52 @@
+%nin%                   Not in
+NA.operations           Some functions to handle NAs
+arsenal                 An Arsenal of 'R' Functions for Large-Scale
+                        Statistical Summaries
+arsenal-defunct         Defunct functions in 'arsenal'
+arsenal-deprecated      Deprecated functions in 'arsenal'
+arsenal_table           'arsenal' tables with common structure
+as.data.frame.freqlist
+                        as.data.frame.freqlist
+as.data.frame.modelsum
+                        as.data.frame.modelsum
+as.data.frame.tableby   as.data.frame.tableby
+comparedf               Compare two data.frames and report differences
+comparedf.control       Control settings for 'comparedf' function
+comparedf.tolerances    'comparedf' tolerances
+diffs                   Extract differences
+formulize               formulize
+freq.control            Control settings for 'freqlist' function
+freqlist                freqlist
+freqlist.internal       Helper functions for freqlist
+internal.functions      Internal Functions
+keep.labels             Keep Labels
+labels                  Labels
+mdy.Date                Convert numeric dates to Date object, and vice
+                        versa
+mockstudy               Mock study data for examples
+modelsum                Fit models over each of a set of independent
+                        variables with a response variable
+modelsum.control        Control settings for 'modelsum' function
+modelsum.family         Family functions for modelsum
+modelsum.internal       Helper functions for modelsum
+padjust                 Adjust P-values for Multiple Comparisons
+paired                  Summary Statistics of a Set of Independent
+                        Variables Paired Across Two Timepoints
+paired.control          Control settings for 'paired' function
+paired.internal         Helper functions for paired
+selectall               Make a column for "select all" input
+summary.comparedf       The summary method for a 'comparedf' object
+summary.freqlist        summary.freqlist
+summary.modelsum        Summarize a 'modelsum' object.
+summary.tableby         The summary method for a 'tableby' object
+tableby                 Summary Statistics of a Set of Independent
+                        Variables by a Categorical Variable
+tableby.control         Control settings for 'tableby' function
+tableby.internal        Helper functions for tableby
+tableby.stats           tableby Summary Statistics Functions
+tableby.stats.internal
+                        Internal 'tableby' functions
+write2                  write2
+write2.internal         Helper functions for 'write2'
+write2specific          write2word, write2html, write2pdf
+yaml                    Include a YAML header in 'write2'

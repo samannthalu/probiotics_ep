@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: An Arsenal of 'R' Functions for Large-Scale Statistical
+Summaries</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> An Arsenal of 'R' Functions for Large-Scale Statistical
+Summaries
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;arsenal&rsquo; version 3.6.3</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+<li><a href="../NEWS.md">Package NEWS</a>.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#K">K</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#X">X</a>
+<a href="#Y">Y</a>
+<a href="#misc">misc</a>
+</p>
+
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="NA.operations.html">allNA</a></td>
+<td>Some functions to handle NAs</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal.html">arsenal</a></td>
+<td>An Arsenal of 'R' Functions for Large-Scale Statistical Summaries</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal-defunct.html">arsenal-defunct</a></td>
+<td>Defunct functions in 'arsenal'</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal-deprecated.html">arsenal-deprecated</a></td>
+<td>Deprecated functions in 'arsenal'</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_max</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_mean</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_median</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_min</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_range</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_sd</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_sum</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">arsenal_table</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">arsenal_var</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.internal.html">as.countpct</a></td>
+<td>Internal 'tableby' functions</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.freqlist.html">as.data.frame.freqlist</a></td>
+<td>as.data.frame.freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.modelsum.html">as.data.frame.modelsum</a></td>
+<td>as.data.frame.modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="summary.freqlist.html">as.data.frame.summary.freqlist</a></td>
+<td>summary.freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="summary.modelsum.html">as.data.frame.summary.modelsum</a></td>
+<td>Summarize a 'modelsum' object.</td></tr>
+<tr><td style="width: 25%;"><a href="summary.tableby.html">as.data.frame.summary.tableby</a></td>
+<td>The summary method for a 'tableby' object</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.tableby.html">as.data.frame.tableby</a></td>
+<td>as.data.frame.tableby</td></tr>
+<tr><td style="width: 25%;"><a href="selectall.html">as.matrix.selectall</a></td>
+<td>Make a column for "select all" input</td></tr>
+<tr><td style="width: 25%;"><a href="selectall.html">as.selectall</a></td>
+<td>Make a column for "select all" input</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.internal.html">as.tbstat</a></td>
+<td>Internal 'tableby' functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.internal.html">as.tbstat_multirow</a></td>
+<td>Internal 'tableby' functions</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tableby.stats.html">binomCI</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="yaml.html">c.yaml</a></td>
+<td>Include a YAML header in 'write2'</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.family.html">clog</a></td>
+<td>Family functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="write2.internal.html">code.chunk</a></td>
+<td>Helper functions for 'write2'</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.html">comparedf</a></td>
+<td>Compare two data.frames and report differences</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.control.html">comparedf.control</a></td>
+<td>Control settings for 'comparedf' function</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">comparedf.tolerances</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">count</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">countcellpct</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">countN</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">countpct</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">countrowpct</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="mdy.Date.html">Date.mdy</a></td>
+<td>Convert numeric dates to Date object, and vice versa</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">diffs</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">diffs.comparedf</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">diffs.summary.comparedf</a></td>
+<td>Extract differences</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="formulize.html">formulize</a></td>
+<td>formulize</td></tr>
+<tr><td style="width: 25%;"><a href="freq.control.html">freq.control</a></td>
+<td>Control settings for 'freqlist' function</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.html">freqlist</a></td>
+<td>freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.html">freqlist.formula</a></td>
+<td>freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.internal.html">freqlist.internal</a></td>
+<td>Helper functions for freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.html">freqlist.table</a></td>
+<td>freqlist</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tableby.stats.html">gmean</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">gmeanCI</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">gmeansd</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">gsd</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="arsenal_table.html">has_strata</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.internal.html">head.summary.freqlist</a></td>
+<td>Helper functions for freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">head.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="NA.operations.html">includeNA</a></td>
+<td>Some functions to handle NAs</td></tr>
+<tr><td style="width: 25%;"><a href="NA.operations.html">includeNA.default</a></td>
+<td>Some functions to handle NAs</td></tr>
+<tr><td style="width: 25%;"><a href="NA.operations.html">includeNA.factor</a></td>
+<td>Some functions to handle NAs</td></tr>
+<tr><td style="width: 25%;"><a href="internal.functions.html">internal.functions</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">iqr</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="mdy.Date.html">is.Date</a></td>
+<td>Convert numeric dates to Date object, and vice versa</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.internal.html">is.freqlist</a></td>
+<td>Helper functions for freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.internal.html">is.modelsum</a></td>
+<td>Helper functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="selectall.html">is.na.selectall</a></td>
+<td>Make a column for "select all" input</td></tr>
+<tr><td style="width: 25%;"><a href="selectall.html">is.selectall</a></td>
+<td>Make a column for "select all" input</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.internal.html">is.summary.freqlist</a></td>
+<td>Helper functions for freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.internal.html">is.summary.modelsum</a></td>
+<td>Helper functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">is.summary.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">is.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="yaml.html">is.yaml</a></td>
+<td>Include a YAML header in 'write2'</td></tr>
+</table>
+
+<h2><a id="K">-- K --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="keep.labels.html">keep.labels</a></td>
+<td>Keep Labels</td></tr>
+<tr><td style="width: 25%;"><a href="keep.labels.html">keep.labels.data.frame</a></td>
+<td>Keep Labels</td></tr>
+<tr><td style="width: 25%;"><a href="keep.labels.html">keep.labels.default</a></td>
+<td>Keep Labels</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="labels.html">labels</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">labels.arsenal_table</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">labels.data.frame</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">labels.keep_labels</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">labels&lt;-</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">labels&lt;-.arsenal_table</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">labels&lt;-.data.frame</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">labels&lt;-.default</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">labels&lt;-.keep_labels</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="keep.labels.html">loosen.labels</a></td>
+<td>Keep Labels</td></tr>
+<tr><td style="width: 25%;"><a href="keep.labels.html">loosen.labels.data.frame</a></td>
+<td>Keep Labels</td></tr>
+<tr><td style="width: 25%;"><a href="keep.labels.html">loosen.labels.default</a></td>
+<td>Keep Labels</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="mdy.Date.html">mdy.Date</a></td>
+<td>Convert numeric dates to Date object, and vice versa</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">meanCI</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">meansd</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">meanse</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">medianmad</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">medianq1q3</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">medianrange</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">medSurv</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">medTime</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">merge.arsenal_table</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">merge.freqlist</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="mockstudy.html">mockstudy</a></td>
+<td>Mock study data for examples</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.html">modelsum</a></td>
+<td>Fit models over each of a set of independent variables with a response variable</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.control.html">modelsum.control</a></td>
+<td>Control settings for 'modelsum' function</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.family.html">modelsum.family</a></td>
+<td>Family functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.internal.html">modelsum.internal</a></td>
+<td>Helper functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">modpval.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="mockstudy.html">muck_up_mockstudy</a></td>
+<td>Mock study data for examples</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tableby.stats.html">N</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">n.diff.obs</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">n.diff.obs.comparedf</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">n.diff.obs.summary.comparedf</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">n.diffs</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">n.diffs.comparedf</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="diffs.html">n.diffs.summary.comparedf</a></td>
+<td>Extract differences</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.internal.html">na.modelsum</a></td>
+<td>Helper functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="NA.operations.html">NA.operations</a></td>
+<td>Some functions to handle NAs</td></tr>
+<tr><td style="width: 25%;"><a href="paired.internal.html">na.paired</a></td>
+<td>Helper functions for paired</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">na.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.family.html">negbin</a></td>
+<td>Family functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">Nevents</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">NeventsSurv</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="grapes-nin-grapes.html">nin</a></td>
+<td>Not in</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">Nmiss</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">Nmiss2</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">Npct</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">Nrisk</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">NriskSurv</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">Nsigntest</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tableby.internal.html">Ops.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.family.html">ordinal</a></td>
+<td>Family functions for modelsum</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="padjust.html">padjust</a></td>
+<td>Adjust P-values for Multiple Comparisons</td></tr>
+<tr><td style="width: 25%;"><a href="padjust.html">padjust.default</a></td>
+<td>Adjust P-values for Multiple Comparisons</td></tr>
+<tr><td style="width: 25%;"><a href="padjust.html">padjust.summary.tableby</a></td>
+<td>Adjust P-values for Multiple Comparisons</td></tr>
+<tr><td style="width: 25%;"><a href="padjust.html">padjust.tableby</a></td>
+<td>Adjust P-values for Multiple Comparisons</td></tr>
+<tr><td style="width: 25%;"><a href="paired.html">paired</a></td>
+<td>Summary Statistics of a Set of Independent Variables Paired Across Two Timepoints</td></tr>
+<tr><td style="width: 25%;"><a href="paired.control.html">paired.control</a></td>
+<td>Control settings for 'paired' function</td></tr>
+<tr><td style="width: 25%;"><a href="paired.internal.html">paired.internal</a></td>
+<td>Helper functions for paired</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">print.arsenal_table</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.html">print.comparedf</a></td>
+<td>Compare two data.frames and report differences</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">print.summary.arsenal_table</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="summary.comparedf.html">print.summary.comparedf</a></td>
+<td>The summary method for a 'comparedf' object</td></tr>
+<tr><td style="width: 25%;"><a href="yaml.html">print.yaml</a></td>
+<td>Include a YAML header in 'write2'</td></tr>
+</table>
+
+<h2><a id="Q">-- Q --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tableby.stats.html">q1q3</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="modelsum.family.html">relrisk</a></td>
+<td>Family functions for modelsum</td></tr>
+<tr><td style="width: 25%;"><a href="internal.functions.html">replace2</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">rowbinomCI</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="selectall.html">selectall</a></td>
+<td>Make a column for "select all" input</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">set_attr</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="labels.html">set_labels</a></td>
+<td>Labels</td></tr>
+<tr><td style="width: 25%;"><a href="internal.functions.html">smart.split</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.internal.html">sort.freqlist</a></td>
+<td>Helper functions for freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">sort.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="summary.comparedf.html">summary.comparedf</a></td>
+<td>The summary method for a 'comparedf' object</td></tr>
+<tr><td style="width: 25%;"><a href="summary.freqlist.html">summary.freqlist</a></td>
+<td>summary.freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="summary.modelsum.html">summary.modelsum</a></td>
+<td>Summarize a 'modelsum' object.</td></tr>
+<tr><td style="width: 25%;"><a href="summary.tableby.html">summary.tableby</a></td>
+<td>The summary method for a 'tableby' object</td></tr>
+<tr><td style="width: 25%;"><a href="modelsum.family.html">survival</a></td>
+<td>Family functions for modelsum</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tableby.html">tableby</a></td>
+<td>Summary Statistics of a Set of Independent Variables by a Categorical Variable</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.control.html">tableby.control</a></td>
+<td>Control settings for 'tableby' function</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">tableby.internal</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.html">tableby.stats</a></td>
+<td>tableby Summary Statistics Functions</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.stats.internal.html">tableby.stats.internal</a></td>
+<td>Internal 'tableby' functions</td></tr>
+<tr><td style="width: 25%;"><a href="freqlist.internal.html">tail.summary.freqlist</a></td>
+<td>Helper functions for freqlist</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">tail.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">tests</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="tableby.internal.html">tests.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.char.both</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.char.case</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.char.none</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.char.trim</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.date.absolute</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.factor.labels</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.factor.levels</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.factor.none</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.logical.none</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.NA</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.num.absolute</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.num.pct</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.num.percent</a></td>
+<td>'comparedf' tolerances</td></tr>
+<tr><td style="width: 25%;"><a href="comparedf.tolerances.html">tol.other.none</a></td>
+<td>'comparedf' tolerances</td></tr>
+</table>
+
+<h2><a id="V">-- V --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="write2.internal.html">verbatim</a></td>
+<td>Helper functions for 'write2'</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="write2.html">write2</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.arsenal_table</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.character</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.code.chunk</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.comparedf</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.default</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.internal.html">write2.internal</a></td>
+<td>Helper functions for 'write2'</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.knitr_kable</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.list</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.summary.arsenal_table</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.summary.comparedf</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.verbatim</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.xtable</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2.html">write2.yaml</a></td>
+<td>write2</td></tr>
+<tr><td style="width: 25%;"><a href="write2specific.html">write2html</a></td>
+<td>write2word, write2html, write2pdf</td></tr>
+<tr><td style="width: 25%;"><a href="write2specific.html">write2pdf</a></td>
+<td>write2word, write2html, write2pdf</td></tr>
+<tr><td style="width: 25%;"><a href="write2specific.html">write2specific</a></td>
+<td>write2word, write2html, write2pdf</td></tr>
+<tr><td style="width: 25%;"><a href="write2specific.html">write2word</a></td>
+<td>write2word, write2html, write2pdf</td></tr>
+</table>
+
+<h2><a id="X">-- X --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tableby.internal.html">xtfrm.tableby</a></td>
+<td>Helper functions for tableby</td></tr>
+</table>
+
+<h2><a id="Y">-- Y --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="yaml.html">yaml</a></td>
+<td>Include a YAML header in 'write2'</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="grapes-nin-grapes.html">%nin%</a></td>
+<td>Not in</td></tr>
+<tr><td style="width: 25%;"><a href="arsenal_table.html">[.arsenal_table</a></td>
+<td>'arsenal' tables with common structure</td></tr>
+<tr><td style="width: 25%;"><a href="keep.labels.html">[.keep_labels</a></td>
+<td>Keep Labels</td></tr>
+<tr><td style="width: 25%;"><a href="selectall.html">[.selectall</a></td>
+<td>Make a column for "select all" input</td></tr>
+<tr><td style="width: 25%;"><a href="keep.labels.html">[&lt;-.keep_labels</a></td>
+<td>Keep Labels</td></tr>
+</table>
+</div></body></html>

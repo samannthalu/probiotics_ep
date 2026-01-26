@@ -1,0 +1,37 @@
+as.data.frame.table1    Convert a 'table1' object to a 'data.frame'.
+eqcut                   Cut a continuous variable into equal-sized
+                        groups.
+factorp                 Factor creation function that preserves column
+                        attributes.
+indexed                 A simple class for indexed data.
+indices                 Extract indices from and indexed object.
+knit_print.table1       Method for printing in a 'knitr' context.
+label                   Label attribute.
+parse.abbrev.render.code
+                        Parse abbreviated code for rendering table
+                        output.
+print.table1            Print 'table1' object.
+render.categorical.default
+                        Render categorical values for table output.
+render.continuous.default
+                        Render continuous values for table output.
+render.default          Render values for table output.
+render.missing.default
+                        Render missing values for table output.
+render.varlabel         Render variable labels for default table1
+                        output.
+signif_pad              Round numbers with 0-padding.
+stats.apply.rounding    Apply rounding to basic descriptive statistics.
+stats.default           Compute some basic descriptive statistics.
+subsetp                 Subset function that preserves column
+                        attributes.
+t1flex                  Convert a 'table1' object to 'flextable'.
+t1kable                 Convert a 'table1' object to 'kabelExtra'.
+t1read                  Read and augment data with extended metadata
+                        attributes
+table.rows              Convert to HTML table rows.
+table1                  Generate an HTML table of descriptive
+                        statistics.
+units                   Units attribute.
+update_html             Update HTML.
+weighted                A simple class for weighted data.

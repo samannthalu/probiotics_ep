@@ -1,0 +1,4087 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Tina Gunderson and Ethan Heinzen" />
+
+
+<title>The freqlist function</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<link href="data:text/css,%0Aa%2Eanchor%2Dsection%20%7Bmargin%2Dleft%3A%2010px%3B%20visibility%3A%20hidden%3B%20color%3A%20inherit%3B%7D%0Aa%2Eanchor%2Dsection%3A%3Abefore%20%7Bcontent%3A%20%27%23%27%3B%7D%0A%2EhasAnchor%3Ahover%20a%2Eanchor%2Dsection%20%7Bvisibility%3A%20visible%3B%7D%0A" rel="stylesheet" />
+<script src="data:application/javascript;base64,Ly8gQW5jaG9yIHNlY3Rpb25zIHYxLjAgd3JpdHRlbiBieSBBdHN1c2hpIFlhc3Vtb3RvIG9uIE9jdCAzcmQsIDIwMjAuCmRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoJ0RPTUNvbnRlbnRMb2FkZWQnLCBmdW5jdGlvbigpIHsKICAvLyBEbyBub3RoaW5nIGlmIEFuY2hvckpTIGlzIHVzZWQKICBpZiAodHlwZW9mIHdpbmRvdy5hbmNob3JzID09PSAnb2JqZWN0JyAmJiBhbmNob3JzLmhhc093blByb3BlcnR5KCdoYXNBbmNob3JKU0xpbmsnKSkgewogICAgcmV0dXJuOwogIH0KCiAgY29uc3QgaCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoJ2gxLCBoMiwgaDMsIGg0LCBoNSwgaDYnKTsKCiAgLy8gRG8gbm90aGluZyBpZiBzZWN0aW9ucyBhcmUgYWxyZWFkeSBhbmNob3JlZAogIGlmIChBcnJheS5mcm9tKGgpLnNvbWUoeCA9PiB4LmNsYXNzTGlzdC5jb250YWlucygnaGFzQW5jaG9yJykpKSB7CiAgICByZXR1cm4gbnVsbDsKICB9CgogIC8vIFVzZSBzZWN0aW9uIGlkIHdoZW4gcGFuZG9jIHJ1bnMgd2l0aCAtLXNlY3Rpb24tZGl2cwogIGNvbnN0IHNlY3Rpb25faWQgPSBmdW5jdGlvbih4KSB7CiAgICByZXR1cm4gKCh4LmNsYXNzTGlzdC5jb250YWlucygnc2VjdGlvbicpIHx8ICh4LnRhZ05hbWUgPT09ICdTRUNUSU9OJykpCiAgICAgICAgICAgID8geC5pZCA6ICcnKTsKICB9OwoKICAvLyBBZGQgYW5jaG9ycwogIGguZm9yRWFjaChmdW5jdGlvbih4KSB7CiAgICBjb25zdCBpZCA9IHguaWQgfHwgc2VjdGlvbl9pZCh4LnBhcmVudEVsZW1lbnQpOwogICAgaWYgKGlkID09PSAnJykgewogICAgICByZXR1cm4gbnVsbDsKICAgIH0KICAgIGxldCBhbmNob3IgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdhJyk7CiAgICBhbmNob3IuaHJlZiA9ICcjJyArIGlkOwogICAgYW5jaG9yLmNsYXNzTGlzdCA9IFsnYW5jaG9yLXNlY3Rpb24nXTsKICAgIHguY2xhc3NMaXN0LmFkZCgnaGFzQW5jaG9yJyk7CiAgICB4LmFwcGVuZENoaWxkKGFuY2hvcik7CiAgfSk7Cn0pOwo="></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The freqlist function</h1>
+<h4 class="author">Tina Gunderson and Ethan Heinzen</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview">Overview</a>
+<ul>
+<li><a href="#sample-dataset">Sample dataset</a></li>
+</ul></li>
+<li><a href="#the-freqlist-object">The <code>freqlist</code> object</a></li>
+<li><a href="#basic-output-using-summary">Basic output using <code>summary()</code></a></li>
+<li><a href="#using-a-formula-with-freqlist">Using a formula with <code>freqlist</code></a></li>
+<li><a href="#rounding-percentage-digits-or-changing-variable-names-for-printing">Rounding percentage digits or changing variable names for printing</a></li>
+<li><a href="#additional-examples">Additional examples</a>
+<ul>
+<li><a href="#including-combinations-with-frequencies-of-zero">Including combinations with frequencies of zero</a></li>
+<li><a href="#options-for-na-handling">Options for NA handling</a></li>
+<li><a href="#frequency-counts-and-percentages-subset-by-factor-levels">Frequency counts and percentages subset by factor levels</a></li>
+<li><a href="#show-only-the-n-most-common-combinations-in-each-table-head-and-sort">Show only the “n” most common combinations in each table (<code>head()</code> and <code>sort()</code>)</a></li>
+<li><a href="#change-labels-on-the-fly">Change labels on the fly</a></li>
+<li><a href="#using-xtable-to-format-and-print-freqlist-results">Using <code>xtable()</code> to format and print <code>freqlist()</code> results</a></li>
+<li><a href="#use-freqlist-in-bookdown">Use <code>freqlist</code> in bookdown</a></li>
+</ul></li>
+<li><a href="#appendix-notes-regarding-table-options-in-r">Appendix: Notes regarding table options in R</a>
+<ul>
+<li><a href="#nas">NAs</a></li>
+<li><a href="#table-dimname-names-dnn">Table dimname names (dnn)</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p><code>freqlist()</code> is a function meant to produce output similar to SAS’s <code>PROC FREQ</code> procedure when using the <code>/list</code> option of the <code>TABLE</code> statement. <code>freqlist()</code> provides options for handling missing or sparse data and can provide cumulative counts and percentages based on subgroups. It depends on the <code>knitr</code> package for printing.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(arsenal)</span></code></pre></div>
+<div id="sample-dataset" class="section level2">
+<h2>Sample dataset</h2>
+<p>For our examples, we’ll load the <code>mockstudy</code> data included with this package and use it to create a basic table. Because they have fewer levels, for brevity, we’ll use the variables arm, sex, and mdquality.s to create the example table. We’ll retain NAs in the table creation. See the appendix for notes regarding default NA handling and other useful information regarding tables in R.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load the data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mockstudy)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># retain NAs when creating the table using the useNA argument</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tab.ex <span class="ot">&lt;-</span> <span class="fu">table</span>(mockstudy[, <span class="fu">c</span>(<span class="st">&quot;arm&quot;</span>, <span class="st">&quot;sex&quot;</span>, <span class="st">&quot;mdquality.s&quot;</span>)], <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="the-freqlist-object" class="section level1">
+<h1>The <code>freqlist</code> object</h1>
+<p>The <code>freqlist()</code> function is an S3 generic (with methods for tables and formulas) which returns an object of class <code>&quot;freqlist&quot;</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>example1 <span class="ot">&lt;-</span> <span class="fu">freqlist</span>(tab.ex)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(example1)</span></code></pre></div>
+<pre><code>List of 3
+ $ Call   : language freqlist.table(object = tab.ex)
+ $ control:List of 5
+  ..$ sparse      : logi FALSE
+  ..$ single      : logi FALSE
+  ..$ dupLabels   : logi FALSE
+  ..$ digits.count: int 0
+  ..$ digits.pct  : int 2
+ $ tables :List of 1
+  ..$ :List of 6
+  .. ..$ y         :List of 2
+  .. .. ..$ term : chr &quot;&quot;
+  .. .. ..$ label: chr &quot;&quot;
+  .. ..$ strata    :List of 4
+  .. .. ..$ term     : chr &quot;&quot;
+  .. .. ..$ values   : chr &quot;&quot;
+  .. .. ..$ label    : chr &quot;&quot;
+  .. .. ..$ hasStrata: logi FALSE
+  .. ..$ x         :List of 7
+  .. .. ..$ arm        :List of 3
+  .. .. .. ..$ variable: chr &quot;arm&quot;
+  .. .. .. ..$ label   : chr &quot;arm&quot;
+  .. .. .. ..$ term    : chr &quot;arm&quot;
+  .. .. ..$ sex        :List of 3
+  .. .. .. ..$ variable: chr &quot;sex&quot;
+  .. .. .. ..$ label   : chr &quot;sex&quot;
+  .. .. .. ..$ term    : chr &quot;sex&quot;
+  .. .. ..$ mdquality.s:List of 3
+  .. .. .. ..$ variable: chr &quot;mdquality.s&quot;
+  .. .. .. ..$ label   : chr &quot;mdquality.s&quot;
+  .. .. .. ..$ term    : chr &quot;mdquality.s&quot;
+  .. .. ..$ Freq       :List of 3
+  .. .. .. ..$ variable: chr &quot;Freq&quot;
+  .. .. .. ..$ label   : chr &quot;Freq&quot;
+  .. .. .. ..$ term    : chr &quot;Freq&quot;
+  .. .. ..$ cumFreq    :List of 3
+  .. .. .. ..$ variable: chr &quot;cumFreq&quot;
+  .. .. .. ..$ label   : chr &quot;Cumulative Freq&quot;
+  .. .. .. ..$ term    : chr &quot;cumFreq&quot;
+  .. .. ..$ freqPercent:List of 3
+  .. .. .. ..$ variable: chr &quot;freqPercent&quot;
+  .. .. .. ..$ label   : chr &quot;Percent&quot;
+  .. .. .. ..$ term    : chr &quot;freqPercent&quot;
+  .. .. ..$ cumPercent :List of 3
+  .. .. .. ..$ variable: chr &quot;cumPercent&quot;
+  .. .. .. ..$ label   : chr &quot;Cumulative Percent&quot;
+  .. .. .. ..$ term    : chr &quot;cumPercent&quot;
+  .. ..$ tables    :List of 1
+  .. .. ..$ :&#39;data.frame&#39;:  18 obs. of  7 variables:
+  .. .. .. ..$ arm        : Factor w/ 3 levels &quot;A: IFL&quot;,&quot;F: FOLFOX&quot;,..: 1 1 1 1 1 1 2 2 2 2 ...
+  .. .. .. ..$ sex        : Factor w/ 2 levels &quot;Male&quot;,&quot;Female&quot;: 1 1 1 2 2 2 1 1 1 2 ...
+  .. .. .. ..$ mdquality.s: Factor w/ 2 levels &quot;0&quot;,&quot;1&quot;: 1 2 NA 1 2 NA 1 2 NA 1 ...
+  .. .. .. ..$ Freq       : int [1:18] 29 214 34 12 118 21 31 285 95 21 ...
+  .. .. .. ..$ cumFreq    : int [1:18] 29 243 277 289 407 428 459 744 839 860 ...
+  .. .. .. ..$ freqPercent: num [1:18] 1.935 14.276 2.268 0.801 7.872 ...
+  .. .. .. ..$ cumPercent : num [1:18] 1.93 16.21 18.48 19.28 27.15 ...
+  .. ..$ hasWeights: logi FALSE
+  .. ..$ na.options: chr &quot;include&quot;
+ - attr(*, &quot;class&quot;)= chr [1:2] &quot;freqlist&quot; &quot;arsenal_table&quot;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># view the data frame portion of freqlist output</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(example1))  <span class="do">## or use as.data.frame(example1)</span></span></code></pre></div>
+<pre><code>     arm    sex mdquality.s Freq cumFreq freqPercent cumPercent
+1 A: IFL   Male           0   29      29   1.9346231   1.934623
+2 A: IFL   Male           1  214     243  14.2761841  16.210807
+3 A: IFL   Male        &lt;NA&gt;   34     277   2.2681788  18.478986
+4 A: IFL Female           0   12     289   0.8005337  19.279520
+5 A: IFL Female           1  118     407   7.8719146  27.151434
+6 A: IFL Female        &lt;NA&gt;   21     428   1.4009340  28.552368</code></pre>
+</div>
+<div id="basic-output-using-summary" class="section level1">
+<h1>Basic output using <code>summary()</code></h1>
+<p>The <code>summary</code> method for <code>freqlist()</code> relies on the <code>kable()</code> function (in the <code>knitr</code> package) for printing. <code>knitr::kable()</code> converts the output to markdown which can be printed in the console or easily rendered in Word, PDF, or HTML documents.</p>
+<p>Note that you must supply <code>results=&quot;asis&quot;</code> to properly format the markdown output.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(example1)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">1.93</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">14.28</td>
+<td align="right">16.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">2.27</td>
+<td align="right">18.48</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.80</td>
+<td align="right">19.28</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">7.87</td>
+<td align="right">27.15</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">1.40</td>
+<td align="right">28.55</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">2.07</td>
+<td align="right">30.62</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">19.01</td>
+<td align="right">49.63</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">6.34</td>
+<td align="right">55.97</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">1.40</td>
+<td align="right">57.37</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">13.21</td>
+<td align="right">70.58</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">1119</td>
+<td align="right">4.07</td>
+<td align="right">74.65</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">1136</td>
+<td align="right">1.13</td>
+<td align="right">75.78</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1323</td>
+<td align="right">12.47</td>
+<td align="right">88.26</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">1347</td>
+<td align="right">1.60</td>
+<td align="right">89.86</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1361</td>
+<td align="right">0.93</td>
+<td align="right">90.79</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1482</td>
+<td align="right">8.07</td>
+<td align="right">98.87</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">1499</td>
+<td align="right">1.13</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<p>You can print a title for the table using the <code>title=</code> argument.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(example1, <span class="at">title =</span> <span class="st">&quot;Basic freqlist output&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Basic freqlist output</caption>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">1.93</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">14.28</td>
+<td align="right">16.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">2.27</td>
+<td align="right">18.48</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.80</td>
+<td align="right">19.28</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">7.87</td>
+<td align="right">27.15</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">1.40</td>
+<td align="right">28.55</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">2.07</td>
+<td align="right">30.62</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">19.01</td>
+<td align="right">49.63</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">6.34</td>
+<td align="right">55.97</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">1.40</td>
+<td align="right">57.37</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">13.21</td>
+<td align="right">70.58</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">1119</td>
+<td align="right">4.07</td>
+<td align="right">74.65</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">1136</td>
+<td align="right">1.13</td>
+<td align="right">75.78</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1323</td>
+<td align="right">12.47</td>
+<td align="right">88.26</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">1347</td>
+<td align="right">1.60</td>
+<td align="right">89.86</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1361</td>
+<td align="right">0.93</td>
+<td align="right">90.79</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1482</td>
+<td align="right">8.07</td>
+<td align="right">98.87</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">1499</td>
+<td align="right">1.13</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<p>You can also easily pull out the <code>freqlist</code> data frame for more complicated formatting or manipulation (e.g. with another function such as <code>xtable()</code> or <code>pander()</code>) using <code>as.data.frame(summary())</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(<span class="fu">summary</span>(example1)))</span></code></pre></div>
+<pre><code>     arm    sex mdquality.s Freq Cumulative Freq Percent Cumulative Percent
+1 A: IFL   Male           0   29              29    1.93               1.93
+2                         1  214             243   14.28              16.21
+3                      &lt;NA&gt;   34             277    2.27              18.48
+4        Female           0   12             289    0.80              19.28
+5                         1  118             407    7.87              27.15
+6                      &lt;NA&gt;   21             428    1.40              28.55</code></pre>
+</div>
+<div id="using-a-formula-with-freqlist" class="section level1">
+<h1>Using a formula with <code>freqlist</code></h1>
+<p>Instead of passing a pre-computed table to <code>freqlist()</code>, you can instead pass a formula, which will be in turn passed to the <code>xtabs()</code> function. Additional <code>freqlist()</code> arguments are passed through the <code>...</code> to the <code>freqlist()</code> table method.</p>
+<p>Note that <code>freqlist()</code> sets the <code>addNA=TRUE</code> argument by default:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(<span class="sc">~</span>arm <span class="sc">+</span> sex <span class="sc">+</span> mdquality.s, <span class="at">data =</span> mockstudy))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Treatment Arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">1.93</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">14.28</td>
+<td align="right">16.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">2.27</td>
+<td align="right">18.48</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.80</td>
+<td align="right">19.28</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">7.87</td>
+<td align="right">27.15</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">1.40</td>
+<td align="right">28.55</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">2.07</td>
+<td align="right">30.62</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">19.01</td>
+<td align="right">49.63</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">6.34</td>
+<td align="right">55.97</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">1.40</td>
+<td align="right">57.37</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">13.21</td>
+<td align="right">70.58</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">1119</td>
+<td align="right">4.07</td>
+<td align="right">74.65</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">1136</td>
+<td align="right">1.13</td>
+<td align="right">75.78</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1323</td>
+<td align="right">12.47</td>
+<td align="right">88.26</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">1347</td>
+<td align="right">1.60</td>
+<td align="right">89.86</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1361</td>
+<td align="right">0.93</td>
+<td align="right">90.79</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1482</td>
+<td align="right">8.07</td>
+<td align="right">98.87</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">1499</td>
+<td align="right">1.13</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<p>One can also set NAs to an explicit value using <code>includeNA()</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(<span class="sc">~</span>arm <span class="sc">+</span> sex <span class="sc">+</span> <span class="fu">includeNA</span>(mdquality.s, <span class="st">&quot;Missing&quot;</span>), <span class="at">data =</span> mockstudy))</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="13%" />
+<col width="6%" />
+<col width="33%" />
+<col width="4%" />
+<col width="15%" />
+<col width="7%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Treatment Arm</th>
+<th align="left">sex</th>
+<th align="left">includeNA(mdquality.s, “Missing”)</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">1.93</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">14.28</td>
+<td align="right">16.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">Missing</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">2.27</td>
+<td align="right">18.48</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.80</td>
+<td align="right">19.28</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">7.87</td>
+<td align="right">27.15</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">Missing</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">1.40</td>
+<td align="right">28.55</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">2.07</td>
+<td align="right">30.62</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">19.01</td>
+<td align="right">49.63</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">Missing</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">6.34</td>
+<td align="right">55.97</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">1.40</td>
+<td align="right">57.37</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">13.21</td>
+<td align="right">70.58</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">Missing</td>
+<td align="right">61</td>
+<td align="right">1119</td>
+<td align="right">4.07</td>
+<td align="right">74.65</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">1136</td>
+<td align="right">1.13</td>
+<td align="right">75.78</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1323</td>
+<td align="right">12.47</td>
+<td align="right">88.26</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">Missing</td>
+<td align="right">24</td>
+<td align="right">1347</td>
+<td align="right">1.60</td>
+<td align="right">89.86</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1361</td>
+<td align="right">0.93</td>
+<td align="right">90.79</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1482</td>
+<td align="right">8.07</td>
+<td align="right">98.87</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">Missing</td>
+<td align="right">17</td>
+<td align="right">1499</td>
+<td align="right">1.13</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<p>In fact, since <code>xtabs()</code> allows for left-hand-side weights, so does <code>freqlist()</code>!</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>mockstudy<span class="sc">$</span>weights <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10000</span>, <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(mockstudy) <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(weights <span class="sc">~</span> arm <span class="sc">+</span> sex <span class="sc">+</span> <span class="fu">addNA</span>(mdquality.s), <span class="at">data =</span> mockstudy))</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="15%" />
+<col width="7%" />
+<col width="21%" />
+<col width="6%" />
+<col width="17%" />
+<col width="8%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Treatment Arm</th>
+<th align="left">sex</th>
+<th align="left">addNA(mdquality.s)</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">0.25</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">1.86</td>
+<td align="right">2.11</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">0.30</td>
+<td align="right">2.41</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.10</td>
+<td align="right">2.51</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">1.03</td>
+<td align="right">3.54</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">0.18</td>
+<td align="right">3.72</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">0.27</td>
+<td align="right">3.99</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">2.48</td>
+<td align="right">6.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">10094</td>
+<td align="right">10838</td>
+<td align="right">87.79</td>
+<td align="right">94.26</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">10859</td>
+<td align="right">0.18</td>
+<td align="right">94.44</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">11057</td>
+<td align="right">1.72</td>
+<td align="right">96.16</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">11118</td>
+<td align="right">0.53</td>
+<td align="right">96.70</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">11135</td>
+<td align="right">0.15</td>
+<td align="right">96.84</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">11322</td>
+<td align="right">1.63</td>
+<td align="right">98.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">11346</td>
+<td align="right">0.21</td>
+<td align="right">98.68</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">11360</td>
+<td align="right">0.12</td>
+<td align="right">98.80</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">11481</td>
+<td align="right">1.05</td>
+<td align="right">99.85</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">11498</td>
+<td align="right">0.15</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<p>You can also specify multiple weights:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mockstudy<span class="sc">$</span>weights2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(mockstudy) <span class="sc">-</span> <span class="dv">1</span>), <span class="dv">10000</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(<span class="fu">list</span>(weights, weights2) <span class="sc">~</span> arm <span class="sc">+</span> sex <span class="sc">+</span> <span class="fu">addNA</span>(mdquality.s), <span class="at">data =</span> mockstudy))</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="15%" />
+<col width="7%" />
+<col width="21%" />
+<col width="6%" />
+<col width="17%" />
+<col width="8%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Treatment Arm</th>
+<th align="left">sex</th>
+<th align="left">addNA(mdquality.s)</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">0.25</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">1.86</td>
+<td align="right">2.11</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">0.30</td>
+<td align="right">2.41</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.10</td>
+<td align="right">2.51</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">1.03</td>
+<td align="right">3.54</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">0.18</td>
+<td align="right">3.72</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">0.27</td>
+<td align="right">3.99</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">2.48</td>
+<td align="right">6.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">10094</td>
+<td align="right">10838</td>
+<td align="right">87.79</td>
+<td align="right">94.26</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">10859</td>
+<td align="right">0.18</td>
+<td align="right">94.44</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">11057</td>
+<td align="right">1.72</td>
+<td align="right">96.16</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">11118</td>
+<td align="right">0.53</td>
+<td align="right">96.70</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">11135</td>
+<td align="right">0.15</td>
+<td align="right">96.84</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">11322</td>
+<td align="right">1.63</td>
+<td align="right">98.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">11346</td>
+<td align="right">0.21</td>
+<td align="right">98.68</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">11360</td>
+<td align="right">0.12</td>
+<td align="right">98.80</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">11481</td>
+<td align="right">1.05</td>
+<td align="right">99.85</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">11498</td>
+<td align="right">0.15</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<table style="width:100%;">
+<colgroup>
+<col width="15%" />
+<col width="7%" />
+<col width="21%" />
+<col width="6%" />
+<col width="17%" />
+<col width="8%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Treatment Arm</th>
+<th align="left">sex</th>
+<th align="left">addNA(mdquality.s)</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">0.25</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">1.86</td>
+<td align="right">2.11</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">0.30</td>
+<td align="right">2.41</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.10</td>
+<td align="right">2.51</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">1.03</td>
+<td align="right">3.54</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">0.18</td>
+<td align="right">3.72</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">0.27</td>
+<td align="right">3.99</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">2.48</td>
+<td align="right">6.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">0.83</td>
+<td align="right">7.30</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">0.18</td>
+<td align="right">7.48</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">1.72</td>
+<td align="right">9.20</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">10060</td>
+<td align="right">11118</td>
+<td align="right">87.49</td>
+<td align="right">96.70</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">11135</td>
+<td align="right">0.15</td>
+<td align="right">96.84</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">11322</td>
+<td align="right">1.63</td>
+<td align="right">98.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">11346</td>
+<td align="right">0.21</td>
+<td align="right">98.68</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">11360</td>
+<td align="right">0.12</td>
+<td align="right">98.80</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">11481</td>
+<td align="right">1.05</td>
+<td align="right">99.85</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">11498</td>
+<td align="right">0.15</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="rounding-percentage-digits-or-changing-variable-names-for-printing" class="section level1">
+<h1>Rounding percentage digits or changing variable names for printing</h1>
+<p>The <code>digits.pct=</code> argument takes a single numeric value and controls the number of digits of percentages in the output. The <code>digits.count=</code> argument takes a similar argument and controls the number of digits of the count columns. The <code>labelTranslations=</code> argument is a named character vector or list. Both options are applied in the following example.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>example2 <span class="ot">&lt;-</span> <span class="fu">freqlist</span>(tab.ex, <span class="at">labelTranslations =</span> <span class="fu">c</span>(<span class="at">arm =</span> <span class="st">&quot;Treatment Arm&quot;</span>, <span class="at">sex =</span> <span class="st">&quot;Gender&quot;</span>, </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">mdquality.s =</span> <span class="st">&quot;LASA QOL&quot;</span>), <span class="at">digits.pct =</span> <span class="dv">1</span>, <span class="at">digits.count =</span> <span class="dv">1</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(example2)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Treatment Arm</th>
+<th align="left">Gender</th>
+<th align="left">LASA QOL</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29.0</td>
+<td align="right">29.0</td>
+<td align="right">1.9</td>
+<td align="right">1.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214.0</td>
+<td align="right">243.0</td>
+<td align="right">14.3</td>
+<td align="right">16.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34.0</td>
+<td align="right">277.0</td>
+<td align="right">2.3</td>
+<td align="right">18.5</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12.0</td>
+<td align="right">289.0</td>
+<td align="right">0.8</td>
+<td align="right">19.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118.0</td>
+<td align="right">407.0</td>
+<td align="right">7.9</td>
+<td align="right">27.2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21.0</td>
+<td align="right">428.0</td>
+<td align="right">1.4</td>
+<td align="right">28.6</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31.0</td>
+<td align="right">459.0</td>
+<td align="right">2.1</td>
+<td align="right">30.6</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285.0</td>
+<td align="right">744.0</td>
+<td align="right">19.0</td>
+<td align="right">49.6</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95.0</td>
+<td align="right">839.0</td>
+<td align="right">6.3</td>
+<td align="right">56.0</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21.0</td>
+<td align="right">860.0</td>
+<td align="right">1.4</td>
+<td align="right">57.4</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198.0</td>
+<td align="right">1058.0</td>
+<td align="right">13.2</td>
+<td align="right">70.6</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61.0</td>
+<td align="right">1119.0</td>
+<td align="right">4.1</td>
+<td align="right">74.6</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17.0</td>
+<td align="right">1136.0</td>
+<td align="right">1.1</td>
+<td align="right">75.8</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187.0</td>
+<td align="right">1323.0</td>
+<td align="right">12.5</td>
+<td align="right">88.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24.0</td>
+<td align="right">1347.0</td>
+<td align="right">1.6</td>
+<td align="right">89.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14.0</td>
+<td align="right">1361.0</td>
+<td align="right">0.9</td>
+<td align="right">90.8</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121.0</td>
+<td align="right">1482.0</td>
+<td align="right">8.1</td>
+<td align="right">98.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17.0</td>
+<td align="right">1499.0</td>
+<td align="right">1.1</td>
+<td align="right">100.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="additional-examples" class="section level1">
+<h1>Additional examples</h1>
+<div id="including-combinations-with-frequencies-of-zero" class="section level2">
+<h2>Including combinations with frequencies of zero</h2>
+<p>The <code>sparse=</code> argument takes a single logical value as input. The default option is <code>FALSE</code>. If set to <code>TRUE</code>, the sparse option will include combinations with frequencies of zero in the list of results. As our initial table did not have any such levels, we create a second table to use in our example.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(<span class="sc">~</span>race <span class="sc">+</span> sex <span class="sc">+</span> arm, <span class="at">data =</span> mockstudy, <span class="at">sparse =</span> <span class="cn">TRUE</span>, <span class="at">digits.pct =</span> <span class="dv">1</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Race</th>
+<th align="left">sex</th>
+<th align="left">Treatment Arm</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">African-Am</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">25</td>
+<td align="right">25</td>
+<td align="right">1.7</td>
+<td align="right">1.7</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">24</td>
+<td align="right">49</td>
+<td align="right">1.6</td>
+<td align="right">3.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">16</td>
+<td align="right">65</td>
+<td align="right">1.1</td>
+<td align="right">4.3</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">14</td>
+<td align="right">79</td>
+<td align="right">0.9</td>
+<td align="right">5.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">25</td>
+<td align="right">104</td>
+<td align="right">1.7</td>
+<td align="right">6.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">11</td>
+<td align="right">115</td>
+<td align="right">0.7</td>
+<td align="right">7.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Asian</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">0</td>
+<td align="right">115</td>
+<td align="right">0.0</td>
+<td align="right">7.7</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">10</td>
+<td align="right">125</td>
+<td align="right">0.7</td>
+<td align="right">8.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">1</td>
+<td align="right">126</td>
+<td align="right">0.1</td>
+<td align="right">8.4</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">1</td>
+<td align="right">127</td>
+<td align="right">0.1</td>
+<td align="right">8.5</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">4</td>
+<td align="right">131</td>
+<td align="right">0.3</td>
+<td align="right">8.7</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">2</td>
+<td align="right">133</td>
+<td align="right">0.1</td>
+<td align="right">8.9</td>
+</tr>
+<tr class="odd">
+<td align="left">Caucasian</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">240</td>
+<td align="right">373</td>
+<td align="right">16.0</td>
+<td align="right">24.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">352</td>
+<td align="right">725</td>
+<td align="right">23.5</td>
+<td align="right">48.4</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">195</td>
+<td align="right">920</td>
+<td align="right">13.0</td>
+<td align="right">61.4</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">131</td>
+<td align="right">1051</td>
+<td align="right">8.7</td>
+<td align="right">70.1</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">234</td>
+<td align="right">1285</td>
+<td align="right">15.6</td>
+<td align="right">85.7</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">136</td>
+<td align="right">1421</td>
+<td align="right">9.1</td>
+<td align="right">94.8</td>
+</tr>
+<tr class="odd">
+<td align="left">Hawaii/Pacific</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">1</td>
+<td align="right">1422</td>
+<td align="right">0.1</td>
+<td align="right">94.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">1</td>
+<td align="right">1423</td>
+<td align="right">0.1</td>
+<td align="right">94.9</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">0</td>
+<td align="right">1423</td>
+<td align="right">0.0</td>
+<td align="right">94.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">0</td>
+<td align="right">1423</td>
+<td align="right">0.0</td>
+<td align="right">94.9</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">2</td>
+<td align="right">1425</td>
+<td align="right">0.1</td>
+<td align="right">95.1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">1</td>
+<td align="right">1426</td>
+<td align="right">0.1</td>
+<td align="right">95.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Hispanic</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">8</td>
+<td align="right">1434</td>
+<td align="right">0.5</td>
+<td align="right">95.7</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">17</td>
+<td align="right">1451</td>
+<td align="right">1.1</td>
+<td align="right">96.8</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">12</td>
+<td align="right">1463</td>
+<td align="right">0.8</td>
+<td align="right">97.6</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">4</td>
+<td align="right">1467</td>
+<td align="right">0.3</td>
+<td align="right">97.9</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">11</td>
+<td align="right">1478</td>
+<td align="right">0.7</td>
+<td align="right">98.6</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">2</td>
+<td align="right">1480</td>
+<td align="right">0.1</td>
+<td align="right">98.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Native-Am/Alaska</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">1</td>
+<td align="right">1481</td>
+<td align="right">0.1</td>
+<td align="right">98.8</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">0</td>
+<td align="right">1481</td>
+<td align="right">0.0</td>
+<td align="right">98.8</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">2</td>
+<td align="right">1483</td>
+<td align="right">0.1</td>
+<td align="right">98.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">1</td>
+<td align="right">1484</td>
+<td align="right">0.1</td>
+<td align="right">99.0</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">1</td>
+<td align="right">1485</td>
+<td align="right">0.1</td>
+<td align="right">99.1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">0</td>
+<td align="right">1485</td>
+<td align="right">0.0</td>
+<td align="right">99.1</td>
+</tr>
+<tr class="odd">
+<td align="left">Other</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">2</td>
+<td align="right">1487</td>
+<td align="right">0.1</td>
+<td align="right">99.2</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">2</td>
+<td align="right">1489</td>
+<td align="right">0.1</td>
+<td align="right">99.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">1</td>
+<td align="right">1490</td>
+<td align="right">0.1</td>
+<td align="right">99.4</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">0</td>
+<td align="right">1490</td>
+<td align="right">0.0</td>
+<td align="right">99.4</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">2</td>
+<td align="right">1492</td>
+<td align="right">0.1</td>
+<td align="right">99.5</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">0</td>
+<td align="right">1492</td>
+<td align="right">0.0</td>
+<td align="right">99.5</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">Male</td>
+<td align="left">A: IFL</td>
+<td align="right">0</td>
+<td align="right">1492</td>
+<td align="right">0.0</td>
+<td align="right">99.5</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">5</td>
+<td align="right">1497</td>
+<td align="right">0.3</td>
+<td align="right">99.9</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">1</td>
+<td align="right">1498</td>
+<td align="right">0.1</td>
+<td align="right">99.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">A: IFL</td>
+<td align="right">0</td>
+<td align="right">1498</td>
+<td align="right">0.0</td>
+<td align="right">99.9</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">F: FOLFOX</td>
+<td align="right">1</td>
+<td align="right">1499</td>
+<td align="right">0.1</td>
+<td align="right">100.0</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">G: IROX</td>
+<td align="right">0</td>
+<td align="right">1499</td>
+<td align="right">0.0</td>
+<td align="right">100.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="options-for-na-handling" class="section level2">
+<h2>Options for NA handling</h2>
+<p>The various <code>na.options=</code> allow you to include or exclude data with missing values for one or more factor levels in the counts and percentages, as well as show the missing data but exclude it from the cumulative counts and percentages. The default option is to include all combinations with missing values.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(tab.ex, <span class="at">na.options =</span> <span class="st">&quot;include&quot;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">1.93</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">14.28</td>
+<td align="right">16.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">2.27</td>
+<td align="right">18.48</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.80</td>
+<td align="right">19.28</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">7.87</td>
+<td align="right">27.15</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">1.40</td>
+<td align="right">28.55</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">2.07</td>
+<td align="right">30.62</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">19.01</td>
+<td align="right">49.63</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">6.34</td>
+<td align="right">55.97</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">1.40</td>
+<td align="right">57.37</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">13.21</td>
+<td align="right">70.58</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">1119</td>
+<td align="right">4.07</td>
+<td align="right">74.65</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">1136</td>
+<td align="right">1.13</td>
+<td align="right">75.78</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1323</td>
+<td align="right">12.47</td>
+<td align="right">88.26</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">1347</td>
+<td align="right">1.60</td>
+<td align="right">89.86</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1361</td>
+<td align="right">0.93</td>
+<td align="right">90.79</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1482</td>
+<td align="right">8.07</td>
+<td align="right">98.87</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">1499</td>
+<td align="right">1.13</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(tab.ex, <span class="at">na.options =</span> <span class="st">&quot;showexclude&quot;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">2.33</td>
+<td align="right">2.33</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">17.16</td>
+<td align="right">19.49</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">255</td>
+<td align="right">0.96</td>
+<td align="right">20.45</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">373</td>
+<td align="right">9.46</td>
+<td align="right">29.91</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">404</td>
+<td align="right">2.49</td>
+<td align="right">32.40</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">689</td>
+<td align="right">22.85</td>
+<td align="right">55.25</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">710</td>
+<td align="right">1.68</td>
+<td align="right">56.94</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">908</td>
+<td align="right">15.88</td>
+<td align="right">72.81</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">925</td>
+<td align="right">1.36</td>
+<td align="right">74.18</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1112</td>
+<td align="right">15.00</td>
+<td align="right">89.17</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1126</td>
+<td align="right">1.12</td>
+<td align="right">90.30</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1247</td>
+<td align="right">9.70</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(tab.ex, <span class="at">na.options =</span> <span class="st">&quot;remove&quot;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">2.33</td>
+<td align="right">2.33</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">17.16</td>
+<td align="right">19.49</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">255</td>
+<td align="right">0.96</td>
+<td align="right">20.45</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">373</td>
+<td align="right">9.46</td>
+<td align="right">29.91</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">404</td>
+<td align="right">2.49</td>
+<td align="right">32.40</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">689</td>
+<td align="right">22.85</td>
+<td align="right">55.25</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">710</td>
+<td align="right">1.68</td>
+<td align="right">56.94</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">908</td>
+<td align="right">15.88</td>
+<td align="right">72.81</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">925</td>
+<td align="right">1.36</td>
+<td align="right">74.18</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1112</td>
+<td align="right">15.00</td>
+<td align="right">89.17</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1126</td>
+<td align="right">1.12</td>
+<td align="right">90.30</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1247</td>
+<td align="right">9.70</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="frequency-counts-and-percentages-subset-by-factor-levels" class="section level2">
+<h2>Frequency counts and percentages subset by factor levels</h2>
+<p>The <code>strata=</code> argument internally subsets the data by the specified factor prior to calculating cumulative counts and percentages. By default, when used each subset will print in a separate table. Using the <code>single = TRUE</code> option when printing will collapse the subsetted result into a single table.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>example3 <span class="ot">&lt;-</span> <span class="fu">freqlist</span>(tab.ex, <span class="at">strata =</span> <span class="fu">c</span>(<span class="st">&quot;arm&quot;</span>, <span class="st">&quot;sex&quot;</span>))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(example3)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">10.47</td>
+<td align="right">10.47</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">77.26</td>
+<td align="right">87.73</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">12.27</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">7.95</td>
+<td align="right">7.95</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">130</td>
+<td align="right">78.15</td>
+<td align="right">86.09</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">151</td>
+<td align="right">13.91</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">31</td>
+<td align="right">7.54</td>
+<td align="right">7.54</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">316</td>
+<td align="right">69.34</td>
+<td align="right">76.89</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">411</td>
+<td align="right">23.11</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">21</td>
+<td align="right">7.50</td>
+<td align="right">7.50</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">219</td>
+<td align="right">70.71</td>
+<td align="right">78.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">280</td>
+<td align="right">21.79</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">17</td>
+<td align="right">7.46</td>
+<td align="right">7.46</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">204</td>
+<td align="right">82.02</td>
+<td align="right">89.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">228</td>
+<td align="right">10.53</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">14</td>
+<td align="right">9.21</td>
+<td align="right">9.21</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">135</td>
+<td align="right">79.61</td>
+<td align="right">88.82</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">152</td>
+<td align="right">11.18</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># using the single = TRUE argument will collapse results into a single table for</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># printing</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(example3, <span class="at">single =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">arm</th>
+<th align="left">sex</th>
+<th align="left">mdquality.s</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">Percent</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">10.47</td>
+<td align="right">10.47</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">77.26</td>
+<td align="right">87.73</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">12.27</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">7.95</td>
+<td align="right">7.95</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">130</td>
+<td align="right">78.15</td>
+<td align="right">86.09</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">151</td>
+<td align="right">13.91</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">31</td>
+<td align="right">7.54</td>
+<td align="right">7.54</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">316</td>
+<td align="right">69.34</td>
+<td align="right">76.89</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">411</td>
+<td align="right">23.11</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">21</td>
+<td align="right">7.50</td>
+<td align="right">7.50</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">219</td>
+<td align="right">70.71</td>
+<td align="right">78.21</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">280</td>
+<td align="right">21.79</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">17</td>
+<td align="right">7.46</td>
+<td align="right">7.46</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">204</td>
+<td align="right">82.02</td>
+<td align="right">89.47</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">228</td>
+<td align="right">10.53</td>
+<td align="right">100.00</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">14</td>
+<td align="right">9.21</td>
+<td align="right">9.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">135</td>
+<td align="right">79.61</td>
+<td align="right">88.82</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">152</td>
+<td align="right">11.18</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="show-only-the-n-most-common-combinations-in-each-table-head-and-sort" class="section level2">
+<h2>Show only the “n” most common combinations in each table (<code>head()</code> and <code>sort()</code>)</h2>
+<p>You can now sort <code>freqlist()</code> objects, and, by taking the <code>head()</code> of the summary, output the most common frequencies. This looks the prettiest with <code>dupLabels=TRUE</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">summary</span>(<span class="fu">sort</span>(example1, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), <span class="at">dupLabels =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>
+
+|arm       |sex    |mdquality.s | Freq| Cumulative Freq| Percent| Cumulative Percent|
+|:---------|:------|:-----------|----:|---------------:|-------:|------------------:|
+|F: FOLFOX |Male   |1           |  285|             285|   19.01|              19.01|
+|A: IFL    |Male   |1           |  214|             499|   14.28|              33.29|
+|F: FOLFOX |Female |1           |  198|             697|   13.21|              46.50|
+|G: IROX   |Male   |1           |  187|             884|   12.47|              58.97|
+|G: IROX   |Female |1           |  121|            1005|    8.07|              67.04|
+|A: IFL    |Female |1           |  118|            1123|    7.87|              74.92|</code></pre>
+</div>
+<div id="change-labels-on-the-fly" class="section level2">
+<h2>Change labels on the fly</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">arm =</span> <span class="st">&quot;Arm&quot;</span>, <span class="at">sex =</span> <span class="st">&quot;Sex&quot;</span>, <span class="at">mdquality.s =</span> <span class="st">&quot;QOL&quot;</span>, <span class="at">freqPercent =</span> <span class="st">&quot;%&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">labels</span>(example1) <span class="ot">&lt;-</span> labs</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(example1)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Arm</th>
+<th align="left">Sex</th>
+<th align="left">QOL</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">%</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">1.93</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">14.28</td>
+<td align="right">16.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">2.27</td>
+<td align="right">18.48</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.80</td>
+<td align="right">19.28</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">7.87</td>
+<td align="right">27.15</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">1.40</td>
+<td align="right">28.55</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">2.07</td>
+<td align="right">30.62</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">19.01</td>
+<td align="right">49.63</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">6.34</td>
+<td align="right">55.97</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">1.40</td>
+<td align="right">57.37</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">13.21</td>
+<td align="right">70.58</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">1119</td>
+<td align="right">4.07</td>
+<td align="right">74.65</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">1136</td>
+<td align="right">1.13</td>
+<td align="right">75.78</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1323</td>
+<td align="right">12.47</td>
+<td align="right">88.26</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">1347</td>
+<td align="right">1.60</td>
+<td align="right">89.86</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1361</td>
+<td align="right">0.93</td>
+<td align="right">90.79</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1482</td>
+<td align="right">8.07</td>
+<td align="right">98.87</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">1499</td>
+<td align="right">1.13</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+<p>You can also supply <code>labelTranslations=</code> to <code>summary()</code>.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(example1, <span class="at">labelTranslations =</span> labs)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Arm</th>
+<th align="left">Sex</th>
+<th align="left">QOL</th>
+<th align="right">Freq</th>
+<th align="right">Cumulative Freq</th>
+<th align="right">%</th>
+<th align="right">Cumulative Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A: IFL</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">29</td>
+<td align="right">29</td>
+<td align="right">1.93</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">214</td>
+<td align="right">243</td>
+<td align="right">14.28</td>
+<td align="right">16.21</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">34</td>
+<td align="right">277</td>
+<td align="right">2.27</td>
+<td align="right">18.48</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">12</td>
+<td align="right">289</td>
+<td align="right">0.80</td>
+<td align="right">19.28</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">118</td>
+<td align="right">407</td>
+<td align="right">7.87</td>
+<td align="right">27.15</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">21</td>
+<td align="right">428</td>
+<td align="right">1.40</td>
+<td align="right">28.55</td>
+</tr>
+<tr class="odd">
+<td align="left">F: FOLFOX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">31</td>
+<td align="right">459</td>
+<td align="right">2.07</td>
+<td align="right">30.62</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">285</td>
+<td align="right">744</td>
+<td align="right">19.01</td>
+<td align="right">49.63</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">95</td>
+<td align="right">839</td>
+<td align="right">6.34</td>
+<td align="right">55.97</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">21</td>
+<td align="right">860</td>
+<td align="right">1.40</td>
+<td align="right">57.37</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">198</td>
+<td align="right">1058</td>
+<td align="right">13.21</td>
+<td align="right">70.58</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">1119</td>
+<td align="right">4.07</td>
+<td align="right">74.65</td>
+</tr>
+<tr class="odd">
+<td align="left">G: IROX</td>
+<td align="left">Male</td>
+<td align="left">0</td>
+<td align="right">17</td>
+<td align="right">1136</td>
+<td align="right">1.13</td>
+<td align="right">75.78</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">187</td>
+<td align="right">1323</td>
+<td align="right">12.47</td>
+<td align="right">88.26</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">24</td>
+<td align="right">1347</td>
+<td align="right">1.60</td>
+<td align="right">89.86</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Female</td>
+<td align="left">0</td>
+<td align="right">14</td>
+<td align="right">1361</td>
+<td align="right">0.93</td>
+<td align="right">90.79</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">1</td>
+<td align="right">121</td>
+<td align="right">1482</td>
+<td align="right">8.07</td>
+<td align="right">98.87</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="right">17</td>
+<td align="right">1499</td>
+<td align="right">1.13</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="using-xtable-to-format-and-print-freqlist-results" class="section level2">
+<h2>Using <code>xtable()</code> to format and print <code>freqlist()</code> results</h2>
+<p>Fair warning: <code>xtable()</code> has kind of a steep learning curve. These examples are given without explanation, for more advanced users.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(xtable)</span></code></pre></div>
+<pre><code>Loading required package: xtable</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up custom function for xtable text</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>italic <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">paste0</span>(<span class="st">&quot;&lt;i&gt;&quot;</span>, x, <span class="st">&quot;&lt;/i&gt;&quot;</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>xftbl <span class="ot">&lt;-</span> <span class="fu">xtable</span>(<span class="fu">as.data.frame</span>(<span class="fu">summary</span>(example1)), <span class="at">caption =</span> <span class="st">&quot;xtable formatted output of freqlist data frame&quot;</span>, </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">align =</span> <span class="st">&quot;|r|r|r|r|c|c|c|r|&quot;</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># change the column names</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(xftbl)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Arm&quot;</span>, <span class="st">&quot;Gender&quot;</span>, <span class="st">&quot;LASA QOL&quot;</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(xftbl, <span class="at">sanitize.colnames.function =</span> italic, <span class="at">include.rownames =</span> <span class="cn">FALSE</span>, <span class="at">type =</span> <span class="st">&quot;html&quot;</span>, </span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">comment =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<table border="1">
+<caption align="bottom">
+xtable formatted output of freqlist data frame
+</caption>
+<tr>
+<th>
+<i>Arm</i>
+</th>
+<th>
+<i>Gender</i>
+</th>
+<th>
+<i>LASA QOL</i>
+</th>
+<th>
+<i>Freq</i>
+</th>
+<th>
+<i>Cumulative Freq</i>
+</th>
+<th>
+<i>%</i>
+</th>
+<th>
+<i>Cumulative Percent</i>
+</th>
+</tr>
+<tr>
+<td align="right">
+A: IFL
+</td>
+<td align="right">
+Male
+</td>
+<td align="right">
+0
+</td>
+<td align="center">
+29
+</td>
+<td align="center">
+29
+</td>
+<td align="center">
+1.93
+</td>
+<td align="right">
+1.93
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+1
+</td>
+<td align="center">
+214
+</td>
+<td align="center">
+243
+</td>
+<td align="center">
+14.28
+</td>
+<td align="right">
+16.21
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="center">
+34
+</td>
+<td align="center">
+277
+</td>
+<td align="center">
+2.27
+</td>
+<td align="right">
+18.48
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+Female
+</td>
+<td align="right">
+0
+</td>
+<td align="center">
+12
+</td>
+<td align="center">
+289
+</td>
+<td align="center">
+0.80
+</td>
+<td align="right">
+19.28
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+1
+</td>
+<td align="center">
+118
+</td>
+<td align="center">
+407
+</td>
+<td align="center">
+7.87
+</td>
+<td align="right">
+27.15
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="center">
+21
+</td>
+<td align="center">
+428
+</td>
+<td align="center">
+1.40
+</td>
+<td align="right">
+28.55
+</td>
+</tr>
+<tr>
+<td align="right">
+F: FOLFOX
+</td>
+<td align="right">
+Male
+</td>
+<td align="right">
+0
+</td>
+<td align="center">
+31
+</td>
+<td align="center">
+459
+</td>
+<td align="center">
+2.07
+</td>
+<td align="right">
+30.62
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+1
+</td>
+<td align="center">
+285
+</td>
+<td align="center">
+744
+</td>
+<td align="center">
+19.01
+</td>
+<td align="right">
+49.63
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="center">
+95
+</td>
+<td align="center">
+839
+</td>
+<td align="center">
+6.34
+</td>
+<td align="right">
+55.97
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+Female
+</td>
+<td align="right">
+0
+</td>
+<td align="center">
+21
+</td>
+<td align="center">
+860
+</td>
+<td align="center">
+1.40
+</td>
+<td align="right">
+57.37
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+1
+</td>
+<td align="center">
+198
+</td>
+<td align="center">
+1058
+</td>
+<td align="center">
+13.21
+</td>
+<td align="right">
+70.58
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="center">
+61
+</td>
+<td align="center">
+1119
+</td>
+<td align="center">
+4.07
+</td>
+<td align="right">
+74.65
+</td>
+</tr>
+<tr>
+<td align="right">
+G: IROX
+</td>
+<td align="right">
+Male
+</td>
+<td align="right">
+0
+</td>
+<td align="center">
+17
+</td>
+<td align="center">
+1136
+</td>
+<td align="center">
+1.13
+</td>
+<td align="right">
+75.78
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+1
+</td>
+<td align="center">
+187
+</td>
+<td align="center">
+1323
+</td>
+<td align="center">
+12.47
+</td>
+<td align="right">
+88.26
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="center">
+24
+</td>
+<td align="center">
+1347
+</td>
+<td align="center">
+1.60
+</td>
+<td align="right">
+89.86
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+Female
+</td>
+<td align="right">
+0
+</td>
+<td align="center">
+14
+</td>
+<td align="center">
+1361
+</td>
+<td align="center">
+0.93
+</td>
+<td align="right">
+90.79
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+1
+</td>
+<td align="center">
+121
+</td>
+<td align="center">
+1482
+</td>
+<td align="center">
+8.07
+</td>
+<td align="right">
+98.87
+</td>
+</tr>
+<tr>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="right">
+</td>
+<td align="center">
+17
+</td>
+<td align="center">
+1499
+</td>
+<td align="center">
+1.13
+</td>
+<td align="right">
+100.00
+</td>
+</tr>
+</table>
+</div>
+<div id="use-freqlist-in-bookdown" class="section level2">
+<h2>Use <code>freqlist</code> in bookdown</h2>
+<p>Since the backbone of <code>freqlist()</code> is <code>knitr::kable()</code>, tables still render well in bookdown. However, <code>print.summary.freqlist()</code> doesn’t use the <code>caption=</code> argument of <code>kable()</code>, so some tables may not have a properly numbered caption. To fix this, use the method described <a href="https://bookdown.org/yihui/bookdown/tables.html">on the bookdown site</a> to give the table a tag/ID.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">freqlist</span>(<span class="sc">~</span>sex <span class="sc">+</span> age, <span class="at">data =</span> mockstudy), <span class="at">title =</span> <span class="st">&quot;(</span><span class="sc">\\</span><span class="st">#tab:mytableby) Caption here&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="appendix-notes-regarding-table-options-in-r" class="section level1">
+<h1>Appendix: Notes regarding table options in R</h1>
+<div id="nas" class="section level2">
+<h2>NAs</h2>
+<p>There are several widely used options for basic tables in R. The <code>table()</code> function in base R is probably the most common; by default it excludes NA values. You can change NA handling in <code>base::table()</code> using the <code>useNA=</code> or <code>exclude=</code> arguments.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># base table default removes NAs</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>tab.d1 <span class="ot">&lt;-</span> base<span class="sc">::</span><span class="fu">table</span>(mockstudy[, <span class="fu">c</span>(<span class="st">&quot;arm&quot;</span>, <span class="st">&quot;sex&quot;</span>, <span class="st">&quot;mdquality.s&quot;</span>)], <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>tab.d1</span></code></pre></div>
+<pre><code>, , mdquality.s = 0
+
+           sex
+arm         Male Female
+  A: IFL      29     12
+  F: FOLFOX   31     21
+  G: IROX     17     14
+
+, , mdquality.s = 1
+
+           sex
+arm         Male Female
+  A: IFL     214    118
+  F: FOLFOX  285    198
+  G: IROX    187    121
+
+, , mdquality.s = NA
+
+           sex
+arm         Male Female
+  A: IFL      34     21
+  F: FOLFOX   95     61
+  G: IROX     24     17</code></pre>
+<p><code>xtabs()</code> is similar to <code>table()</code>, but uses a formula-based syntax. However, NAs must be explicitly added to each factor using the <code>addNA()</code> function or using the argument <code>addNA = TRUE</code>.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># without specifying addNA</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>tab.d2 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(<span class="at">formula =</span> <span class="sc">~</span>arm <span class="sc">+</span> sex <span class="sc">+</span> mdquality.s, <span class="at">data =</span> mockstudy)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>tab.d2</span></code></pre></div>
+<pre><code>, , mdquality.s = 0
+
+           sex
+arm         Male Female
+  A: IFL      29     12
+  F: FOLFOX   31     21
+  G: IROX     17     14
+
+, , mdquality.s = 1
+
+           sex
+arm         Male Female
+  A: IFL     214    118
+  F: FOLFOX  285    198
+  G: IROX    187    121</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now with addNA</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>tab.d3 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(<span class="sc">~</span>arm <span class="sc">+</span> sex <span class="sc">+</span> <span class="fu">addNA</span>(mdquality.s), <span class="at">data =</span> mockstudy)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>tab.d3</span></code></pre></div>
+<pre><code>, , addNA(mdquality.s) = 0
+
+           sex
+arm         Male Female
+  A: IFL      29     12
+  F: FOLFOX   31     21
+  G: IROX     17     14
+
+, , addNA(mdquality.s) = 1
+
+           sex
+arm         Male Female
+  A: IFL     214    118
+  F: FOLFOX  285    198
+  G: IROX    187    121
+
+, , addNA(mdquality.s) = NA
+
+           sex
+arm         Male Female
+  A: IFL      34     21
+  F: FOLFOX   95     61
+  G: IROX     24     17</code></pre>
+<p>Since the formula method of <code>freqlist()</code> uses <code>xtabs()</code>, NAs should be treated in the same way. <code>includeNA()</code> can also be helpful here for setting explicit NA values.</p>
+</div>
+<div id="table-dimname-names-dnn" class="section level2">
+<h2>Table dimname names (dnn)</h2>
+<p>Supplying a data.frame to the <code>table()</code> function without giving columns individually will create a contingency table using all variables in the data.frame.</p>
+<p>However, if the columns of a data.frame or matrix are supplied separately (i.e., as vectors), column names will not be preserved.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># providing variables separately (as vectors) drops column names</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(mockstudy<span class="sc">$</span>arm, mockstudy<span class="sc">$</span>sex, mockstudy<span class="sc">$</span>mdquality.s)</span></code></pre></div>
+<pre><code>, ,  = 0
+
+           
+            Male Female
+  A: IFL      29     12
+  F: FOLFOX   31     21
+  G: IROX     17     14
+
+, ,  = 1
+
+           
+            Male Female
+  A: IFL     214    118
+  F: FOLFOX  285    198
+  G: IROX    187    121</code></pre>
+<p>If desired, you can use the <code>dnn=</code> argument to pass variable names.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add the column name labels back using dnn option in base::table</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(mockstudy<span class="sc">$</span>arm, mockstudy<span class="sc">$</span>sex, mockstudy<span class="sc">$</span>mdquality.s, <span class="at">dnn =</span> <span class="fu">c</span>(<span class="st">&quot;Arm&quot;</span>, <span class="st">&quot;Sex&quot;</span>, </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;QOL&quot;</span>))</span></code></pre></div>
+<pre><code>, , QOL = 0
+
+           Sex
+Arm         Male Female
+  A: IFL      29     12
+  F: FOLFOX   31     21
+  G: IROX     17     14
+
+, , QOL = 1
+
+           Sex
+Arm         Male Female
+  A: IFL     214    118
+  F: FOLFOX  285    198
+  G: IROX    187    121</code></pre>
+<p>You can also name the arguments to <code>table()</code>:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="at">Arm =</span> mockstudy<span class="sc">$</span>arm, <span class="at">Sex =</span> mockstudy<span class="sc">$</span>sex, <span class="at">QOL =</span> mockstudy<span class="sc">$</span>mdquality.s)</span></code></pre></div>
+<pre><code>, , QOL = 0
+
+           Sex
+Arm         Male Female
+  A: IFL      29     12
+  F: FOLFOX   31     21
+  G: IROX     17     14
+
+, , QOL = 1
+
+           Sex
+Arm         Male Female
+  A: IFL     214    118
+  F: FOLFOX  285    198
+  G: IROX    187    121</code></pre>
+<p>If using <code>freqlist()</code>, you can provide the labels directly to <code>freqlist()</code> or to <code>summary()</code> using <code>labelTranslations=</code>.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
