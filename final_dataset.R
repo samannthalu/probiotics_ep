@@ -13,8 +13,13 @@ IPD_outcome<-NHIRD_IPD%>%
   select(Sampleid,IN_DATE,EarlyPuberty_IPD)
 OPD_outcome<-NHIRD_OPD%>%
   select(Sampleid,FUNC_DATE,EarlyPuberty_OPD)
-###combine NHIRD OPD/IPD outcome(is this necessary?)----
-outcome
+###combine NHIRD OPD/IPD outcome----
+IPD_outcome_rename<-IPD_outcome%>%
+  rename(FUNC_DATE=IN_DATE)
+OPD_outcome_rename<-OPD_outcome%>%
+  rename(EarlyPuberty_IPD=EarlyPuberty_OPD)
+EarplPuberty_combine<-rbind(IPD_outcome_rename,OPD_outcome_rename)
+
 #Combine final dataset----
 TBCSstimu_fixed<-TBCSstimu5y%>%
   full_join(exposure,by="Sampleid")%>%
