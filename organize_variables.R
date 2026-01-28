@@ -18,11 +18,12 @@ NHIRD_OPD<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_NHIRD_stimulated/NHIR
 #select and rename variables----
 ##6month----
 sixmdata_fixed<-sixmdata%>%
-  select(Sampleid,B_SEX,C4a4,C2ad,D1d1,D1d2,D1d3,Fedu,Medu,H13)
+  select(Sampleid,B_SEX,C4a4,C2ad,C2aM,D1d1,D1d2,D1d3,Fedu,Medu,H13)
 
 sixmdata_fixed<-sixmdata_fixed%>%
-  rename(probioticintake_6m=C4a4, 
-         breastfeeding_6m=C2ad,
+  rename(probioticintake_6m=C4a4,
+         breastfeedingmonths_6m=C2aM,
+         breastfeedingdays_6m=C2ad,
          weight_6m=D1d1,
          height_6m=D1d2,
          HC_6m=D1d3,fedu_6m=Fedu,medu_6m=Medu,Socioeco_6m=H13)
@@ -32,7 +33,6 @@ eighteenmdata_fixed<-eighteenmdata%>%
 
 eighteenmdata_fixed<-eighteenmdata_fixed%>%
   rename(probioticintake_18m=D4a4,
-         breastfeeding_18m=D1a1,
          dairyintake_18m=D2b,
          weight_18m=A2_3W,
          height_18m=A2_3L,
