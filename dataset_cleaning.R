@@ -1,5 +1,4 @@
 source("organize_variables.R")
-library("arsenal")
 #Fix misclassification----
 ##sex----
 TBCSstimu$B_SEX<-as.factor(TBCSstimu$B_SEX)
@@ -30,8 +29,8 @@ TBCSstimu$Socioeco_5y<-as.factor(TBCSstimu$Socioeco_5y)
 TBCSstimu$Socioeco_8y<-as.factor(TBCSstimu$Socioeco_8y)
 
 ##breastfeeding----
-TBCSstimu$breastfeeding_6m<-as.factor(TBCSstimu$breastfeeding_6m)
-TBCSstimu$breastfeeding_18m<-as.factor(TBCSstimu$breastfeeding_18m)
+TBCSstimu$breastfeedingdays_6m<-as.numeric(TBCSstimu$breastfeedingdays_6m)
+TBCSstimu$breastfeedingmonths_6m<-as.numeric(TBCSstimu$breastfeedingmonths_6m)
 
 ##dairy intake----
 TBCSstimu$dairyintake_18m<-as.factor(TBCSstimu$dairyintake_18m)
