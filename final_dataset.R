@@ -4,8 +4,21 @@ exposure<-exposureb45y_clean%>%
   select(Sampleid,probioticintake)
 ##covariate selection----
 TBCSstimu5y<-TBCSstimu%>%
-  select(Sampleid,B_SEX,height_5y,weight_5y,dairyintake_5y,fedu_5y,medu_5y,Socioeco_5y)
-###BMI counting----
+  select(Sampleid,
+         B_SEX,
+         height_5y,
+         weight_5y,
+         breastfeedingdays_6m,
+         breastfeedingmonths_6m,
+         dairyintake_5y,
+         fedu_5y,
+         medu_5y,
+         Socioeco_5y)
+###breastfeeding duration calculate---
+TBCSstimu5y<-TBCSstimu5y%>%    
+  mutate(breastfeeding=if_else((breastfeedingmonths_6m>1&breastfeedingmonths_6m<99)|
+       (breastfeedingdays_6m>30&breastfeedingdays_6m<999),1,0))
+###BMI calculate----
 TBCSstimu5y<-TBCSstimu5y%>%
   mutate(BMI_5y=weight_5y/(height_5y/100)^2)
 ##outcome selection----
@@ -15,19 +28,20 @@ OPD_outcome<-NHIRD_OPD%>%
   select(Sampleid,FUNC_DATE,EarlyPuberty_OPD)
 ###combine NHIRD OPD/IPD outcome----
 IPD_outcome_rename<-IPD_outcome%>%
-  rename(FUNC_DATE=IN_DATE)
+  rename(FUNC_DATE=IN_DATE,
+         EarlyPuberty=EarlyPuberty_IPD)
 OPD_outcome_rename<-OPD_outcome%>%
-  rename(EarlyPuberty_IPD=EarlyPuberty_OPD)
+  rename(EarlyPuberty=EarlyPuberty_OPD)
 EarlyPuberty_combine<-rbind(IPD_outcome_rename,OPD_outcome_rename)
 ####find case IDs----
 caseID<-EarlyPuberty_combine%>%
-  filter(EarlyPuberty_IPD==1)%>%
+  filter(EarlyPuberty==1)%>%
   pull(Sampleid)%>%
   unique()
 ####deal with case (EarlyPuberty=1)----
 cases<-EarlyPuberty_combine%>%
   filter(Sampleid %in% caseID)%>%
-  filter(EarlyPuberty_IPD==1)%>%
+  filter(EarlyPuberty==1)%>%
   group_by(Sampleid)%>%
   slice_min(`FUNC_DATE`,n=1)%>%
   ungroup()
@@ -40,69 +54,17 @@ controls<-EarlyPuberty_combine%>%
 ####combine----
 outcome_combine<-rbind(cases,controls)
 #Combine final dataset----
-TBCSstimu_fixed<-TBCSstimu5y%>%
+Finaldataset<-TBCSstimu5y%>%
+  select(Sampleid,
+         B_SEX,
+         BMI_5y,
+         dairyintake_5y,
+         breastfeeding,
+         fedu_5y,
+         medu_5y,
+         Socioeco_5y)%>%
   full_join(exposure,by="Sampleid")%>%
-  full_join(IPD_outcome,by="Sampleid")%>%
-  full_join(OPD_outcome,by="Sampleid")
+  full_join(outcome_combine,by="Sampleid")
 
 ##change factor----
 TBCSstimu_fixed$probioticintake<-factor(TBCSstimu_fixed$probioticintake)
-
-#Table1----
-dat1<-TBCSstimu_fixed
-
-dat1$probioticintake<- 
-  factor(dat1$probioticintake,
-  levels = c(0, 1),
-  labels = c("Neverusers", "Everusers"))
-
-dat1$B_SEX<- 
-  factor(dat1$B_SEX,
-  levels = c(1, 2),
-  labels = c("Male", "Female"))
-
-dat1$dairyintake_5y<-factor(dat1$dairyintake_5y,
-                            levels=c(0,1,2,3,4,5,8,9),
-                            labels=c("Never",
-                                     "less than 1 time a week",
-                                     "1-2 times a week",
-                                     "3 to 5 times a week",
-                                     "everyday/almost everyday",
-                                     "Unsure","Not Applicable",
-                                     "Unknown"))
-dat1$medu_5y<-factor(dat1$medu_5y,
-                     levels=c(1,2,3),
-                     labels=c("Junior High&below",
-                              "Senior High/Vocational",
-                              "University&above"))
-dat1$Socioeco_5y<-factor(dat1$Socioeco_5y,
-                         levels=c(1,2,3,4,5,6,7,8,9,88,98,99),
-                         labels=c("<10,000",
-                                  ">=10,000,<20,000",
-                                  ">=20,000,<30,000",
-                                  ">=30,000,<50,000",
-                                  ">=50,000,<70,000",
-                                  ">=70,000,<100,000",
-                                  ">=100,000,<150,000",
-                                  ">=150,000,<200,000",
-                                  ">=200,000",
-                                  "Not Appliable",
-                                  "Refused/Don't Know",
-                                  "Unknown"))
-
-dat1$height_5y<-as.numeric(dat1$height_5y)
-dat1$weight_5y<-as.numeric(dat1$weight_5y)
-dat1$BMI_5y<-as.numeric(dat1$BMI_5y)
-
-label(dat1$probioticintake) <- "Probiotic intake"
-label(dat1$B_SEX)           <- "Sex"
-label(dat1$height_5y)       <- "Height at age 5 (cm)"
-label(dat1$weight_5y)       <- "Weight at age 5 (kg)"
-label(dat1$BMI_5y)          <- "BMI at age 5 (kg/m²)"
-label(dat1$dairyintake_5y)  <- "Dairy intake at age 5"
-label(dat1$medu_5y)         <- "Maternal education level"
-label(dat1$Socioeco_5y)     <- "Average month family income(NT$)"
-
-tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y | probioticintake, 
-        data = dat1)
-save_html(tab1, "table1.html")
