@@ -18,8 +18,27 @@ IPD_outcome_rename<-IPD_outcome%>%
   rename(FUNC_DATE=IN_DATE)
 OPD_outcome_rename<-OPD_outcome%>%
   rename(EarlyPuberty_IPD=EarlyPuberty_OPD)
-EarplPuberty_combine<-rbind(IPD_outcome_rename,OPD_outcome_rename)
-
+EarlyPuberty_combine<-rbind(IPD_outcome_rename,OPD_outcome_rename)
+####find case IDs----
+caseID<-EarlyPuberty_combine%>%
+  filter(EarlyPuberty_IPD==1)%>%
+  pull(Sampleid)%>%
+  unique()
+####deal with case (EarlyPuberty=1)----
+cases<-EarlyPuberty_combine%>%
+  filter(Sampleid %in% caseID)%>%
+  filter(EarlyPuberty_IPD==1)%>%
+  group_by(Sampleid)%>%
+  slice_min(`FUNC_DATE`,n=1)%>%
+  ungroup()
+####deal with controls(EarlyPuberty=0)
+controls<-EarlyPuberty_combine%>%
+  filter(!Sampleid %in% caseID)%>%
+  group_by(Sampleid)%>%
+  slice_max(`FUNC_DATE`,n=1)%>%
+  ungroup()
+####combine----
+outcome_combine<-rbind(cases,controls)
 #Combine final dataset----
 TBCSstimu_fixed<-TBCSstimu5y%>%
   full_join(exposure,by="Sampleid")%>%
@@ -29,7 +48,7 @@ TBCSstimu_fixed<-TBCSstimu5y%>%
 ##change factor----
 TBCSstimu_fixed$probioticintake<-factor(TBCSstimu_fixed$probioticintake)
 
-#table1----
+#Table1----
 dat1<-TBCSstimu_fixed
 
 dat1$probioticintake<- 

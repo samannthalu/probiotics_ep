@@ -6,6 +6,7 @@ library(dplyr)
 library(tidyverse)
 library(readr)
 library(table1)
+library(arsenal)
 library(htmltools)
 #input data
 sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_6m_simulated.csv")
@@ -29,7 +30,7 @@ sixmdata_fixed<-sixmdata_fixed%>%
          HC_6m=D1d3,fedu_6m=Fedu,medu_6m=Medu,Socioeco_6m=H13)
 ##18month----
 eighteenmdata_fixed<-eighteenmdata%>%
-  select(Sampleid,D4a4,D1a1,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
+  select(Sampleid,D4a4,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
 
 eighteenmdata_fixed<-eighteenmdata_fixed%>%
   rename(probioticintake_18m=D4a4,
