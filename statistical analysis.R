@@ -1,16 +1,11 @@
 #Table1----
 dat1<-TBCSstimu_fixed
-
-dat1$probioticintake<- 
-  factor(dat1$probioticintake,
+dat1$probioticintake<-factor(dat1$probioticintake,
          levels = c(0, 1),
          labels = c("Neverusers", "Everusers"))
-
-dat1$B_SEX<- 
-  factor(dat1$B_SEX,
+dat1$B_SEX<-factor(dat1$B_SEX,
          levels = c(1, 2),
          labels = c("Male", "Female"))
-
 dat1$dairyintake_5y<-factor(dat1$dairyintake_5y,
                             levels=c(0,1,2,3,4,5,8,9),
                             labels=c("Never",
@@ -39,7 +34,6 @@ dat1$Socioeco_5y<-factor(dat1$Socioeco_5y,
                                   "Not Appliable",
                                   "Refused/Don't Know",
                                   "Unknown"))
-
 dat1$height_5y<-as.numeric(dat1$height_5y)
 dat1$weight_5y<-as.numeric(dat1$weight_5y)
 dat1$BMI_5y<-as.numeric(dat1$BMI_5y)
@@ -56,3 +50,16 @@ label(dat1$Socioeco_5y)     <- "Average month family income(NT$)"
 tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y | probioticintake, 
               data = dat1)
 save_html(tab1, "table1.html")
+
+#Table2----
+explanatory=c("probioticintake",
+              "B_SEX","BMI_5y",
+              "dairyintake_5y",
+              "breastfeeding",
+              "medu_5y",
+              "Socioeco_5y")
+dependent='EarlyPuberty' 
+
+Finaldataset%>%finalfit(dependent,explanatory,metric=TRUE)->T2
+
+write.csv(T2[1],"Table2_result.csv",row.names = FALSE)
