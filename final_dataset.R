@@ -67,4 +67,5 @@ Finaldataset<-TBCSstimu5y%>%
   full_join(outcome_combine,by="Sampleid")
 
 ##change factor----
-TBCSstimu_fixed$probioticintake<-factor(TBCSstimu_fixed$probioticintake)
+Finaldataset$probioticintake<-factor(Finaldataset$probioticintake)
+Finaldataset$EarlyPuberty<-factor(Finaldataset$EarlyPuberty)
