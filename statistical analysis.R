@@ -9,6 +9,9 @@ dat1$B_SEX<-factor(dat1$B_SEX,
 dat1$EarlyPuberty<-factor(dat1$EarlyPuberty,
                           levels = c(0,1),
                           labels = c("No Early Puberty","Early Puberty"))
+dat1$breastfeeding<-factor(dat1$breastfeeding,
+                           levels = c(0,1),
+                           labels = c("No breastfeeding","breastfeeding"))
 dat1$dairyintake_5y<-factor(dat1$dairyintake_5y,
                             levels=c(0,1,2,3,4,5,8,9),
                             labels=c("Never",
@@ -46,7 +49,8 @@ label(dat1$dairyintake_5y)  <- "Dairy intake at age 5"
 label(dat1$medu_5y)         <- "Maternal education level"
 label(dat1$Socioeco_5y)     <- "Average month family income(NT$)"
 label(dat1$EarlyPuberty)    <- "Early Puberty"
-tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y+EarlyPuberty | probioticintake, 
+label(dat1$breastfeeding)   <- "Breast feeding"
+tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y+EarlyPuberty+breastfeeding | probioticintake, 
               data = dat1)
 save_html(tab1, "table1.html")
 #table1 pvalue
@@ -63,13 +67,14 @@ dat1 %>%
 write.csv(t1,"Table1_result.csv",row.names = FALSE)
 #Table2----
 explanatory=c("probioticintake",
-              "B_SEX","BMI_5y",
+              "B_SEX",
+              "BMI_5y",
               "dairyintake_5y",
               "breastfeeding",
               "medu_5y",
               "Socioeco_5y")
 dependent='EarlyPuberty' 
 
-Finaldataset%>%finalfit(dependent,explanatory,metric=TRUE)->T2
+dat1%>%finalfit(dependent,explanatory,metric=TRUE)->T2
 
 write.csv(T2[1],"Table2_result.csv",row.names = FALSE)
