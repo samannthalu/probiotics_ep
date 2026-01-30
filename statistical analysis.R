@@ -53,6 +53,7 @@ label(dat1$breastfeeding)   <- "Breast feeding"
 tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y+EarlyPuberty+breastfeeding | probioticintake, 
               data = dat1)
 save_html(tab1, "table1.html")
+
 #table1 pvalue
 explanatory = c("EarlyPuberty",
                 "B_SEX","BMI_5y",
@@ -65,6 +66,7 @@ dat1 %>%
   summary_factorlist(dependent, explanatory, 
                      p=TRUE, add_dependent_label=TRUE) -> t1
 write.csv(t1,"Table1_result.csv",row.names = FALSE)
+
 #Table2----
 explanatory=c("probioticintake",
               "B_SEX",
@@ -78,3 +80,51 @@ dependent='EarlyPuberty'
 dat1%>%finalfit(dependent,explanatory,metric=TRUE)->T2
 
 write.csv(T2[1],"Table2_result.csv",row.names = FALSE)
+
+#Regression plots----
+explanatory=c("probioticintake",
+              "B_SEX",
+              "BMI_5y",
+              "dairyintake_5y",
+              "breastfeeding",
+              "medu_5y",
+              "Socioeco_5y")
+dependent='EarlyPuberty' 
+
+dat1%>%or_plot(dependent,explanatory)
+
+#Stratified analysis
+dependent = "EarlyPuberty"
+explanatory_stratified = c("probioticintake", 
+                           "BMI_5y", 
+                           "dairyintake_5y", 
+                           "breastfeeding", 
+                           "medu_5y", 
+                           "Socioeco_5y")
+##boys----
+t3_boys <- dat1 %>%
+  filter(B_SEX == "Male") %>% 
+  finalfit(dependent, explanatory_stratified) %>%
+  rename(Variable = 1) %>%  
+  mutate(Variable = na_if(Variable, "")) %>% 
+  fill(Variable, .direction = "down") %>% 
+
+filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>% 
+  mutate(Subgroup = "Boys (Male)")
+##girls----
+t3_girls <- dat1 %>%
+  filter(B_SEX == "Female") %>% 
+  finalfit(dependent, explanatory_stratified) %>%
+  rename(Variable = 1) %>%
+  mutate(Variable = na_if(Variable, "")) %>%
+  fill(Variable, .direction = "down") %>%
+
+filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
+  mutate(Subgroup = "Girls (Female)")
+##combine boys and girls
+table3_sex_result <- rbind(t3_boys, t3_girls) %>%
+  select(Subgroup, everything())
+
+print(table3_sex_result)
+
+write_csv(table3_sex_result, "Table3_Stratified_by_Sex.csv")
