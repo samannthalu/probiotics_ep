@@ -44,8 +44,7 @@ exposureb45y<-TBCSstimu%>%
          probioticintake_6m,
          probioticintake_18m,
          probioticintake_3y,
-         probioticintake_5y,
-         probioticintake_8y)
+         probioticintake_5y,)
 
 ##change N/A into zero----
 exposureb45y_clean<-exposureb45y
@@ -53,12 +52,10 @@ exposureb45y_clean<-exposureb45y
   exposureb45y_clean$probioticintake_18m[is.na(exposureb45y_clean$probioticintake_18m)]<-0
   exposureb45y_clean$probioticintake_3y[is.na(exposureb45y_clean$probioticintake_3y)]<-0
   exposureb45y_clean$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
-  exposureb45y_clean$probioticintake_8y[is.na(exposureb45y_clean$probioticintake_8y)]<-0
 
 ##change variables to numeric
 exposureb45y_clean$probioticintake_18m<-as.numeric(as.character(exposureb45y_clean$probioticintake_18m))
 exposureb45y_clean$probioticintake_3y<-as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
-exposureb45y_clean$probioticintake_8y<-as.numeric(as.character(exposureb45y_clean$probioticintake_8y))
 
 ##add up exposure score----
 exposureb45y_clean<-exposureb45y_clean%>%
@@ -66,8 +63,7 @@ exposureb45y_clean<-exposureb45y_clean%>%
         probioticintake_6m,
         probioticintake_18m,
         probioticintake_3y,
-        probioticintake_5y,
-        probioticintake_8y)),na.rm=TRUE))
+        probioticintake_5y,)),na.rm=TRUE))
 ##everuser/neveruser----
 exposureb45y_clean<-exposureb45y_clean%>%
   mutate(probioticintake=case_when(total==0|total>=40~0,
