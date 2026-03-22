@@ -38,18 +38,18 @@ caseID<-EarlyPuberty_combine%>%
   filter(EarlyPuberty==1)%>%
   pull(Sampleid)%>%
   unique()
-####deal with case (EarlyPuberty=1)----
-cases<-EarlyPuberty_combine%>%
+####deal with case(EarlyPuberty=1)----
+cases<-EarlyPuberty_combine%>% 
   filter(Sampleid %in% caseID)%>%
-  filter(EarlyPuberty==1)%>%
+  filter(EarlyPuberty==1)%>% #find out people who had early puberty
   group_by(Sampleid)%>%
-  slice_min(`FUNC_DATE`,n=1)%>%
+  slice_min(`FUNC_DATE`,n=1)%>% #use their earliest record
   ungroup()
 ####deal with controls(EarlyPuberty=0)
 controls<-EarlyPuberty_combine%>%
-  filter(!Sampleid %in% caseID)%>%
+  filter(!Sampleid %in% caseID)%>% 
   group_by(Sampleid)%>%
-  slice_max(`FUNC_DATE`,n=1)%>%
+  slice_max(`FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
   ungroup()
 ####combine----
 outcome_combine<-rbind(cases,controls)
