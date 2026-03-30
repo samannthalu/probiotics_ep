@@ -40,3 +40,19 @@ surv_data_clean<-surv_data_clean%>%
       TRUE ~ cutoff_date),
     followup_time = as.numeric(
       end_date - start_date) / 30)
+#Cox model----
+cox_model<-coxph(
+  Surv(followup_time, event) ~ probioticintake,
+  data = surv_data_clean)
+
+summary(cox_model)
+
+#Kaplan Mier----
+KM<-survfit(
+  Surv(followup_time, event) ~ probioticintake, 
+  data = surv_data_clean)
+
+plot(KM, col = c(1,2), lty = 1:2,
+     xlab = "Months", ylab = "Survival probability")
+legend("bottomleft", legend = c("No probiotic", "Probiotic"),
+       col = c(1,2), lty = 1:2)
