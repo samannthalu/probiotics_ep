@@ -2,6 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-.csv
-price6_7.csv
+*.csv
 .DS_Store
