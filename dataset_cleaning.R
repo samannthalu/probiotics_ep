@@ -37,6 +37,8 @@ TBCSstimu$dairyintake_18m<-as.factor(TBCSstimu$dairyintake_18m)
 TBCSstimu$dairyintake_5y<-as.factor(TBCSstimu$dairyintake_5y)
 TBCSstimu$dairyintake_8y<-as.factor(TBCSstimu$dairyintake_8y)
 
+##gastroentertitis----
+TBCSstimu$gastroenteritis<-as.factor(TBCSstimu$gastroenteritis)
 #Probioticintake (exposure)----
 ##exposure combine----
 exposureb45y<-TBCSstimu%>%
@@ -53,7 +55,7 @@ exposureb45y_clean<-exposureb45y
   exposureb45y_clean$probioticintake_3y[is.na(exposureb45y_clean$probioticintake_3y)]<-0
   exposureb45y_clean$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
 
-##change variables to numeric
+##change variables to numeric----
 exposureb45y_clean$probioticintake_18m<-as.numeric(as.character(exposureb45y_clean$probioticintake_18m))
 exposureb45y_clean$probioticintake_3y<-as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
 
@@ -77,3 +79,14 @@ NHIRD_IPD<-NHIRD_IPD%>%
   mutate(EarlyPuberty_IPD=if_else(
     if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3,ICD9CM_4,ICD9CM_5),
            ~ .x %in% c("E301","2591")),1,0))
+#Appendicitis (sensitivity analysis)----
+NHIRD_OPD<-NHIRD_OPD%>%
+  mutate(Appendicitis_OPD=if_else(
+    if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3),
+           ~ .x %in% c("K352","K353","K3580","K3589","K37","K36",
+                       "5400","5401","5409","541","542")),1,0))
+NHIRD_IPD<-NHIRD_IPD%>%
+  mutate(Appendicitis_IPD=if_else(
+    if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3,ICD9CM_4,ICD9CM_5),
+           ~ .x %in% c("K352","K353","K3580","K3589","K37","K36",
+                       "5400","5401","5409","541","542")),1,0))
