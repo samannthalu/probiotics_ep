@@ -5,6 +5,7 @@ install.packages("table1")
 install.packages("finalfit")
 install.packages("survminer")
 install.packages("lubridate")
+install.packages("AER")
 library(dplyr)
 library(tidyverse)
 library(readr)
@@ -15,6 +16,7 @@ library(finalfit)
 library(survival)
 library(survminer)
 library(lubridate)
+library(AER)
 #input data
 sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_6m_simulated.csv")
 eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_18m_simulated.csv")
@@ -27,7 +29,7 @@ NHIRD_OPD<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_NHIRD_stimulated/NHIR
 ##6month----
 sixmdata_fixed<-sixmdata%>%
   select(Sampleid,B_SEX,C4a4,C2ad,C2aM,D1d1,D1d2,D1d3,Fedu,Medu,H13,
-         CVR8,CVR9,CVR10)
+         CVR8,CVR9,CVR10,E5b2_2)
 
 sixmdata_fixed<-sixmdata_fixed%>%
   rename(probioticintake_6m=C4a4,
@@ -36,7 +38,8 @@ sixmdata_fixed<-sixmdata_fixed%>%
          weight_6m=D1d1,
          height_6m=D1d2,
          HC_6m=D1d3,fedu_6m=Fedu,medu_6m=Medu,Socioeco_6m=H13,
-         m6_year=CVR8,m6_month=CVR9,m6_day=CVR10)
+         m6_year=CVR8,m6_month=CVR9,m6_day=CVR10,
+         gastroenteritis=E5b2_2)
 ##18month----
 eighteenmdata_fixed<-eighteenmdata%>%
   select(Sampleid,D4a4,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
