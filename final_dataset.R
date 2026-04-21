@@ -13,7 +13,8 @@ TBCSstimu5y<-TBCSstimu%>%
          dairyintake_5y,
          fedu_5y,
          medu_5y,
-         Socioeco_5y)
+         Socioeco_5y,
+         gastroenteritis)
 ###breastfeeding duration calculate---
 TBCSstimu5y<-TBCSstimu5y%>%    
   mutate(breastfeeding=if_else((breastfeedingmonths_6m>1&breastfeedingmonths_6m<99)|
@@ -53,6 +54,43 @@ controls<-EarlyPuberty_combine%>%
   ungroup()
 ####combine----
 outcome_combine<-rbind(cases,controls)
+
+IPD_outcome<-NHIRD_IPD%>%
+  select(Sampleid,IN_DATE,EarlyPuberty_IPD)
+OPD_outcome<-NHIRD_OPD%>%
+  select(Sampleid,FUNC_DATE,EarlyPuberty_OPD)
+##outcome selection(appendicitis)----
+IPD_outcome_ap<-NHIRD_IPD%>%
+  select(Sampleid,IN_DATE,Appendicitis_IPD)
+OPD_outcome_ap<-NHIRD_OPD%>%
+  select(Sampleid,FUNC_DATE,Appendicitis_OPD)
+###combine NHIRD OPD/IPD outcome(appendicitis)----
+IPD_outcome_rename_ap<-IPD_outcome_ap%>%
+  rename(FUNC_DATE=IN_DATE,
+         Appendicitis=Appendicitis_IPD)
+OPD_outcome_rename_ap<-OPD_outcome_ap%>%
+  rename(Appendicitis=Appendicitis_OPD)
+Appendicitis_combine<-rbind(IPD_outcome_rename_ap,OPD_outcome_rename_ap)
+####find case IDs(appendicitis)----
+caseID_ap<-Appendicitis_combine%>%
+  filter(Appendicitis==1)%>%
+  pull(Sampleid)%>%
+  unique()
+####deal with case(Appendicitis=1)----
+cases_ap<-Appendicitis_combine%>% 
+  filter(Sampleid %in% caseID_ap)%>%
+  filter(Appendicitis==1)%>% #find out people who had early puberty
+  group_by(Sampleid)%>%
+  slice_min(`FUNC_DATE`,n=1)%>% #use their earliest record
+  ungroup()
+####deal with controls(Appendicitis=0)
+controls_ap<-Appendicitis_combine%>%
+  filter(!Sampleid %in% caseID_ap)%>% 
+  group_by(Sampleid)%>%
+  slice_max(`FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
+  ungroup()
+####combine(appencitis)----
+outcome_combine_ap<-rbind(cases_ap,controls_ap)
 #Combine final dataset----
 Finaldataset<-TBCSstimu5y%>%
   select(Sampleid,
@@ -62,10 +100,13 @@ Finaldataset<-TBCSstimu5y%>%
          breastfeeding,
          fedu_5y,
          medu_5y,
-         Socioeco_5y)%>%
+         Socioeco_5y,
+         gastroenteritis)%>%
   full_join(exposure,by="Sampleid")%>%
-  full_join(outcome_combine,by="Sampleid")
+  full_join(outcome_combine,by="Sampleid")%>%
+  full_join(outcome_combine_ap,by="Sampleid")
 
 ##change factor----
 Finaldataset$probioticintake<-factor(Finaldataset$probioticintake)
 Finaldataset$EarlyPuberty<-factor(Finaldataset$EarlyPuberty)
+Finaldataset$Appendicitis<-factor(Finaldataset$Appendicitis)
