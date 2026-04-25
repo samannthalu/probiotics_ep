@@ -54,7 +54,7 @@ tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y+EarlyPuberty+bre
               data = dat1)
 save_html(tab1, "table1.html")
 
-#table1 pvalue
+#table1 p-value
 explanatory = c("EarlyPuberty",
                 "B_SEX","BMI_5y",
                 "dairyintake_5y",
@@ -93,7 +93,7 @@ dependent='EarlyPuberty'
 
 dat1%>%or_plot(dependent,explanatory)
 
-#Stratified analysis
+#Stratified analysis----
 dependent = "EarlyPuberty"
 explanatory_stratified = c("probioticintake", 
                            "BMI_5y", 
@@ -121,7 +121,7 @@ t3_girls <- dat1 %>%
 
 filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
   mutate(Subgroup = "Girls (Female)")
-##combine boys and girls
+##combine boys and girls----
 table3_sex_result <- rbind(t3_boys, t3_girls) %>%
   select(Subgroup, everything())
 
