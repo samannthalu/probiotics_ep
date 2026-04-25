@@ -6,8 +6,7 @@ TBCSstimu$B_SEX<-as.factor(TBCSstimu$B_SEX)
 TBCSstimu$pribioticintake_6m<-as.factor(TBCSstimu$probioticintake_6m)
 TBCSstimu$probioticintake_18m<-as.factor(TBCSstimu$probioticintake_18m)
 TBCSstimu$probioticintake_3y<-as.factor(TBCSstimu$probioticintake_3y)
-TBCSstimu$probioticinkake_5y<-as.factor(TBCSstimu$probioticintake_5y)
-TBCSstimu$probioticintake_8y<-as.factor(TBCSstimu$probioticintake_8y)
+TBCSstimu$probioticintake_5y<-as.factor(TBCSstimu$probioticintake_5y)
 
 ##father/mother education----
 TBCSstimu$fedu_6m<-as.factor(TBCSstimu$fedu_6m)
@@ -18,15 +17,12 @@ TBCSstimu$fedu_3y<-as.factor(TBCSstimu$fedu_3y)
 TBCSstimu$medu_3y<-as.factor(TBCSstimu$medu_3y)
 TBCSstimu$fedu_5y<-as.factor(TBCSstimu$fedu_5y)
 TBCSstimu$medu_5y<-as.factor(TBCSstimu$medu_5y)
-TBCSstimu$fedu_8y<-as.factor(TBCSstimu$fedu_8y)
-TBCSstimu$medu_8y<-as.factor(TBCSstimu$medu_8y)
 
 ##socioeconomic Status----
 TBCSstimu$Socioeco_6m<-as.factor(TBCSstimu$Socioeco_6m)
 TBCSstimu$Socioeco_18m<-as.factor(TBCSstimu$Socioeco_18m)
 TBCSstimu$Socioeco_3y<-as.factor(TBCSstimu$Socioeco_3y)
 TBCSstimu$Socioeco_5y<-as.factor(TBCSstimu$Socioeco_5y)
-TBCSstimu$Socioeco_8y<-as.factor(TBCSstimu$Socioeco_8y)
 
 ##breastfeeding----
 TBCSstimu$breastfeedingdays_6m<-as.numeric(TBCSstimu$breastfeedingdays_6m)
@@ -35,10 +31,13 @@ TBCSstimu$breastfeedingmonths_6m<-as.numeric(TBCSstimu$breastfeedingmonths_6m)
 ##dairy intake----
 TBCSstimu$dairyintake_18m<-as.factor(TBCSstimu$dairyintake_18m)
 TBCSstimu$dairyintake_5y<-as.factor(TBCSstimu$dairyintake_5y)
-TBCSstimu$dairyintake_8y<-as.factor(TBCSstimu$dairyintake_8y)
 
 ##gastroentertitis----
-TBCSstimu$gastroenteritis<-as.factor(TBCSstimu$gastroenteritis)
+TBCSstimu$gastroenteritis_6m<-as.factor(TBCSstimu$gastroenteritis_6m)
+TBCSstimu$gastroenteritis_18m<-as.factor(TBCSstimu$gastroenteritis_18m)
+TBCSstimu$gastroenteritis_3y<-as.factor(TBCSstimu$gastroenteritis_3y)
+TBCSstimu$gastroenteritis_5y-as.factor(TBCSstimu$gastroenteritis_5y)
+
 #Probioticintake (exposure)----
 ##exposure combine----
 exposureb45y<-TBCSstimu%>%
@@ -56,9 +55,10 @@ exposureb45y_clean<-exposureb45y
   exposureb45y_clean$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
 
 ##change variables to numeric----
+exposureb45y_clean$probioticintake_6m<-as.numeric(as.character(exposureb45y_clean$probioticintake_6m))
 exposureb45y_clean$probioticintake_18m<-as.numeric(as.character(exposureb45y_clean$probioticintake_18m))
 exposureb45y_clean$probioticintake_3y<-as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
-
+exposureb45y_clean$probioticintake_5y<-as.numeric(as.character(exposureb45y_clean$probioticintake_5y))
 ##add up exposure score----
 exposureb45y_clean<-exposureb45y_clean%>%
   mutate(total=rowSums(across(c(
@@ -90,3 +90,26 @@ NHIRD_IPD<-NHIRD_IPD%>%
     if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3,ICD9CM_4,ICD9CM_5),
            ~ .x %in% c("K352","K353","K3580","K3589","K37","K36",
                        "5400","5401","5409","541","542")),1,0))
+#Gastroenteritis(sensitivity analysis)----
+gastro_all<-TBCSstimu%>%
+  select(Sampleid,
+         gastroenteritis_6m,
+         gastroenteritis_18m,
+         gastroenteritis_3y,
+         gastroenteritis_5y,)
+##change variables to numeric----
+gastro_all$gastroenteritis_6m<-as.numeric(as.character(gastro_all$gastroenteritis_6m))
+gastro_all$gastroenteritis_18m<-as.numeric(as.character(gastro_all$gastroenteritis_18m))
+gastro_all$gastroenteritis_3y<-as.numeric(as.character(gastro_all$gastroenteritis_3y))
+gastro_all$gastroenteritis_5y<-as.numeric(as.character(gastro_all$gastroenteritis_5y))
+##add up gastro score----
+gastro_all<-gastro_all%>%
+  mutate(total=rowSums(across(c(
+    gastroenteritis_6m,
+    gastroenteritis_18m,
+    gastroenteritis_3y,
+    gastroenteritis_5y,)),na.rm=TRUE))
+##gastro/no gastro----
+gastro_all<-gastro_all%>%
+  mutate(gastroenteritis=case_when(total==0~0,
+                                   total>0~1))
