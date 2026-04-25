@@ -29,7 +29,7 @@ NHIRD_OPD<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_NHIRD_stimulated/NHIR
 ##6month----
 sixmdata_fixed<-sixmdata%>%
   select(Sampleid,B_SEX,C4a4,C2ad,C2aM,D1d1,D1d2,D1d3,Fedu,Medu,H13,
-         CVR8,CVR9,CVR10,E5b2_2)
+         CVR8,CVR9,CVR10,E5a_2,E5b2_2)
 
 sixmdata_fixed<-sixmdata_fixed%>%
   rename(probioticintake_6m=C4a4,
@@ -39,20 +39,23 @@ sixmdata_fixed<-sixmdata_fixed%>%
          height_6m=D1d2,
          HC_6m=D1d3,fedu_6m=Fedu,medu_6m=Medu,Socioeco_6m=H13,
          m6_year=CVR8,m6_month=CVR9,m6_day=CVR10,
-         gastroenteritis=E5b2_2)
+         physician_diagosis_6m=E5a_2,
+         gastroenteritis_6m=E5b2_2)
 ##18month----
 eighteenmdata_fixed<-eighteenmdata%>%
-  select(Sampleid,D4a4,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10)
+  select(Sampleid,D4a4,D2b,A2_3H,A2_3L,A2_3W,,Fedu,Medu,F10,E3a_2,E3b2_2)
 
 eighteenmdata_fixed<-eighteenmdata_fixed%>%
   rename(probioticintake_18m=D4a4,
          dairyintake_18m=D2b,
          weight_18m=A2_3W,
          height_18m=A2_3L,
-         HC_18m=A2_3H,fedu_18m=Fedu,medu_18m=Medu,Socioeco_18m=F10)
+         HC_18m=A2_3H,fedu_18m=Fedu,medu_18m=Medu,Socioeco_18m=F10,
+         physician_diagnosis_18m=E3a_2,
+         gastroenteritis_18m=E3b2_2)
 ##3yeard-old----
 threeydata_fixed<-threeydata%>%
-  select(Sampleid,D6a4,A2_3L,A2_3W,Fedu,Medu,F14)
+  select(Sampleid,D6a4,A2_3L,A2_3W,Fedu,Medu,F14,E3a2,E3b2_2)
 
 threeydata_fixed<-threeydata_fixed%>%
   rename(probioticintake_3y=D6a4,
@@ -60,10 +63,12 @@ threeydata_fixed<-threeydata_fixed%>%
          height_3y=A2_3L,
          fedu_3y=Fedu,
          medu_3y=Medu,
-         Socioeco_3y=F14)
+         Socioeco_3y=F14,
+         physician_diagnosis_3y=E3a2,
+         gastroenteritis_3y=E3b2_2)
 ##5year-old----
 fiveydata_fixed<-fiveydata%>%
-  select(Sampleid,D5ad,A2_2L,A2_2W,D4_8,FEDU_5Y,MEDU_5Y,G13)
+  select(Sampleid,D5ad,A2_2L,A2_2W,D4_8,FEDU_5Y,MEDU_5Y,G13,E4a2,E4b2_b)
 
 fiveydata_fixed<-fiveydata_fixed%>%
   rename(probioticintake_5y=D5ad,
@@ -72,7 +77,9 @@ fiveydata_fixed<-fiveydata_fixed%>%
          height_5y=A2_2L,
          fedu_5y=FEDU_5Y,
          medu_5y=MEDU_5Y,
-         Socioeco_5y=G13)
+         Socioeco_5y=G13,
+         physician_diagnosis_5y=E4a2,
+         gastroenteritis_5y=E4b2_b)
 ##8year-old----
 eightydata_fixed<-eightydata%>%
   select(Sampleid,D6ad,A1_1L,A1_1W,D5_8,FEDU_8Y,MEDU_8Y,H13,
