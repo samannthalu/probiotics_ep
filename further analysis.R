@@ -9,7 +9,7 @@ surv_select2<-Finaldataset%>%
   select(Sampleid,
          B_SEX,
          probioticintake,
-         FUNC_DATE,
+         EarlyPuberty_FUNC_DATE,
          EarlyPuberty,
          dairyintake_5y,
          breastfeeding,
@@ -41,22 +41,22 @@ surv_data_clean<-surv_data%>%
          Socioeco_5y,
          medu_5y,
          EarlyPuberty,
-         FUNC_DATE,
+         EarlyPuberty_FUNC_DATE,
          cutoff_date,
          survey_date_8y)
 
 surv_data_clean<-surv_data_clean%>%
-  filter(!(EarlyPuberty == 1 & FUNC_DATE < start_date))
+  filter(!(EarlyPuberty == 1 & EarlyPuberty_FUNC_DATE < start_date))
 ###define event----
 surv_data_clean<-surv_data_clean %>%
   mutate(event = case_when(
-    EarlyPuberty == 1 & FUNC_DATE >= start_date &
-      FUNC_DATE <= cutoff_date ~ 1,
+    EarlyPuberty == 1 & EarlyPuberty_FUNC_DATE >= start_date &
+      EarlyPuberty_FUNC_DATE <= cutoff_date ~ 1,
       TRUE ~ 0))
 ###calculate end date----
 surv_data_clean<-surv_data_clean%>%
   mutate(end_date = case_when(
-      event == 1 ~ FUNC_DATE,
+      event == 1 ~ EarlyPuberty_FUNC_DATE,
       TRUE ~ cutoff_date),
     followup_time = as.numeric(
       end_date - start_date) / 30)
@@ -123,22 +123,36 @@ cox_schoenfeld<-coxph(Surv(followup_time, event) ~
                         socioeco.factor +
                         medu.factor,
                       data = surv_data_labeled)
-## check PH assumption----
+##check PH assumption----
 cox.zph(cox_model)
 ##plot----
+png("Cox_PH_Check.png", width=8, height=6, units="in", res=400)
 plot(cox.zph(cox_model))
+dev.off()
+
+png("Cox_PH_Check_V2.png", width = 8, height = 6, units = "in", res = 400)
+plot(cox.zph(cox_model), 
+     cex = 0.8,     #調整殘差點的大小
+     resid = TRUE)  #確保顯示殘差點
+abline(h = 0, col = "red", lty = 3) #y=0 reference
+dev.off()
 ##HR plot----
-surv_data_labeled %>%
-  hr_plot(dependent = "Surv(followup_time, event)",
-    explanatory = c(
-      "probioticintake.factor",
-      "sex.factor",
-      "dairyintake.factor",
-      "breastfeeding.factor",
-      "BMI.numeric",
-      "socioeco.factor",
-      "medu.factor"),
-    dependent_label = "Early puberty")
+png("HR_plot_final.png", width = 12, height = 10, units = "in", res = 400)
+
+print(
+  surv_data_labeled %>%
+    hr_plot(dependent = "Surv(followup_time, event)",
+            explanatory = c(
+              "probioticintake.factor",
+              "sex.factor",
+              "dairyintake.factor",
+              "breastfeeding.factor",
+              "BMI.numeric",
+              "socioeco.factor",
+              "medu.factor"),
+            dependent_label = "Early puberty"))
+dev.off()
+
 #negative control----
 dat5<-Finaldataset
 dat5$probioticintake<-factor(dat5$probioticintake,
@@ -208,19 +222,19 @@ write.csv(T5[1],"Table5_negative_control_result.csv",row.names = FALSE)
 
 #instrumental variable----
 
-#make EarlyPuberty numeric 0/1
+##make EarlyPuberty numeric----
 Finaldataset$EarlyPuberty <- as.numeric(as.character(Finaldataset$EarlyPuberty))
 
-#establish analisys data
+##establish analysis data----
 dat_iv <- Finaldataset[, c("EarlyPuberty", "probioticintake", "gastroenteritis",
                            "B_SEX", "breastfeeding", "medu_5y",
                            "Socioeco_5y", "dairyintake_5y", "BMI_5y")]
 
-#delete missing value
+##delete missing value----
 dat_iv <- subset(dat_iv, is.finite(EarlyPuberty))
 dat_iv <- na.omit(dat_iv)
 
-#IV model
+##IV model----
 iv_model <- ivreg(EarlyPuberty ~ 
     probioticintake + 
     B_SEX + 
@@ -239,8 +253,8 @@ iv_model <- ivreg(EarlyPuberty ~
     BMI_5y,
   data = dat_iv)
 
-summary(iv_model, diagnostics = TRUE)
-
+sum_iv<-summary(iv_model, diagnostics = TRUE)
+capture.output(sum_iv, file = "IV_Summary_Result.txt")
 #probiotics grouping----
 pb_grouping <- exposureb45y
 
@@ -265,14 +279,13 @@ pb_grouping$probiotic_group <- with(pb_grouping, ifelse(
         "Late",
         "Intermittent")))))
 
-#設定類別順序(回歸分析時通常會拿Never當reference)
 pb_grouping$probiotic_group <- factor(
   pb_grouping$probiotic_group,
   levels = c("Never", 
              "Early", 
              "Late", 
              "Intermittent", 
-             "Always"))
+             "Always"))  #Define factor levels: "Never" as reference for regression & logical ordering for plots
+                         #(R會預設拿levles第一個當對照組，在此設定never為第一個)
 
-#看每組人數
-table(pb_grouping$probiotic_group, useNA = "ifany")
+table(pb_grouping$probiotic_group, useNA = "ifany") #check distribution and handle missing values
