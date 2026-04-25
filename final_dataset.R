@@ -2,6 +2,9 @@
 ##exposure selection----
 exposure<-exposureb45y_clean%>%
   select(Sampleid,probioticintake)
+##gastroenteritis selection----
+gastro<-gastro_all%>%
+  select(Sampleid,gastroenteritis)
 ##covariate selection----
 TBCSstimu5y<-TBCSstimu%>%
   select(Sampleid,
@@ -13,8 +16,7 @@ TBCSstimu5y<-TBCSstimu%>%
          dairyintake_5y,
          fedu_5y,
          medu_5y,
-         Socioeco_5y,
-         gastroenteritis)
+         Socioeco_5y,)
 ###breastfeeding duration calculate---
 TBCSstimu5y<-TBCSstimu5y%>%    
   mutate(breastfeeding=if_else((breastfeedingmonths_6m>1&breastfeedingmonths_6m<99)|
@@ -29,10 +31,11 @@ OPD_outcome<-NHIRD_OPD%>%
   select(Sampleid,FUNC_DATE,EarlyPuberty_OPD)
 ###combine NHIRD OPD/IPD outcome----
 IPD_outcome_rename<-IPD_outcome%>%
-  rename(FUNC_DATE=IN_DATE,
+  rename(EarlyPuberty_FUNC_DATE=IN_DATE,
          EarlyPuberty=EarlyPuberty_IPD)
 OPD_outcome_rename<-OPD_outcome%>%
-  rename(EarlyPuberty=EarlyPuberty_OPD)
+  rename(EarlyPuberty=EarlyPuberty_OPD,
+         EarlyPuberty_FUNC_DATE=FUNC_DATE)
 EarlyPuberty_combine<-rbind(IPD_outcome_rename,OPD_outcome_rename)
 ####find case IDs----
 caseID<-EarlyPuberty_combine%>%
@@ -44,21 +47,17 @@ cases<-EarlyPuberty_combine%>%
   filter(Sampleid %in% caseID)%>%
   filter(EarlyPuberty==1)%>% #find out people who had early puberty
   group_by(Sampleid)%>%
-  slice_min(`FUNC_DATE`,n=1)%>% #use their earliest record
+  slice_min(`EarlyPuberty_FUNC_DATE`,n=1)%>% #use their earliest record
   ungroup()
 ####deal with controls(EarlyPuberty=0)
 controls<-EarlyPuberty_combine%>%
   filter(!Sampleid %in% caseID)%>% 
   group_by(Sampleid)%>%
-  slice_max(`FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
+  slice_max(`EarlyPuberty_FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
   ungroup()
 ####combine----
-outcome_combine<-rbind(cases,controls)
+outcome_combine_ep<-rbind(cases,controls)
 
-IPD_outcome<-NHIRD_IPD%>%
-  select(Sampleid,IN_DATE,EarlyPuberty_IPD)
-OPD_outcome<-NHIRD_OPD%>%
-  select(Sampleid,FUNC_DATE,EarlyPuberty_OPD)
 ##outcome selection(appendicitis)----
 IPD_outcome_ap<-NHIRD_IPD%>%
   select(Sampleid,IN_DATE,Appendicitis_IPD)
@@ -66,10 +65,11 @@ OPD_outcome_ap<-NHIRD_OPD%>%
   select(Sampleid,FUNC_DATE,Appendicitis_OPD)
 ###combine NHIRD OPD/IPD outcome(appendicitis)----
 IPD_outcome_rename_ap<-IPD_outcome_ap%>%
-  rename(FUNC_DATE=IN_DATE,
+  rename(Appendicitis_FUNC_DATE=IN_DATE,
          Appendicitis=Appendicitis_IPD)
 OPD_outcome_rename_ap<-OPD_outcome_ap%>%
-  rename(Appendicitis=Appendicitis_OPD)
+  rename(Appendicitis_FUNC_DATE=FUNC_DATE,
+         Appendicitis=Appendicitis_OPD)
 Appendicitis_combine<-rbind(IPD_outcome_rename_ap,OPD_outcome_rename_ap)
 ####find case IDs(appendicitis)----
 caseID_ap<-Appendicitis_combine%>%
@@ -81,17 +81,17 @@ cases_ap<-Appendicitis_combine%>%
   filter(Sampleid %in% caseID_ap)%>%
   filter(Appendicitis==1)%>% #find out people who had early puberty
   group_by(Sampleid)%>%
-  slice_min(`FUNC_DATE`,n=1)%>% #use their earliest record
+  slice_min(`Appendicitis_FUNC_DATE`,n=1)%>% #use their earliest record
   ungroup()
 ####deal with controls(Appendicitis=0)
 controls_ap<-Appendicitis_combine%>%
   filter(!Sampleid %in% caseID_ap)%>% 
   group_by(Sampleid)%>%
-  slice_max(`FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
+  slice_max(`Appendicitis_FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
   ungroup()
 ####combine(appencitis)----
 outcome_combine_ap<-rbind(cases_ap,controls_ap)
-#Combine final dataset----
+#Combine Final dataset----
 Finaldataset<-TBCSstimu5y%>%
   select(Sampleid,
          B_SEX,
@@ -100,9 +100,9 @@ Finaldataset<-TBCSstimu5y%>%
          breastfeeding,
          fedu_5y,
          medu_5y,
-         Socioeco_5y,
-         gastroenteritis)%>%
+         Socioeco_5y)%>%
   full_join(exposure,by="Sampleid")%>%
+  full_join(gastro,by="Sampleid")%>%
   full_join(outcome_combine,by="Sampleid")%>%
   full_join(outcome_combine_ap,by="Sampleid")
 
