@@ -1,4 +1,4 @@
-#sort data for cox----
+#Sort data for cox----
 ##select survey date from each wave----
 surv_select<-TBCSstimu%>%
   select(Sampleid,
@@ -18,7 +18,7 @@ surv_select2<-Finaldataset%>%
          medu_5y,
          BMI_5y,
          Socioeco_5y)
-#combine selected data----
+#Combine selected data----
 surv_data<-surv_select%>%
   full_join(surv_select2,by="Sampleid")
 ##organize date----
@@ -333,7 +333,7 @@ print(
             dependent_label = "Appendicitis"))
 dev.off()
 
-#instrumental variable----
+#Instrumental variable----
 ##make EarlyPuberty numeric----
 Finaldataset$EarlyPuberty <- as.numeric(as.character(Finaldataset$EarlyPuberty))
 
@@ -367,7 +367,7 @@ iv_model <- ivreg(EarlyPuberty ~
 
 sum_iv<-summary(iv_model, diagnostics = TRUE)
 capture.output(sum_iv, file = "IV_Summary_Result.txt")
-#probiotics grouping----
+#Probiotics grouping----
 pb_grouping <- exposureb45y
 
 pb_grouping$probiotic_group <- with(pb_grouping, ifelse(
