@@ -96,6 +96,8 @@ Finaldataset<-TBCSstimu5y%>%
   select(Sampleid,
          B_SEX,
          BMI_5y,
+         height_5y,
+         weight_5y,
          dairyintake_5y,
          breastfeeding,
          fedu_5y,
@@ -103,10 +105,35 @@ Finaldataset<-TBCSstimu5y%>%
          Socioeco_5y)%>%
   full_join(exposure,by="Sampleid")%>%
   full_join(gastro,by="Sampleid")%>%
-  full_join(outcome_combine,by="Sampleid")%>%
+  full_join(outcome_combine_ep,by="Sampleid")%>%
   full_join(outcome_combine_ap,by="Sampleid")
 
 ##change factor----
 Finaldataset$probioticintake<-factor(Finaldataset$probioticintake)
 Finaldataset$EarlyPuberty<-factor(Finaldataset$EarlyPuberty)
 Finaldataset$Appendicitis<-factor(Finaldataset$Appendicitis)
+
+##missing pattern----
+missing_result<-Finaldataset%>%
+  missing_pattern(dependent="EarlyPuberty",
+                  explanatory=c("B_SEX",
+                                "BMI_5y",
+                                "height_5y",
+                                "weight_5y",
+                                "dairyintake_5y",
+                                "breastdeeding",
+                                "medu_5y",
+                                "Socioeco_5y",
+                                "probioticintake",
+                                "gastroeneteritis",
+                                "Appendicitis"))
+
+missingresult<-as.data.frame(missing_result)
+missingresult$n <- rownames(missingresult)
+missingresult<- missingresult%>%
+  relocate(n)
+
+write.csv(
+  missingresult,
+  "missing_pattern_result.csv",
+  row.names = FALSE)
