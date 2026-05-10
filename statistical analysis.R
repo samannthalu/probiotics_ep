@@ -53,7 +53,6 @@ label(dat1$breastfeeding)   <- "Breast feeding"
 tab1<-table1( ~ B_SEX+BMI_5y+dairyintake_5y+medu_5y+Socioeco_5y+EarlyPuberty+breastfeeding | probioticintake, 
               data = dat1)
 save_html(tab1, "table1.html")
-
 #table1 p-value
 explanatory = c("EarlyPuberty",
                 "B_SEX","BMI_5y",
