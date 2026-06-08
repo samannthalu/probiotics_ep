@@ -117,10 +117,10 @@ label(dat1$medu_5y)         <- "Maternal education level"
 label(dat1$Socioeco_5y)     <- "Average month family income(NT$)"
 label(dat1$EarlyPuberty)    <- "Early Puberty"
 label(dat1$breastfeeding)   <- "Breast feeding"
-tab1<-table1( ~ B_SEX+dairyintake_5y+medu_5y+Socioeco_5y+EarlyPuberty+breastfeeding | probioticintake, 
+tab1_noBMI<-table1( ~ B_SEX+dairyintake_5y+medu_5y+Socioeco_5y+EarlyPuberty+breastfeeding | probioticintake, 
               data = dat1)
-save_html(tab1, "table1.html")
-#table1 p-value
+save_html(tab1_noBMI, "table1.html")
+##table1 p-value(no BMI)
 explanatory = c("EarlyPuberty",
                 "B_SEX",
                 "dairyintake_5y",
@@ -130,8 +130,8 @@ explanatory = c("EarlyPuberty",
 dependent = 'probioticintake'
 dat1 %>%
   summary_factorlist(dependent, explanatory, 
-                     p=TRUE, add_dependent_label=TRUE) -> t1
-write.csv(t1,"Table1_result.csv",row.names = FALSE)
+                     p=TRUE, add_dependent_label=TRUE) -> t1_noBMI
+write.csv(t1_noBMI,"Table1_result_noBMI.csv",row.names = FALSE)
 #Table2----
 explanatory=c("probioticintake",
               "B_SEX",
@@ -145,11 +145,32 @@ dependent='EarlyPuberty'
 dat1%>%finalfit(dependent,explanatory,metric=TRUE)->T2
 
 write.csv(T2[1],"Table2_result.csv",row.names = FALSE)
-
 #Regression plots----
 explanatory=c("probioticintake",
               "B_SEX",
               "BMI_5y",
+              "dairyintake_5y",
+              "breastfeeding",
+              "medu_5y",
+              "Socioeco_5y")
+dependent='EarlyPuberty' 
+
+dat1%>%or_plot(dependent,explanatory)
+##Table2(no BMI version)----
+explanatory=c("probioticintake",
+              "B_SEX",
+              "dairyintake_5y",
+              "breastfeeding",
+              "medu_5y",
+              "Socioeco_5y")
+dependent='EarlyPuberty' 
+
+dat1%>%finalfit(dependent,explanatory,metric=TRUE)->T2_noBMI
+
+write.csv(T2_noBMI[1],"Table2_result_noBMI.csv",row.names = FALSE)
+#Regression plots----
+explanatory=c("probioticintake",
+              "B_SEX",
               "dairyintake_5y",
               "breastfeeding",
               "medu_5y",
