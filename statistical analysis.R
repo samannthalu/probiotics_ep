@@ -168,7 +168,7 @@ dependent='EarlyPuberty'
 dat1%>%finalfit(dependent,explanatory,metric=TRUE)->T2_noBMI
 
 write.csv(T2_noBMI[1],"Table2_result_noBMI.csv",row.names = FALSE)
-#Regression plots----
+##Regression plots----
 explanatory=c("probioticintake",
               "B_SEX",
               "dairyintake_5y",
@@ -214,3 +214,38 @@ table3_sex_result <- rbind(t3_boys, t3_girls) %>%
 print(table3_sex_result)
 
 write_csv(table3_sex_result, "Table3_Stratified_by_Sex.csv")
+##Stratified analysis(no BMI)----
+dependent = "EarlyPuberty"
+explanatory_stratified = c("probioticintake", 
+                           "BMI_5y", 
+                           "dairyintake_5y", 
+                           "breastfeeding", 
+                           "medu_5y", 
+                           "Socioeco_5y")
+###boys----
+t3_boys_noBMI <- dat1 %>%
+  filter(B_SEX == "Male") %>% 
+  finalfit(dependent, explanatory_stratified) %>%
+  rename(Variable = 1) %>%  
+  mutate(Variable = na_if(Variable, "")) %>% 
+  fill(Variable, .direction = "down") %>% 
+  
+  filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>% 
+  mutate(Subgroup = "Boys (Male)")
+##girls----
+t3_girls_noBMI <- dat1 %>%
+  filter(B_SEX == "Female") %>% 
+  finalfit(dependent, explanatory_stratified) %>%
+  rename(Variable = 1) %>%
+  mutate(Variable = na_if(Variable, "")) %>%
+  fill(Variable, .direction = "down") %>%
+  
+  filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
+  mutate(Subgroup = "Girls (Female)")
+##combine boys and girls----
+table3_sex_result_noBMI <- rbind(t3_boys_noBMI, t3_girls_noBMI) %>%
+  select(Subgroup, everything())
+
+print(table3_sex_result_noBMI)
+
+write_csv(table3_sex_result_noBMI, "Table3_Stratified_by_Sex_noBMI.csv")
