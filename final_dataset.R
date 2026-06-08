@@ -48,16 +48,17 @@ cases<-EarlyPuberty_combine%>%
   filter(EarlyPuberty==1)%>% #find out people who had early puberty
   group_by(Sampleid)%>%
   slice_min(`EarlyPuberty_FUNC_DATE`,n=1)%>% #use their earliest record
-  ungroup()
+  ungroup()%>%
+  unique()
 ###deal with controls(EarlyPuberty=0)
 controls<-EarlyPuberty_combine%>%
   filter(!Sampleid %in% caseID)%>% 
   group_by(Sampleid)%>%
   slice_max(`EarlyPuberty_FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
-  ungroup()
+  ungroup()%>%
+  unique()
 ###combine----
 outcome_combine_ep<-rbind(cases,controls)
-
 #Outcome selection(appendicitis)----
 IPD_outcome_ap<-NHIRD_IPD%>%
   select(Sampleid,IN_DATE,Appendicitis_IPD)
@@ -82,13 +83,15 @@ cases_ap<-Appendicitis_combine%>%
   filter(Appendicitis==1)%>% #find out people who had early puberty
   group_by(Sampleid)%>%
   slice_min(`Appendicitis_FUNC_DATE`,n=1)%>% #use their earliest record
-  ungroup()
+  ungroup()%>%
+  unique()
 ###deal with controls(Appendicitis=0)
 controls_ap<-Appendicitis_combine%>%
   filter(!Sampleid %in% caseID_ap)%>% 
   group_by(Sampleid)%>%
   slice_max(`Appendicitis_FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
-  ungroup()
+  ungroup()%>%
+  unique()
 ###combine(appencitis)----
 outcome_combine_ap<-rbind(cases_ap,controls_ap)
 #Combine Final dataset----
