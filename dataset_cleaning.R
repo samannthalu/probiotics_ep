@@ -45,7 +45,11 @@ exposureb45y<-TBCSstimu%>%
          probioticintake_6m,
          probioticintake_18m,
          probioticintake_3y,
-         probioticintake_5y,)
+         probioticintake_5y,)%>%
+  mutate(
+    across(
+      -Sampleid,function(x){x<- as.numeric(as.character(x))
+      ifelse(x==1,1,0)}))
 
 ##change N/A into zero----
 exposureb45y_clean<-exposureb45y
@@ -66,6 +70,8 @@ exposureb45y_clean<-exposureb45y_clean%>%
         probioticintake_18m,
         probioticintake_3y,
         probioticintake_5y,)),na.rm=TRUE))
+##Replace 8 and 9 with 0----
+
 ##everuser/neveruser----
 exposureb45y_clean<-exposureb45y_clean%>%
   mutate(probioticintake=case_when(total==0|total>=40~0,
