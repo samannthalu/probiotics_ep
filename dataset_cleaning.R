@@ -49,7 +49,7 @@ exposureb45y<-TBCSstimu%>%
   mutate(
     across(
       -Sampleid,function(x){x<- as.numeric(as.character(x))
-      ifelse(x==1,1,0)}))
+      ifelse(x==1,1,0)})) #replace 8,9 and other number with 0
 
 ##change N/A into zero----
 exposureb45y_clean<-exposureb45y
@@ -70,12 +70,11 @@ exposureb45y_clean<-exposureb45y_clean%>%
         probioticintake_18m,
         probioticintake_3y,
         probioticintake_5y,)),na.rm=TRUE))
-##Replace 8 and 9 with 0----
 
 ##everuser/neveruser----
 exposureb45y_clean<-exposureb45y_clean%>%
-  mutate(probioticintake=case_when(total==0|total>=40~0,
-                                   total>0|total<40~1))
+  mutate(probioticintake=case_when(total==0~0,
+                                   total>0~1))
 #Early Puberty (outcome)----
 NHIRD_OPD<-NHIRD_OPD%>%
   mutate(EarlyPuberty_OPD=if_else(
