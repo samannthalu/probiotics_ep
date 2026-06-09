@@ -117,7 +117,7 @@ Finaldataset<-TBCSstimu5y%>%
   full_join(gastro,by="Sampleid")%>%
   full_join(outcome_combine_ep,by="Sampleid")%>%
   full_join(outcome_combine_ap,by="Sampleid")
-##filter prople didn't follow at wave 5 and had early puberty before age 5----
+##filter prople didn't follow at wave 5y and had early puberty before age 5----
 Finaldataset<-Finaldataset%>%
   filter(!is.na(start_date))%>%
   filter(!(EarlyPuberty == 1 & EarlyPuberty_FUNC_DATE < start_date))
