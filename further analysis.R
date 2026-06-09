@@ -727,7 +727,7 @@ dependent='EarlyPuberty'
 datpbgroup%>%finalfit(dependent,explanatory,metric=TRUE)->pbgroup
 
 write.csv(pbgroup,"Table_probiotic_group.csv",row.names = FALSE)
-##probiotic grouping logistic regression (no BMI) ----
+##probiotic grouping logistic regression (no BMI)----
 datpbgroup <- Finaldataset
 explanatory_noBMI <- c("probiotic_group",
                        "B_SEX",
