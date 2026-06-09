@@ -38,9 +38,9 @@ dat1$Socioeco_5y<-factor(dat1$Socioeco_5y,
                                   ">=100,000,<150,000",
                                   ">=150,000,<200,000",
                                   ">=200,000",
-                                  "Unknown",
-                                  "Unknown",
-                                  "Unknown"))
+                                  ">=50,000,<70,000",
+                                  ">=50,000,<70,000",
+                                  ">=50,000,<70,000"))
 dat1$BMI_5y<-as.numeric(dat1$BMI_5y)
 
 label(dat1$probioticintake) <- "Probiotic intake"
@@ -106,9 +106,9 @@ dat1$Socioeco_5y<-factor(dat1$Socioeco_5y,
                                   ">=100,000,<150,000",
                                   ">=150,000,<200,000",
                                   ">=200,000",
-                                  "Unknown",
-                                  "Unknown",
-                                  "Unknown"))
+                                  ">=50,000,<70,000",
+                                  ">=50,000,<70,000",
+                                  ">=50,000,<70,000"))
 
 label(dat1$probioticintake) <- "Probiotic intake"
 label(dat1$B_SEX)           <- "Sex"
