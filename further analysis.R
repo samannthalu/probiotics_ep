@@ -93,30 +93,31 @@ surv_data_labeled_ep<-surv_data_clean%>%
          breastfeeding.factor = factor(breastfeeding,levels = c(0, 1),
                                        labels = c("No breastfeeding","Breastfeeding")),
          dairyintake.factor = factor(dairyintake_5y,levels = c(0,1,2,3,4,5,8,9),
-                                     labels = c("Never",
-                                                "less than 1 time a week",
+                                     labels = c("Never or less than 1 time a week",
+                                                "Never or less than 1 time a week",
                                                 "1-2 times a week",
                                                 "3 to 5 times a week",
                                                 "everyday/almost everyday",
-                                                "Unsure","Not Applicable",
-                                                "Unknown")),
+                                                "everyday/almost everyday",
+                                                "everyday/almost everyday",
+                                                "everyday/almost everyday")),
          medu.factor = factor(medu_5y,levels = c(1,2,3),
                               labels = c ("Junior High&below",
                                          "Senior High/Vocational",
                                          "University&above")),
          socioeco.factor = factor(Socioeco_5y,levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
-                                  labels = c("<10,000",
-                                             ">=10,000,<20,000",
-                                             ">=20,000,<30,000",
+                                  labels = c("30,000",
+                                             "30,000",
+                                             "30,000",
                                              ">=30,000,<50,000",
                                              ">=50,000,<70,000",
                                              ">=70,000,<100,000",
                                              ">=100,000,<150,000",
                                              ">=150,000,<200,000",
                                              ">=200,000",
-                                             "Not Appliable",
-                                             "Refused/Don't Know",
-                                             "Unknown")),
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000")),
          BMI.numeric = as.numeric(BMI_5y))
 
 explanatory=c("probioticintake.factor",
@@ -132,6 +133,53 @@ surv_data_labeled_ep %>%
 knitr::kable(t4, row.names=FALSE, align=c("l", "l", "r", "r", "r", "r"))
 
 write.csv(t4, "Table4_HR_results_ep.csv", row.names = FALSE)
+##adjusted Cox model(no BMI)----
+surv_data_labeled_ep<-surv_data_clean%>%
+  mutate(probioticintake.factor = factor(probioticintake,levels = c(0, 1),
+                                         labels = c("No","Yes")),
+         sex.factor = factor(B_SEX,levels = c("1", "2"),
+                             labels = c("Boy", "Girl")),
+         breastfeeding.factor = factor(breastfeeding,levels = c(0, 1),
+                                       labels = c("No breastfeeding","Breastfeeding")),
+         dairyintake.factor = factor(dairyintake_5y,levels = c(0,1,2,3,4,5,8,9),
+                                     labels = c("Never or less than 1 time a week",
+                                                "Never or less than 1 time a week",
+                                                "1-2 times a week",
+                                                "3 to 5 times a week",
+                                                "everyday/almost everyday",
+                                                "everyday/almost everyday",
+                                                "everyday/almost everyday",
+                                                "everyday/almost everyday")),
+         medu.factor = factor(medu_5y,levels = c(1,2,3),
+                              labels = c ("Junior High&below",
+                                          "Senior High/Vocational",
+                                          "University&above")),
+         socioeco.factor = factor(Socioeco_5y,levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
+                                  labels = c("30,000",
+                                             "30,000",
+                                             "30,000",
+                                             ">=30,000,<50,000",
+                                             ">=50,000,<70,000",
+                                             ">=70,000,<100,000",
+                                             ">=100,000,<150,000",
+                                             ">=150,000,<200,000",
+                                             ">=200,000",
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000")))
+  
+explanatory=c("probioticintake.factor",
+              "sex.factor",
+              "dairyintake.factor",
+              "breastfeeding.factor",
+              "socioeco.factor",
+              "medu.factor")
+dependent = "Surv(ep_followup_time, ep_event)"
+surv_data_labeled_ep %>%
+  finalfit(dependent, explanatory) -> t4_noBMI
+knitr::kable(t4_noBMI, row.names=FALSE, align=c("l", "l", "r", "r", "r", "r"))
+
+write.csv(t4_noBMI, "Table4_HR_results_ep_noBMI.csv", row.names = FALSE)
 #Schoenfeld residual tests----
 ##cox for Schoenfeld residual tests----
 cox_schoenfeld_ep<-coxph(Surv(ep_followup_time, ep_event) ~ 
@@ -172,7 +220,44 @@ print(
               "medu.factor"),
             dependent_label = "Early puberty"))
 dev.off()
+###Schoenfeld residual tests(no BMI)----
+####cox for Schoenfeld residual tests----
+cox_schoenfeld_ep_noBMI<-coxph(Surv(ep_followup_time, ep_event) ~ 
+                           probioticintake.factor +
+                           sex.factor +
+                           dairyintake.factor +
+                           breastfeeding.factor +
+                           socioeco.factor +
+                           medu.factor,
+                         data = surv_data_labeled_ep)
+####check PH assumption----
+cox.zph(cox_schoenfeld_ep_noBMI)
+####plot----
+png("Cox_PH_Check_ep_noBMI.png", width=8, height=6, units="in", res=400)
+plot(cox.zph(cox_schoenfeld_ep_noBMI))
+dev.off()
 
+png("Cox_PH_Check_ep_V2_noBMI.png", width = 8, height = 6, units = "in", res = 400)
+plot(cox.zph(cox_schoenfeld_ep_noBMI), 
+     cex = 0.8,     #調整殘差點的大小
+     resid = TRUE)  #確保顯示殘差點
+abline(h = 0, col = "red", lty = 3) #y=0 reference
+dev.off()
+####HR plot----
+png("HR_plot_final_ep_noBMI.png", width = 12, height = 10, units = "in", res = 400)
+
+print(
+  surv_data_labeled_ep %>%
+    hr_plot(dependent = "Surv(ep_followup_time, ep_event)",
+            explanatory = c(
+              "probioticintake.factor",
+              "sex.factor",
+              "dairyintake.factor",
+              "breastfeeding.factor",
+              "socioeco.factor",
+              "medu.factor"),
+            dependent_label = "Early puberty"))
+dev.off()
 #Negative control----
 ##OR----
 dat5<-Finaldataset
@@ -190,13 +275,14 @@ dat5$breastfeeding<-factor(dat5$breastfeeding,
                            labels = c("No breastfeeding","breastfeeding"))
 dat5$dairyintake_5y<-factor(dat5$dairyintake_5y,
                             levels = c(0,1,2,3,4,5,8,9),
-                            labels = c("Never",
-                                       "less than 1 time a week",
+                            labels = c("Never or less than 1 time a week",
+                                       "Never or less than 1 time a week",
                                        "1-2 times a week",
                                        "3 to 5 times a week",
                                        "everyday/almost everyday",
-                                       "Unsure","Not Applicable",
-                                       "Unknown"))
+                                       "everyday/almost everyday",
+                                       "everyday/almost everyday",
+                                       "everyday/almost everyday"))
 dat5$medu_5y<-factor(dat5$medu_5y,
                      levels=c(1,2,3),
                      labels=c("Junior High&below",
@@ -204,18 +290,18 @@ dat5$medu_5y<-factor(dat5$medu_5y,
                               "University&above"))
 dat5$Socioeco_5y<-factor(dat5$Socioeco_5y,
                          levels=c(1,2,3,4,5,6,7,8,9,88,98,99),
-                         labels=c("<10,000",
-                                  ">=10,000,<20,000",
-                                  ">=20,000,<30,000",
+                         labels=c("30,000",
+                                  "30,000",
+                                  "30,000",
                                   ">=30,000,<50,000",
                                   ">=50,000,<70,000",
                                   ">=70,000,<100,000",
                                   ">=100,000,<150,000",
                                   ">=150,000,<200,000",
                                   ">=200,000",
-                                  "Not Appliable",
-                                  "Refused/Don't Know",
-                                  "Unknown"))
+                                  ">=50,000,<70,000",
+                                  ">=50,000,<70,000",
+                                  ">=50,000,<70,000"))
 dat5$BMI_5y<-as.numeric(dat5$BMI_5y)
 
 label(dat5$probioticintake) <- "Probiotic intake"
@@ -265,18 +351,18 @@ surv_data_labeled_ap<-surv_data_clean%>%
                                           "Senior High/Vocational",
                                           "University&above")),
          socioeco.factor = factor(Socioeco_5y,levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
-                                  labels = c("<10,000",
-                                             ">=10,000,<20,000",
-                                             ">=20,000,<30,000",
+                                  labels = c("30,000",
+                                             "30,000",
+                                             "30,000",
                                              ">=30,000,<50,000",
                                              ">=50,000,<70,000",
                                              ">=70,000,<100,000",
                                              ">=100,000,<150,000",
                                              ">=150,000,<200,000",
                                              ">=200,000",
-                                             "Not Appliable",
-                                             "Refused/Don't Know",
-                                             "Unknown")),
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000")),
          BMI.numeric = as.numeric(BMI_5y))
 
 explanatory=c("probioticintake.factor",
@@ -292,6 +378,53 @@ surv_data_labeled_ap %>%
 knitr::kable(t4, row.names=FALSE, align=c("l", "l", "r", "r", "r", "r"))
 
 write.csv(t4, "Table4_HR_results_ap.csv", row.names = FALSE)
+###Negative control(no BMI)----
+surv_data_labeled_ap_noBMI<-surv_data_clean%>%
+  mutate(probioticintake.factor = factor(probioticintake,levels = c(0, 1),
+                                         labels = c("No","Yes")),
+         sex.factor = factor(B_SEX,levels = c("1", "2"),
+                             labels = c("Boy", "Girl")),
+         breastfeeding.factor = factor(breastfeeding,levels = c(0, 1),
+                                       labels = c("No breastfeeding","Breastfeeding")),
+         dairyintake.factor = factor(dairyintake_5y,levels = c(0,1,2,3,4,5,8,9),
+                                     labels = c("Never",
+                                                "less than 1 time a week",
+                                                "1-2 times a week",
+                                                "3 to 5 times a week",
+                                                "everyday/almost everyday",
+                                                "Unsure","Not Applicable",
+                                                "Unknown")),
+         medu.factor = factor(medu_5y,levels = c(1,2,3),
+                              labels = c ("Junior High&below",
+                                          "Senior High/Vocational",
+                                          "University&above")),
+         socioeco.factor = factor(Socioeco_5y,levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
+                                  labels = c("30,000",
+                                             "30,000",
+                                             "30,000",
+                                             ">=30,000,<50,000",
+                                             ">=50,000,<70,000",
+                                             ">=70,000,<100,000",
+                                             ">=100,000,<150,000",
+                                             ">=150,000,<200,000",
+                                             ">=200,000",
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000",
+                                             ">=50,000,<70,000")))
+         
+
+explanatory_noBMI=c("probioticintake.factor",
+              "sex.factor",
+              "dairyintake.factor",
+              "breastfeeding.factor",
+              "socioeco.factor",
+              "medu.factor")
+dependent = "Surv(ap_followup_time, ap_event)"
+surv_data_labeled_ap_noBMI %>%
+  finalfit(dependent, explanatory_noBMI) -> t4_ap_noBMI
+knitr::kable(t4_ap_noBMI, row.names=FALSE, align=c("l", "l", "r", "r", "r", "r"))
+
+write.csv(t4, "Table4_HR_results_ap_noBMI.csv", row.names = FALSE)
 #Schoenfeld residual tests----
 ##cox for Schoenfeld residual tests----
 cox_schoenfeld_ap<-coxph(Surv(ap_followup_time, ap_event) ~ 
@@ -332,7 +465,43 @@ print(
               "medu.factor"),
             dependent_label = "Appendicitis"))
 dev.off()
+###cox for Schoenfeld residual tests(no BMI)----
+cox_schoenfeld_ap_noBMI<-coxph(Surv(ap_followup_time, ap_event) ~ 
+probioticintake.factor +
+  sex.factor +
+  dairyintake.factor +
+  breastfeeding.factor +
+  socioeco.factor +
+  medu.factor,
+data = surv_data_labeled_ap_noBMI)
+####check PH assumption----
+cox.zph(cox_schoenfeld_ap_noBMI)
+####plot----
+png("Cox_PH_Check_ap_noBMI.png", width=8, height=6, units="in", res=400)
+plot(cox.zph(cox_schoenfeld_ap_noBMI))
+dev.off()
 
+png("Cox_PH_Check_ap_V2_noBMI.png", width = 8, height = 6, units = "in", res = 400)
+plot(cox.zph(cox_schoenfeld_ap_noBMI), 
+     cex = 0.8,     #調整殘差點的大小
+     resid = TRUE)  #確保顯示殘差點
+abline(h = 0, col = "red", lty = 3) #y=0 reference
+dev.off()
+####HR plot----
+png("HR_plot_final_ap_noBMI.png", width = 12, height = 10, units = "in", res = 400)
+
+print(
+  surv_data_labeled_ap_noBMI %>%
+    hr_plot(dependent = "Surv(ap_followup_time, ap_event)",
+            explanatory = c(
+              "probioticintake.factor",
+              "sex.factor",
+              "dairyintake.factor",
+              "breastfeeding.factor",
+              "socioeco.factor",
+              "medu.factor"),
+            dependent_label = "Appendicitis"))
+dev.off()
 #Instrumental variable----
 ##make EarlyPuberty numeric----
 Finaldataset$EarlyPuberty <- as.numeric(as.character(Finaldataset$EarlyPuberty))
