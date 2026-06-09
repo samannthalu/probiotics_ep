@@ -16,7 +16,10 @@ TBCSstimu5y<-TBCSstimu%>%
          dairyintake_5y,
          fedu_5y,
          medu_5y,
-         Socioeco_5y,)
+         Socioeco_5y,
+         y5_year,
+         y5_month,
+         y5_day)
 ###breastfeeding duration calculate---
 TBCSstimu5y<-TBCSstimu5y%>%    
   mutate(breastfeeding=if_else((breastfeedingmonths_6m>1&breastfeedingmonths_6m<99)|
@@ -24,6 +27,9 @@ TBCSstimu5y<-TBCSstimu5y%>%
 ###BMI calculate----
 TBCSstimu5y<-TBCSstimu5y%>%
   mutate(BMI_5y=weight_5y/(height_5y/100)^2)
+###start date count----
+TBCSstimu5y<-TBCSstimu5y%>%
+  mutate(start_date=make_date(y5_year, y5_month, y5_day))
 #Outcome selection----
 IPD_outcome<-NHIRD_IPD%>%
   select(Sampleid,IN_DATE,EarlyPuberty_IPD)
@@ -105,11 +111,16 @@ Finaldataset<-TBCSstimu5y%>%
          breastfeeding,
          fedu_5y,
          medu_5y,
-         Socioeco_5y)%>%
+         Socioeco_5y,
+         start_date)%>%
   full_join(exposure,by="Sampleid")%>%
   full_join(gastro,by="Sampleid")%>%
   full_join(outcome_combine_ep,by="Sampleid")%>%
   full_join(outcome_combine_ap,by="Sampleid")
+##filter prople didn't follow at wave 5 and had early puberty before age 5----
+Finaldataset<-Finaldataset%>%
+  filter(!is.na(start_date))%>%
+  filter(!(EarlyPuberty == 1 & EarlyPuberty_FUNC_DATE < start_date))
 
 ##change factor----
 Finaldataset$probioticintake<-factor(Finaldataset$probioticintake)
