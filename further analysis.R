@@ -741,3 +741,4 @@ datpbgroup %>%
   finalfit(dependent, explanatory_noBMI, metric = TRUE) -> pbgroup_noBMI
 
 write.csv(pbgroup_noBMI,"Table_probiotic_group_noBMI.csv",row.names = FALSE)
+#Sex-stratified analysis(HR)----
