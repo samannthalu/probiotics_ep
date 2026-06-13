@@ -742,3 +742,104 @@ datpbgroup %>%
 
 write.csv(pbgroup_noBMI,"Table_probiotic_group_noBMI.csv",row.names = FALSE)
 #Sex-stratified analysis(HR)----
+# rebuilt labeled dataset (make sure BMI.numeric exsist)
+surv_data_labeled_ep <- surv_data_clean %>%
+  mutate(
+    probioticintake.factor = factor(probioticintake, levels = c(0,1),
+                                    labels = c("No","Yes")),
+    sex.factor = factor(B_SEX, levels = c("1","2"),
+                        labels = c("Boy","Girl")),
+    breastfeeding.factor = factor(breastfeeding, levels = c(0,1),
+                                  labels = c("No breastfeeding","Breastfeeding")),
+    dairyintake.factor = factor(dairyintake_5y, levels = c(0,1,2,3,4,5,8,9),
+                                labels = c("Never or less than 1 time a week",
+                                           "Never or less than 1 time a week",
+                                           "1-2 times a week",
+                                           "3 to 5 times a week",
+                                           "everyday/almost everyday",
+                                           "everyday/almost everyday",
+                                           "everyday/almost everyday",
+                                           "everyday/almost everyday")),
+    medu.factor = factor(medu_5y, levels = c(1,2,3),
+                         labels = c("Junior High&below",
+                                    "Senior High/Vocational",
+                                    "University&above")),
+    socioeco.factor = factor(Socioeco_5y,
+                             levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
+                             labels = c("30,000","30,000","30,000",
+                                        ">=30,000,<50,000",
+                                        ">=50,000,<70,000",
+                                        ">=70,000,<100,000",
+                                        ">=100,000,<150,000",
+                                        ">=150,000,<200,000",
+                                        ">=200,000",
+                                        ">=50,000,<70,000",
+                                        ">=50,000,<70,000",
+                                        ">=50,000,<70,000")),
+    BMI.numeric = as.numeric(BMI_5y)  # ← 關鍵
+  )
+
+## With BMI ----
+dependent_surv <- "Surv(ep_followup_time, ep_event)"
+
+explanatory_with_BMI <- c("probioticintake.factor",
+                          "dairyintake.factor",
+                          "breastfeeding.factor",
+                          "BMI.numeric",
+                          "socioeco.factor",
+                          "medu.factor")
+
+explanatory_no_BMI <- c("probioticintake.factor",
+                        "dairyintake.factor",
+                        "breastfeeding.factor",
+                        "socioeco.factor",
+                        "medu.factor")
+
+### Boys with BMI ----
+t3_boys <- surv_data_labeled_ep %>%
+  filter(sex.factor == "Boy") %>%
+  finalfit(dependent_surv, explanatory_with_BMI) %>%
+  rename(Variable = 1) %>%
+  mutate(Variable = na_if(Variable, "")) %>%
+  fill(Variable, .direction = "down") %>%
+  filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
+  mutate(Subgroup = "Boys (Male)")
+
+### Girls with BMI ----
+t3_girls <- surv_data_labeled_ep %>%
+  filter(sex.factor == "Girl") %>%
+  finalfit(dependent_surv, explanatory_with_BMI) %>%
+  rename(Variable = 1) %>%
+  mutate(Variable = na_if(Variable, "")) %>%
+  fill(Variable, .direction = "down") %>%
+  filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
+  mutate(Subgroup = "Girls (Female)")
+
+table3_sex_result <- rbind(t3_boys, t3_girls) %>%
+  select(Subgroup, everything())
+write_csv(table3_sex_result, "Table3_Stratified_by_Sex_Cox_withBMI.csv")
+
+## Without BMI ----
+### Boys no BMI ----
+t3_boys_noBMI <- surv_data_labeled_ep %>%
+  filter(sex.factor == "Boy") %>%
+  finalfit(dependent_surv, explanatory_no_BMI) %>%
+  rename(Variable = 1) %>%
+  mutate(Variable = na_if(Variable, "")) %>%
+  fill(Variable, .direction = "down") %>%
+  filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
+  mutate(Subgroup = "Boys (Male)")
+
+### Girls no BMI ----
+t3_girls_noBMI <- surv_data_labeled_ep %>%
+  filter(sex.factor == "Girl") %>%
+  finalfit(dependent_surv, explanatory_no_BMI) %>%
+  rename(Variable = 1) %>%
+  mutate(Variable = na_if(Variable, "")) %>%
+  fill(Variable, .direction = "down") %>%
+  filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
+  mutate(Subgroup = "Girls (Female)")
+
+table3_sex_result_noBMI <- rbind(t3_boys_noBMI, t3_girls_noBMI) %>%
+  select(Subgroup, everything())
+write_csv(table3_sex_result_noBMI, "Table3_Stratified_by_Sex_Cox_noBMI.csv")
