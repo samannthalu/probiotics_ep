@@ -217,7 +217,6 @@ write_csv(table3_sex_result, "Table3_Stratified_by_Sex.csv")
 ##Stratified analysis(no BMI)----
 dependent = "EarlyPuberty"
 explanatory_stratified = c("probioticintake", 
-                           "BMI_5y", 
                            "dairyintake_5y", 
                            "breastfeeding", 
                            "medu_5y", 
@@ -232,7 +231,7 @@ t3_boys_noBMI <- dat1 %>%
   
   filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>% 
   mutate(Subgroup = "Boys (Male)")
-##girls----
+###girls----
 t3_girls_noBMI <- dat1 %>%
   filter(B_SEX == "Female") %>% 
   finalfit(dependent, explanatory_stratified) %>%
