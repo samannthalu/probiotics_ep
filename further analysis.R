@@ -581,6 +581,7 @@ sum_iv_noBMI <- summary(iv_model_noBMI, diagnostics = TRUE)
 capture.output(
   sum_iv_noBMI,
   file = "IV_Summary_Result_noBMI.txt")
+
 #Probiotics grouping----
 pb_grouping <- exposureb45y
 
@@ -619,102 +620,13 @@ table(pb_grouping$probiotic_group, useNA = "ifany") #check distribution and hand
 Finaldataset<-Finaldataset%>%
   full_join(pb_grouping,by="Sampleid")
 ##logistic regression----
-datpbgroup<-Finaldataset
-explanatory=c("probiotic_group",
-              "B_SEX",
-              "BMI_5y",
-              "dairyintake_5y",
-              "breastfeeding",
-              "medu_5y",
-              "Socioeco_5y")
-dependent='EarlyPuberty' 
-
-datpbgroup%>%finalfit(dependent,explanatory,metric=TRUE)->pbgroup
-
-write.csv(pbgroup[1],"Table_probiotic_group.csv",row.names = FALSE)
-##make EarlyPuberty numeric ----
-Finaldataset$EarlyPuberty <- as.numeric(as.character(Finaldataset$EarlyPuberty))
-
-##establish analysis data ----
-dat_iv_noBMI <- Finaldataset[, c(
-  "EarlyPuberty",
-  "probioticintake",
-  "gastroenteritis",
-  "B_SEX",
-  "breastfeeding",
-  "medu_5y",
-  "Socioeco_5y",
-  "dairyintake_5y"
-)]
-
-##delete missing value ----
-dat_iv_noBMI <- subset(dat_iv_noBMI, is.finite(EarlyPuberty))
-dat_iv_noBMI <- na.omit(dat_iv_noBMI)
-
-##IV model without BMI ----
-iv_model_noBMI <- ivreg(
-  EarlyPuberty ~ 
-    probioticintake + 
-    B_SEX + 
-    breastfeeding + 
-    medu_5y + 
-    Socioeco_5y + 
-    dairyintake_5y
-  |
-    gastroenteritis + 
-    B_SEX + 
-    breastfeeding + 
-    medu_5y + 
-    Socioeco_5y + 
-    dairyintake_5y,
-  data = dat_iv_noBMI
-)
-
-sum_iv_noBMI <- summary(iv_model_noBMI, diagnostics = TRUE)
-
-capture.output(
-  sum_iv_noBMI,
-  file = "IV_Summary_Result_noBMI.txt"
-)
-#Probiotics grouping----
-pb_grouping <- exposureb45y
-
-pb_grouping$probiotic_group <- with(pb_grouping, ifelse(
-  probioticintake_6m == 0 & probioticintake_18m == 0 &
-    probioticintake_3y == 0 & probioticintake_5y == 0,
-  "Never",
-  
-  ifelse(
-    probioticintake_6m == 1 & probioticintake_18m == 1 &
-      probioticintake_3y == 1 & probioticintake_5y == 1,
-    "Always",
-    
-    ifelse(
-      (probioticintake_6m == 1 | probioticintake_18m == 1) &
-        probioticintake_3y == 0 & probioticintake_5y == 0,
-      "Early",
-      
-      ifelse(
-        probioticintake_6m == 0 & probioticintake_18m == 0 &
-          (probioticintake_3y == 1 | probioticintake_5y == 1),
-        "Late",
-        "Intermittent")))))
-
-pb_grouping$probiotic_group <- factor(
-  pb_grouping$probiotic_group,
-  levels = c("Never", 
-             "Early", 
-             "Late", 
-             "Intermittent", 
-             "Always"))  #Define factor levels: "Never" as reference for regression & logical ordering for plots
-                         #(R會預設拿levels第一個當對照組，在此設定never為第一個)
-
-table(pb_grouping$probiotic_group, useNA = "ifany") #check distribution and handle missing values
-##combine pb_grouping w finaldataset-----
-Finaldataset<-Finaldataset%>%
-  full_join(pb_grouping,by="Sampleid")
-##logistic regression----
-datpbgroup<-Finaldataset
+datpbgroup <- Finaldataset %>%
+  mutate(
+    EarlyPuberty = factor(EarlyPuberty, levels = c(0, 1),    
+                          labels = c("No", "Yes")),
+    probiotic_group = factor(probiotic_group,                
+                             levels = c("Never", "Early", "Late",
+                                        "Intermittent", "Always")))
 explanatory=c("probiotic_group",
               "B_SEX",
               "BMI_5y",
@@ -728,7 +640,6 @@ datpbgroup%>%finalfit(dependent,explanatory,metric=TRUE)->pbgroup
 
 write.csv(pbgroup,"Table_probiotic_group.csv",row.names = FALSE)
 ##probiotic grouping logistic regression (no BMI)----
-datpbgroup <- Finaldataset
 explanatory_noBMI <- c("probiotic_group",
                        "B_SEX",
                        "dairyintake_5y",
@@ -736,10 +647,8 @@ explanatory_noBMI <- c("probiotic_group",
                        "medu_5y",
                        "Socioeco_5y")
 dependent <- "EarlyPuberty" 
-
-datpbgroup %>%
+datpbgroup %>%                            
   finalfit(dependent, explanatory_noBMI, metric = TRUE) -> pbgroup_noBMI
-
 write.csv(pbgroup_noBMI,"Table_probiotic_group_noBMI.csv",row.names = FALSE)
 #Sex-stratified analysis(HR)----
 # rebuilt labeled dataset (make sure BMI.numeric exsist)
