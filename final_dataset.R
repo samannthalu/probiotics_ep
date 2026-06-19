@@ -151,3 +151,24 @@ write.csv(
   missingresult,
   "missing_pattern_result.csv",
   row.names = FALSE)
+library(dplyr)
+
+#BMI missing----
+missing_summary <- Finaldataset %>%
+  summarise(
+    Total_N          = n(),
+    Height_missing   = sum(is.na(height_5y)),
+    Weight_missing   = sum(is.na(weight_5y)),
+    Both_missing     = sum(is.na(height_5y) & is.na(weight_5y)),
+    Only_height_miss = sum(is.na(height_5y) & !is.na(weight_5y)),
+    Only_weight_miss = sum(!is.na(height_5y) & is.na(weight_5y)),
+    BMI_missing      = sum(is.na(BMI_5y)))
+
+missing_table <- data.frame(
+  Variable = names(missing_summary),
+  N        = as.numeric(missing_summary[1, ]),
+  Percent  = round(as.numeric(missing_summary[1, ]) / missing_summary$Total_N * 100, 1))
+
+print(missing_table)
+
+write.csv(missing_table, "missing_height_weight_summary.csv", row.names = FALSE)
