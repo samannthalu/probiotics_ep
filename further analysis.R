@@ -153,6 +153,7 @@ plot(cox.zph(cox_schoenfeld_ep))
 dev.off()
 
 png("Cox_PH_Check_ep_V2.png", width = 8, height = 6, units = "in", res = 400)
+par(mfrow = c(2, 4))
 plot(cox.zph(cox_schoenfeld_ep), 
      cex = 0.8,     #調整殘差點的大小
      resid = TRUE)  #確保顯示殘差點
@@ -239,6 +240,7 @@ plot(cox.zph(cox_schoenfeld_ep_noBMI))
 dev.off()
 
 png("Cox_PH_Check_ep_V2_noBMI.png", width = 8, height = 6, units = "in", res = 400)
+par(mfrow = c(2, 4))
 plot(cox.zph(cox_schoenfeld_ep_noBMI), 
      cex = 0.8,     #調整殘差點的大小
      resid = TRUE)  #確保顯示殘差點
@@ -381,13 +383,14 @@ surv_data_labeled_ap<-surv_data_clean%>%
          breastfeeding.factor = factor(breastfeeding,levels = c(0, 1),
                                        labels = c("No breastfeeding","Breastfeeding")),
          dairyintake.factor = factor(dairyintake_5y,levels = c(0,1,2,3,4,5,8,9),
-                                     labels = c("Never",
-                                                "less than 1 time a week",
+                                     labels = c("Never or less than 1 time a week",
+                                                "Never or less than 1 time a week",
                                                 "1-2 times a week",
                                                 "3 to 5 times a week",
                                                 "everyday/almost everyday",
-                                                "Unsure","Not Applicable",
-                                                "Unknown")),
+                                                "everyday/almost everyday",
+                                                "everyday/almost everyday",
+                                                "everyday/almost everyday")),
          medu.factor = factor(medu_5y,levels = c(1,2,3),
                               labels = c ("Junior High&below",
                                           "Senior High/Vocational",
@@ -440,6 +443,7 @@ plot(cox.zph(cox_schoenfeld_ap))
 dev.off()
 
 png("Cox_PH_Check_ap_V2.png", width = 8, height = 6, units = "in", res = 400)
+par(mfrow = c(2, 4))
 plot(cox.zph(cox_schoenfeld_ap), 
      cex = 0.8,     #調整殘差點的大小
      resid = TRUE)  #確保顯示殘差點
@@ -526,6 +530,7 @@ plot(cox.zph(cox_schoenfeld_ap_noBMI))
 dev.off()
 
 png("Cox_PH_Check_ap_V2_noBMI.png", width = 8, height = 6, units = "in", res = 400)
+par(mfrow = c(2, 4))
 plot(cox.zph(cox_schoenfeld_ap_noBMI), 
      cex = 0.8,     #調整殘差點的大小
      resid = TRUE)  #確保顯示殘差點
