@@ -31,7 +31,8 @@ sixmdata_fixed<-sixmdata%>%
          CVR8,CVR9,CVR10,E5a_2,E5b2_2,E5a_3,E5b3_1)
 
 sixmdata_fixed<-sixmdata_fixed%>%
-  rename(probioticintake_6m=C4a4,
+  rename(Sex=B_SEX,
+         probioticintake_6m=C4a4,
          breastfeedingmonths_6m=C2aM,
          breastfeedingdays_6m=C2ad,
          medu_6m=Medu,
