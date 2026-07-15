@@ -43,10 +43,10 @@ sixmdata_fixed<-sixmdata_fixed%>%
          doc_gastro_6m=E5a_2,
          gastroenteritis_6m=E5b2_2,
          doc_AD_6m=E5a_3,
-         AD_6m=E5b3_1)
+         self_AD_6m=E5b3_1)
 ##18month----
 eighteenmdata_fixed<-eighteenmdata%>%
-  select(Sampleid,D4a4,D2b,Medu,F10,E3a_2,E3b2_2,E3a_3,E3b3_2)
+  select(Sampleid,D4a4,D2b,Medu,F10,E3a_2,E3b2_2,E3a_3,E3b3_1)
 
 eighteenmdata_fixed<-eighteenmdata_fixed%>%
   rename(probioticintake_18m=D4a4,
@@ -56,7 +56,7 @@ eighteenmdata_fixed<-eighteenmdata_fixed%>%
          doc_gastro_18m=E3a_2,
          gastroenteritis_18m=E3b2_2,
          doc_AD_18m=E3a_3,
-         AD_18m=E3b3_2)
+         self_AD_18m=E3b3_1)
 ##3yeard-old----
 threeydata_fixed<-threeydata%>%
   select(Sampleid,D6a4,Medu,F14,E3a2,E3b2_2,E4c_6)
@@ -87,3 +87,15 @@ TBCSstimu<-sixmdata_fixed%>%
   full_join(eighteenmdata_fixed, by="Sampleid")%>%
   full_join(threeydata_fixed, by="Sampleid")%>%
   full_join(fiveydata_fixed, by="Sampleid")
+##AD variables----
+TBCSstimu <- TBCSstimu %>%
+  mutate(AD_6m  = if_else(doc_AD_6m  == 1 & self_AD_6m  == 1, 1, 0, missing = 0),
+         AD_18m = if_else(doc_AD_18m == 1 & self_AD_18m == 1, 1, 0, missing = 0),
+         AD_3y  = if_else(doc_AD_3y == 1, 1, 0, missing = 0),
+         AD_5y  = if_else(doc_AD_5y == 1, 1, 0, missing = 0)) # 6m、18m:醫師診斷=1 且 屬異位性皮膚炎=1 才算1,其餘(0/8/9/NA)皆為0
+##Gastroenteritis variables----
+TBCSstimu <- TBCSstimu %>%
+  mutate(Gastro_6m  = if_else(doc_gastro_6m          == 1 & gastroenteritis_6m  == 1, 1, 0, missing = 0),
+         Gastro_18m = if_else(doc_gastro_18m         == 1 & gastroenteritis_18m == 1, 1, 0, missing = 0),
+         Gastro_3y  = if_else(physician_diagnosis_3y == 1 & gastroenteritis_3y  == 1, 1, 0, missing = 0),
+         Gastro_5y  = if_else(physician_diagnosis_5y == 1 & gastroenteritis_5y  == 1, 1, 0, missing = 0))   # 醫師診斷腸胃疾病=1 且 類型為腸胃炎=1 才算1,其餘(0/8/9/NA)皆為0
