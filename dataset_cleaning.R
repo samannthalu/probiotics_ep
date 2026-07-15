@@ -3,7 +3,7 @@ source("organize_variables.R")
 ##sex----
 TBCSstimu$Sex<-as.factor(TBCSstimu$Sex)
 ##probiotic intake----
-TBCSstimu$pribioticintake_6m<-as.factor(TBCSstimu$probioticintake_6m)
+TBCSstimu$probioticintake_6m<-as.factor(TBCSstimu$probioticintake_6m)
 TBCSstimu$probioticintake_18m<-as.factor(TBCSstimu$probioticintake_18m)
 TBCSstimu$probioticintake_3y<-as.factor(TBCSstimu$probioticintake_3y)
 TBCSstimu$probioticintake_5y<-as.factor(TBCSstimu$probioticintake_5y)
@@ -11,7 +11,7 @@ TBCSstimu$probioticintake_5y<-as.factor(TBCSstimu$probioticintake_5y)
 ##mother education----
 TBCSstimu$medu_6m<-as.factor(TBCSstimu$medu_6m)
 TBCSstimu$medu_18m<-as.factor(TBCSstimu$medu_18m)
-TBCSstimu$medu_3y<-as.factor(TBCSstimu$medu_3y))
+TBCSstimu$medu_3y<-as.factor(TBCSstimu$medu_3y)
 TBCSstimu$medu_5y<-as.factor(TBCSstimu$medu_5y)
 
 ##socioeconomic Status----
@@ -29,12 +29,16 @@ TBCSstimu$dairyintake_18m<-as.factor(TBCSstimu$dairyintake_18m)
 TBCSstimu$dairyintake_5y<-as.factor(TBCSstimu$dairyintake_5y)
 
 ##gastroentertitis----
-TBCSstimu$gastroenteritis_6m<-as.factor(TBCSstimu$gastroenteritis_6m)
-TBCSstimu$gastroenteritis_18m<-as.factor(TBCSstimu$gastroenteritis_18m)
-TBCSstimu$gastroenteritis_3y<-as.factor(TBCSstimu$gastroenteritis_3y)
-TBCSstimu$gastroenteritis_5y-as.factor(TBCSstimu$gastroenteritis_5y)
-##atopic dermatitis
+TBCSstimu$Gastro_6m<-as.factor(TBCSstimu$Gastro_6m)
+TBCSstimu$Gastro_18m<-as.factor(TBCSstimu$Gastro_18m)
+TBCSstimu$Gastro_3y<-as.factor(TBCSstimu$Gastro_3y)
+TBCSstimu$Gastro_5y<-as.factor(TBCSstimu$Gastro_5y)
 
+##atopic dermatitis
+TBCSstimu$AD_6m<-as.factor(TBCSstimu$AD_6m)
+TBCSstimu$AD_18m<-as.factor(TBCSstimu$AD_18m)
+TBCSstimu$AD_3y<-as.factor(TBCSstimu$AD_3y)
+TBCSstimu$AD_5y<-as.factor(TBCSstimu$AD_5y)
 #Probioticintake (exposure)----
 ##exposure combine----
 exposureb45y<-TBCSstimu%>%
