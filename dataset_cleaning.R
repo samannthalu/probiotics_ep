@@ -40,6 +40,11 @@ TBCSstimu$AD_18m<-as.factor(TBCSstimu$AD_18m)
 TBCSstimu$AD_3y<-as.factor(TBCSstimu$AD_3y)
 TBCSstimu$AD_5y<-as.factor(TBCSstimu$AD_5y)
 #Probioticintake (exposure)----
+##5y probiotic data availability (for exclusion step)----
+prob5y_available <- TBCSstimu %>%
+  transmute(Sampleid,
+            probiotic5y_available = as.integer(
+              as.character(probioticintake_5y) %in% c("0", "1")))   # 8/9/NA 皆視為無資料
 ##exposure combine----
 exposureb45y<-TBCSstimu%>%
   select(Sampleid,
@@ -119,27 +124,72 @@ NHIRD_OPD <- NHIRD_OPD %>%
 NHIRD_IPD <- NHIRD_IPD %>%
   mutate(OtitisMedia_IPD = if_else(
     if_any(c(ICD9CM_1, ICD9CM_2, ICD9CM_3, ICD9CM_4, ICD9CM_5), ~ .x %in% otitis_codes), 1, 0))
+#Case definitions: loose (>=1 OPD or >=1 IPD) & strict (>=3 OPD or >=1 IPD)
+##Early puberty----
+ep_opd <- NHIRD_OPD %>% filter(EarlyPuberty_OPD == 1) %>% distinct(Sampleid, FUNC_DATE)
+ep_ipd <- NHIRD_IPD %>% filter(EarlyPuberty_IPD == 1) %>% distinct(Sampleid, IN_DATE)
+ep_outcome <- full_join(count(ep_opd, Sampleid, name = "opd_n"),
+                        count(ep_ipd, Sampleid, name = "ipd_n"), by = "Sampleid") %>%
+  mutate(across(c(opd_n, ipd_n), ~ replace_na(., 0L))) %>%
+  left_join(bind_rows(rename(ep_opd, date = FUNC_DATE), rename(ep_ipd, date = IN_DATE)) %>%
+              group_by(Sampleid) %>% summarise(EarlyPuberty_date = min(date), .groups = "drop"),
+            by = "Sampleid") %>%
+  mutate(EarlyPuberty_loose  = as.integer(opd_n >= 1 | ipd_n >= 1),
+         EarlyPuberty_strict = as.integer(opd_n >= 3 | ipd_n >= 1)) %>%
+  select(Sampleid, EarlyPuberty_loose, EarlyPuberty_strict, EarlyPuberty_date)
 
+##Appendicitis----
+ap_opd <- NHIRD_OPD %>% filter(Appendicitis_OPD == 1) %>% distinct(Sampleid, FUNC_DATE)
+ap_ipd <- NHIRD_IPD %>% filter(Appendicitis_IPD == 1) %>% distinct(Sampleid, IN_DATE)
+ap_outcome <- full_join(count(ap_opd, Sampleid, name = "opd_n"),
+                        count(ap_ipd, Sampleid, name = "ipd_n"), by = "Sampleid") %>%
+  mutate(across(c(opd_n, ipd_n), ~ replace_na(., 0L))) %>%
+  left_join(bind_rows(rename(ap_opd, date = FUNC_DATE), rename(ap_ipd, date = IN_DATE)) %>%
+              group_by(Sampleid) %>% summarise(Appendicitis_date = min(date), .groups = "drop"),
+            by = "Sampleid") %>%
+  mutate(Appendicitis_loose  = as.integer(opd_n >= 1 | ipd_n >= 1),
+         Appendicitis_strict = as.integer(opd_n >= 3 | ipd_n >= 1)) %>%
+  select(Sampleid, Appendicitis_loose, Appendicitis_strict, Appendicitis_date)
+
+##Otitis media----
+om_opd <- NHIRD_OPD %>% filter(OtitisMedia_OPD == 1) %>% distinct(Sampleid, FUNC_DATE)
+om_ipd <- NHIRD_IPD %>% filter(OtitisMedia_IPD == 1) %>% distinct(Sampleid, IN_DATE)
+om_outcome <- full_join(count(om_opd, Sampleid, name = "opd_n"),
+                        count(om_ipd, Sampleid, name = "ipd_n"), by = "Sampleid") %>%
+  mutate(across(c(opd_n, ipd_n), ~ replace_na(., 0L))) %>%
+  left_join(bind_rows(rename(om_opd, date = FUNC_DATE), rename(om_ipd, date = IN_DATE)) %>%
+              group_by(Sampleid) %>% summarise(OtitisMedia_date = min(date), .groups = "drop"),
+            by = "Sampleid") %>%
+  mutate(OtitisMedia_loose  = as.integer(opd_n >= 1 | ipd_n >= 1),
+         OtitisMedia_strict = as.integer(opd_n >= 3 | ipd_n >= 1)) %>%
+  select(Sampleid, OtitisMedia_loose, OtitisMedia_strict, OtitisMedia_date)
 ##Gastroenteritis(sensitivity analysis)----
 gastro_all<-TBCSstimu%>%
   select(Sampleid,
          gastroenteritis_6m,
          gastroenteritis_18m,
          gastroenteritis_3y,
-         gastroenteritis_5y,)
-##change variables to numeric----
+         gastroenteritis_5y)
 gastro_all$gastroenteritis_6m<-as.numeric(as.character(gastro_all$gastroenteritis_6m))
 gastro_all$gastroenteritis_18m<-as.numeric(as.character(gastro_all$gastroenteritis_18m))
 gastro_all$gastroenteritis_3y<-as.numeric(as.character(gastro_all$gastroenteritis_3y))
 gastro_all$gastroenteritis_5y<-as.numeric(as.character(gastro_all$gastroenteritis_5y))
-##add up gastro score----
 gastro_all<-gastro_all%>%
   mutate(total=rowSums(across(c(
     gastroenteritis_6m,
     gastroenteritis_18m,
     gastroenteritis_3y,
-    gastroenteritis_5y,)),na.rm=TRUE))
-##gastro/no gastro----
-gastro_all<-gastro_all%>%
+    gastroenteritis_5y)),na.rm=TRUE))%>%
   mutate(gastroenteritis=case_when(total==0~0,
                                    total>0~1))
+#Atopic dermatitis (IV instrument)----
+AD_all<-TBCSstimu%>%
+  select(Sampleid, AD_6m, AD_18m, AD_3y, AD_5y)
+AD_all$AD_6m <-as.numeric(as.character(AD_all$AD_6m))
+AD_all$AD_18m<-as.numeric(as.character(AD_all$AD_18m))
+AD_all$AD_3y <-as.numeric(as.character(AD_all$AD_3y))
+AD_all$AD_5y <-as.numeric(as.character(AD_all$AD_5y))
+AD_all<-AD_all%>%
+  mutate(AD_total=rowSums(across(c(AD_6m, AD_18m, AD_3y, AD_5y)),na.rm=TRUE))%>%
+  mutate(AD=case_when(AD_total==0~0,
+                      AD_total>0~1))
