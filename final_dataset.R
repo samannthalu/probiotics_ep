@@ -14,7 +14,6 @@ TBCSstimu5y<-TBCSstimu%>%
          breastfeedingdays_6m,
          breastfeedingmonths_6m,
          dairyintake_5y,
-         fedu_5y,
          medu_5y,
          Socioeco_5y,
          y5_year,
@@ -109,7 +108,6 @@ Finaldataset<-TBCSstimu5y%>%
          weight_5y,
          dairyintake_5y,
          breastfeeding,
-         fedu_5y,
          medu_5y,
          Socioeco_5y,
          start_date)%>%
