@@ -58,8 +58,8 @@ exposureb45y<-TBCSstimu%>%
         probioticintake_5y,)),na.rm=TRUE))%>%
 
 ##everuser/neveruser----
-  mutate(probioticintake=case_when(total==0~0,
-                                   total>0~1))%>%
+  mutate(probioticintake=case_when(probiotic_score==0~0,
+                                   probiotic_score>0~1))%>%
 ##probiotic grouping----
 mutate(probiotic_group = case_when(
   probioticintake_6m == 0 & probioticintake_18m == 0 &
