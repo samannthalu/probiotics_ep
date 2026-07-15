@@ -1,7 +1,7 @@
 source("organize_variables.R")
 #Fix misclassification----
 ##sex----
-TBCSstimu$Sex<-as.factor(TBCSstimu$Sex)
+TBCSstimu$B_SEX<-as.factor(TBCSstimu$B_SEX)
 ##probiotic intake----
 TBCSstimu$probioticintake_6m<-as.factor(TBCSstimu$probioticintake_6m)
 TBCSstimu$probioticintake_18m<-as.factor(TBCSstimu$probioticintake_18m)
@@ -83,7 +83,7 @@ NHIRD_IPD<-NHIRD_IPD%>%
   mutate(EarlyPuberty_IPD=if_else(
     if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3,ICD9CM_4,ICD9CM_5),
            ~ .x %in% c("E301","2591")),1,0))
-#Appendicitis (sensitivity analysis)----
+##Appendicitis (sensitivity analysis)----
 NHIRD_OPD<-NHIRD_OPD%>%
   mutate(Appendicitis_OPD=if_else(
     if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3),
@@ -94,7 +94,7 @@ NHIRD_IPD<-NHIRD_IPD%>%
     if_any(c(ICD9CM_1,ICD9CM_2,ICD9CM_3,ICD9CM_4,ICD9CM_5),
            ~ .x %in% c("K352","K353","K3580","K3589","K37","K36",
                        "5400","5401","5409","541","542")),1,0))
-#Otitis media (negative control)----
+##Otitis media (negative control)----
 otitis_codes <- c(
   # ICD-9 (381.0x–381.4、382.00/382.01/382.1–382.9,exclude 382.02)
   "38100","38101","38102","38103","38104","38105","38106",
@@ -119,7 +119,8 @@ NHIRD_OPD <- NHIRD_OPD %>%
 NHIRD_IPD <- NHIRD_IPD %>%
   mutate(OtitisMedia_IPD = if_else(
     if_any(c(ICD9CM_1, ICD9CM_2, ICD9CM_3, ICD9CM_4, ICD9CM_5), ~ .x %in% otitis_codes), 1, 0))
-#Gastroenteritis(sensitivity analysis)----
+
+##Gastroenteritis(sensitivity analysis)----
 gastro_all<-TBCSstimu%>%
   select(Sampleid,
          gastroenteritis_6m,
