@@ -47,35 +47,33 @@ exposureb45y<-TBCSstimu%>%
          probioticintake_18m,
          probioticintake_3y,
          probioticintake_5y,)%>%
-  mutate(
-    across(
-      -Sampleid,function(x){x<- as.numeric(as.character(x))
-      ifelse(x==1,1,0)})) #replace 8,9 and other number with 0
+  mutate(across(-Sampleid,
+                ~ if_else(as.numeric(as.character(.)) == 1, 1, 0, missing = 0))) %>% #replace 8,9 and other number with 0
 
-##change N/A into zero----
-exposureb45y_clean<-exposureb45y
-  exposureb45y_clean$probioticintake_6m[is.na(exposureb45y_clean$probioticintake_6m)]<-0
-  exposureb45y_clean$probioticintake_18m[is.na(exposureb45y_clean$probioticintake_18m)]<-0
-  exposureb45y_clean$probioticintake_3y[is.na(exposureb45y_clean$probioticintake_3y)]<-0
-  exposureb45y_clean$probioticintake_5y[is.na(exposureb45y_clean$probioticintake_5y)]<-0
-
-##change variables to numeric----
-exposureb45y_clean$probioticintake_6m<-as.numeric(as.character(exposureb45y_clean$probioticintake_6m))
-exposureb45y_clean$probioticintake_18m<-as.numeric(as.character(exposureb45y_clean$probioticintake_18m))
-exposureb45y_clean$probioticintake_3y<-as.numeric(as.character(exposureb45y_clean$probioticintake_3y))
-exposureb45y_clean$probioticintake_5y<-as.numeric(as.character(exposureb45y_clean$probioticintake_5y))
 ##add up exposure score----
-exposureb45y_clean<-exposureb45y_clean%>%
-  mutate(total=rowSums(across(c(
+  mutate(probiotic_score=rowSums(across(c(
         probioticintake_6m,
         probioticintake_18m,
         probioticintake_3y,
-        probioticintake_5y,)),na.rm=TRUE))
+        probioticintake_5y,)),na.rm=TRUE))%>%
 
 ##everuser/neveruser----
-exposureb45y_clean<-exposureb45y_clean%>%
   mutate(probioticintake=case_when(total==0~0,
-                                   total>0~1))
+                                   total>0~1))%>%
+##probiotic grouping----
+mutate(probiotic_group = case_when(
+  probioticintake_6m == 0 & probioticintake_18m == 0 &
+    probioticintake_3y == 0 & probioticintake_5y == 0            ~ "Never",
+  probioticintake_6m == 1 & probioticintake_18m == 1 &
+    probioticintake_3y == 1 & probioticintake_5y == 1            ~ "Always",
+  (probioticintake_6m == 1 | probioticintake_18m == 1) &
+    probioticintake_3y == 0 & probioticintake_5y == 0           ~ "Early",
+  probioticintake_6m == 0 & probioticintake_18m == 0 &
+    (probioticintake_3y == 1 | probioticintake_5y == 1)         ~ "Late",
+  TRUE                                                           ~ "Intermittent"
+),
+probiotic_group = factor(probiotic_group,
+                         levels = c("Never", "Early", "Late", "Intermittent", "Always")))
 #Early Puberty (outcome)----
 NHIRD_OPD<-NHIRD_OPD%>%
   mutate(EarlyPuberty_OPD=if_else(
