@@ -22,6 +22,7 @@ sixmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_6m_
 eighteenmdata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_18m_simulated.csv")
 threeydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_3y_simulated.csv")
 fiveydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_5y_simulated.csv")
+eightydata<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_stimulated_V2/TBCS_8y_simulated.csv")
 NHIRD_IPD<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_NHIRD_stimulated/NHIRD_IPD_simulated.csv")
 NHIRD_OPD<-read_csv("/Users/samanthalu/Desktop/thesis/TBCS_NHIRD_stimulated/NHIRD_OPD_simulated.csv")
 #select and rename variables----
@@ -70,7 +71,7 @@ threeydata_fixed<-threeydata_fixed%>%
          doc_AD_3y=E4c_6)
 ##5year-old----
 fiveydata_fixed<-fiveydata%>%
-  select(Sampleid,D5ad,A2_2L,A2_2W,D4_8,MEDU_5Y,G13,E4a2,E4b2_b,E5c_4)
+  select(Sampleid,D5ad,A2_2L,A2_2W,D4_8,MEDU_5Y,G13,E4a2,E4b2_b,E5c_4,C_Y_5Y,C_M_5Y,C_D_5Y)
 
 fiveydata_fixed<-fiveydata_fixed%>%
   rename(probioticintake_5y=D5ad,
@@ -81,12 +82,23 @@ fiveydata_fixed<-fiveydata_fixed%>%
          Socioeco_5y=G13,
          physician_diagnosis_5y=E4a2,
          gastroenteritis_5y=E4b2_b,
-         doc_AD_5y=E5c_4)
+         doc_AD_5y=E5c_4,
+         y5_year=C_Y_5Y,
+         y5_month=C_M_5Y,
+         y5_day=C_D_5Y)
+##8 years old----
+eightydata_fixed<-eightydata%>%
+  select(Sampleid,C_Y_8Y,C_M_8Y,C_D_8Y)
+eightydata_fixed<-eightydata_fixed%>%
+  rename(y8_year=C_Y_8Y,
+         y8_month=C_M_8Y,
+         y8_day=C_D_8Y)
 #join data----
 TBCSstimu<-sixmdata_fixed%>%
   full_join(eighteenmdata_fixed, by="Sampleid")%>%
   full_join(threeydata_fixed, by="Sampleid")%>%
-  full_join(fiveydata_fixed, by="Sampleid")
+  full_join(fiveydata_fixed, by="Sampleid")%>%
+  full_join(eightydata_fixed, by="Sampleid")
 ##AD variables----
 TBCSstimu <- TBCSstimu %>%
   mutate(AD_6m  = if_else(doc_AD_6m  == 1 & self_AD_6m  == 1, 1, 0, missing = 0),
