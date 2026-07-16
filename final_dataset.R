@@ -1,10 +1,19 @@
 #Select column from different dataset----
 ##exposure selection----
-exposure<-exposureb45y_clean%>%
-  select(Sampleid,probioticintake)
+exposure<-exposureb45y%>%
+  select(Sampleid,
+         probioticintake,
+         probiotic_score,
+         probiotic_group)
 ##gastroenteritis selection----
 gastro<-gastro_all%>%
   select(Sampleid,gastroenteritis)
+##AD selection----
+AD<-AD_all%>%
+  select(Sampleid,AD)
+##5y proboiitc available (exclusion)----
+prob5y<-prob5y_available
+
 ##covariate selection----
 TBCSstimu5y<-TBCSstimu%>%
   select(Sampleid,
@@ -18,7 +27,10 @@ TBCSstimu5y<-TBCSstimu%>%
          Socioeco_5y,
          y5_year,
          y5_month,
-         y5_day)
+         y5_day,
+         y8_year,
+         y8_month,
+         y8_day)
 ###breastfeeding duration calculate---
 TBCSstimu5y<-TBCSstimu5y%>%    
   mutate(breastfeeding=if_else((breastfeedingmonths_6m>1&breastfeedingmonths_6m<99)|
@@ -26,9 +38,13 @@ TBCSstimu5y<-TBCSstimu5y%>%
 ###BMI calculate----
 TBCSstimu5y<-TBCSstimu5y%>%
   mutate(BMI_5y=weight_5y/(height_5y/100)^2)
-###start date count----
+###Cox analysis date calculate----
+###date calculate----
 TBCSstimu5y<-TBCSstimu5y%>%
-  mutate(start_date=make_date(y5_year, y5_month, y5_day))
+  mutate(start_date     = make_date(y5_year + 1911, y5_month, y5_day),   # 民國+1911
+         survey_date_8y = make_date(y8_year + 1911, y8_month, y8_day),   # 民國+1911
+         cutoff_date    = case_when(B_SEX=="1" ~ start_date + years(4),  # 男:9歲
+                                    B_SEX=="2" ~ start_date + years(3))) # 女:8歲
 #Outcome selection----
 IPD_outcome<-NHIRD_IPD%>%
   select(Sampleid,IN_DATE,EarlyPuberty_IPD)
