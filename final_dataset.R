@@ -41,80 +41,11 @@ TBCSstimu5y<-TBCSstimu5y%>%
 ###Cox analysis date calculate----
 ###date calculate----
 TBCSstimu5y<-TBCSstimu5y%>%
-  mutate(start_date     = make_date(y5_year + 1911, y5_month, y5_day),   # 民國+1911
-         survey_date_8y = make_date(y8_year + 1911, y8_month, y8_day),   # 民國+1911
-         cutoff_date    = case_when(B_SEX=="1" ~ start_date + years(4),  # 男:9歲
-                                    B_SEX=="2" ~ start_date + years(3))) # 女:8歲
-#Outcome selection----
-IPD_outcome<-NHIRD_IPD%>%
-  select(Sampleid,IN_DATE,EarlyPuberty_IPD)
-OPD_outcome<-NHIRD_OPD%>%
-  select(Sampleid,FUNC_DATE,EarlyPuberty_OPD)
-##combine NHIRD OPD/IPD outcome----
-IPD_outcome_rename<-IPD_outcome%>%
-  rename(EarlyPuberty_FUNC_DATE=IN_DATE,
-         EarlyPuberty=EarlyPuberty_IPD)
-OPD_outcome_rename<-OPD_outcome%>%
-  rename(EarlyPuberty=EarlyPuberty_OPD,
-         EarlyPuberty_FUNC_DATE=FUNC_DATE)
-EarlyPuberty_combine<-rbind(IPD_outcome_rename,OPD_outcome_rename)
-###find case IDs----
-caseID<-EarlyPuberty_combine%>%
-  filter(EarlyPuberty==1)%>%
-  pull(Sampleid)%>%
-  unique()
-###deal with case(EarlyPuberty=1)----
-cases<-EarlyPuberty_combine%>% 
-  filter(Sampleid %in% caseID)%>%
-  filter(EarlyPuberty==1)%>% #find out people who had early puberty
-  group_by(Sampleid)%>%
-  slice_min(`EarlyPuberty_FUNC_DATE`,n=1)%>% #use their earliest record
-  ungroup()%>%
-  unique()
-###deal with controls(EarlyPuberty=0)
-controls<-EarlyPuberty_combine%>%
-  filter(!Sampleid %in% caseID)%>% 
-  group_by(Sampleid)%>%
-  slice_max(`EarlyPuberty_FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
-  ungroup()%>%
-  unique()
-###combine----
-outcome_combine_ep<-rbind(cases,controls)
-#Outcome selection(appendicitis)----
-IPD_outcome_ap<-NHIRD_IPD%>%
-  select(Sampleid,IN_DATE,Appendicitis_IPD)
-OPD_outcome_ap<-NHIRD_OPD%>%
-  select(Sampleid,FUNC_DATE,Appendicitis_OPD)
-##combine NHIRD OPD/IPD outcome(appendicitis)----
-IPD_outcome_rename_ap<-IPD_outcome_ap%>%
-  rename(Appendicitis_FUNC_DATE=IN_DATE,
-         Appendicitis=Appendicitis_IPD)
-OPD_outcome_rename_ap<-OPD_outcome_ap%>%
-  rename(Appendicitis_FUNC_DATE=FUNC_DATE,
-         Appendicitis=Appendicitis_OPD)
-Appendicitis_combine<-rbind(IPD_outcome_rename_ap,OPD_outcome_rename_ap)
-###find case IDs(appendicitis)----
-caseID_ap<-Appendicitis_combine%>%
-  filter(Appendicitis==1)%>%
-  pull(Sampleid)%>%
-  unique()
-###deal with case(Appendicitis=1)----
-cases_ap<-Appendicitis_combine%>% 
-  filter(Sampleid %in% caseID_ap)%>%
-  filter(Appendicitis==1)%>% #find out people who had early puberty
-  group_by(Sampleid)%>%
-  slice_min(`Appendicitis_FUNC_DATE`,n=1)%>% #use their earliest record
-  ungroup()%>%
-  unique()
-###deal with controls(Appendicitis=0)
-controls_ap<-Appendicitis_combine%>%
-  filter(!Sampleid %in% caseID_ap)%>% 
-  group_by(Sampleid)%>%
-  slice_max(`Appendicitis_FUNC_DATE`,n=1)%>% #people who doesn't have early puberty use their last record
-  ungroup()%>%
-  unique()
-###combine(appencitis)----
-outcome_combine_ap<-rbind(cases_ap,controls_ap)
+  mutate(start_date     = make_date(y5_year , y5_month, y5_day),   
+         survey_date_8y = make_date(y8_year , y8_month, y8_day),   
+         cutoff_date    = case_when(B_SEX=="1" ~ start_date + years(4),  
+                                    B_SEX=="2" ~ start_date + years(3)))
+
 #Combine Final dataset----
 Finaldataset<-TBCSstimu5y%>%
   select(Sampleid,
@@ -126,11 +57,17 @@ Finaldataset<-TBCSstimu5y%>%
          breastfeeding,
          medu_5y,
          Socioeco_5y,
-         start_date)%>%
-  full_join(exposure,by="Sampleid")%>%
-  full_join(gastro,by="Sampleid")%>%
-  full_join(outcome_combine_ep,by="Sampleid")%>%
-  full_join(outcome_combine_ap,by="Sampleid")
+         start_date,
+         survey_date_8y,
+         cutoff_date)%>%
+  left_join(exposure,by="Sampleid")%>%
+  left_join(gastro,by="Sampleid")%>%
+  left_join(AD,by="Sampleid")%>%
+  left_join(prob5y,by="Sampleid")%>%
+  left_join(ep_outcome,by="Sampleid")%>% 
+  left_join(ap_outcome,by="Sampleid")%>%
+  left_join(om_outcome,by="Sampleid")%>%
+  
 ##filter prople didn't follow at wave 5y and had early puberty before age 5----
 Finaldataset<-Finaldataset%>%
   filter(!is.na(start_date))%>%
