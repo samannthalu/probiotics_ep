@@ -67,11 +67,43 @@ Finaldataset<-TBCSstimu5y%>%
   left_join(ep_outcome,by="Sampleid")%>% 
   left_join(ap_outcome,by="Sampleid")%>%
   left_join(om_outcome,by="Sampleid")%>%
-  
-##filter prople didn't follow at wave 5y and had early puberty before age 5----
-Finaldataset<-Finaldataset%>%
-  filter(!is.na(start_date))%>%
-  filter(!(EarlyPuberty == 1 & EarlyPuberty_FUNC_DATE < start_date))
+  mutate(across(c(EarlyPuberty_loose,EarlyPuberty_strict, # 沒配到NHIRD=沒事件=0
+                  Appendicitis_loose,Appendicitis_strict,
+                  OtitisMedia_loose, OtitisMedia_strict),
+                ~ replace_na(.,0L)))
+#Exclusion flow----
+n_linked <- nrow(Finaldataset)
+
+##共用前兩步:排除 無5歲追蹤 / 益生菌無資料----
+base <- Finaldataset %>% filter(!is.na(start_date) & probiotic5y_available == 1)
+n_base <- nrow(base)
+
+##LOOSE 版:排除 5歲前性早熟(loose)----
+analytic_loose <- base %>%
+  filter(!(EarlyPuberty_loose == 1 & EarlyPuberty_date < start_date))
+n_loose <- nrow(analytic_loose)
+
+##STRICT 版:排除 5歲前性早熟(strict)----
+analytic_strict <- base %>%
+  filter(!(EarlyPuberty_strict == 1 & EarlyPuberty_date < start_date))
+n_strict <- nrow(analytic_strict)
+
+##flowchart(loose)----
+exclusion_flow_loose <- tibble::tibble(
+  step        = c("成功連結健保","排除:無5歲追蹤/益生菌無資料","排除:5歲前性早熟 loose(最終)"),
+  n_remaining = c(n_linked, n_base, n_loose),
+  n_excluded  = c(NA, n_linked - n_base, n_base - n_loose))
+
+##flowchart(strict)----
+exclusion_flow_strict <- tibble::tibble(
+  step        = c("成功連結健保","排除:無5歲追蹤/益生菌無資料","排除:5歲前性早熟 strict(最終)"),
+  n_remaining = c(n_linked, n_base, n_strict),
+  n_excluded  = c(NA, n_linked - n_base, n_base - n_strict))
+
+print(exclusion_flow_loose)
+print(exclusion_flow_strict)
+write.csv(exclusion_flow_loose,  "exclusion_flow_loose.csv",  row.names = FALSE)
+write.csv(exclusion_flow_strict, "exclusion_flow_strict.csv", row.names = FALSE)
 
 ##change factor----
 Finaldataset$probioticintake<-factor(Finaldataset$probioticintake)
@@ -80,17 +112,17 @@ Finaldataset$Appendicitis<-factor(Finaldataset$Appendicitis)
 
 ##missing pattern----
 missing_result<-Finaldataset%>%
-  missing_pattern(dependent="EarlyPuberty",
+  missing_pattern(dependent="EarlyPuberty_strict",
                   explanatory=c("B_SEX",
                                 "BMI_5y",
                                 "height_5y",
                                 "weight_5y",
                                 "dairyintake_5y",
-                                "breastdeeding",
+                                "breastfeeding",
                                 "medu_5y",
                                 "Socioeco_5y",
                                 "probioticintake",
-                                "gastroeneteritis",
+                                "gastroenteritis",
                                 "Appendicitis"))
 
 missingresult<-as.data.frame(missing_result)
