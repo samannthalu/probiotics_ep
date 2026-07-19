@@ -3,7 +3,7 @@ source("final_dataset.R")
 cov_A2 <- c("B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y")
 cov_A4 <- c("B_SEX","medu_5y","Socioeco_5y") #(no BMI:A2 adjusted all(AA)、adjusted 4(A4)
 
-#logistic regression----
+#Logistic regression----
 ##loose AA----
 dat <- analytic_loose %>%
   mutate(EarlyPuberty = factor(EarlyPuberty_loose, levels=c(0,1), labels=c("No","Yes")))
@@ -149,3 +149,55 @@ count_table$Percent <- round(count_table$N_yes / count_table$Total * 100, 1)
 
 print(count_table)
 write.csv(count_table, "NCO_IV_counts.csv", row.names = FALSE)
+#VIF----
+## A1 (AA + BMI)----
+cox_A1_loose <- coxph(Surv(ep_followup_time, ep_event) ~ probioticintake + B_SEX +
+                        dairyintake_5y + breastfeeding + medu_5y + Socioeco_5y + BMI_5y,
+                      data = analytic_loose)
+v <- as.data.frame(car::vif(cox_A1_loose)); v$term <- rownames(v)
+write.csv(v, "VIF_ep_loose_A1.csv", row.names = FALSE)
+
+cox_A1_strict <- coxph(Surv(ep_followup_time, ep_event) ~ probioticintake + B_SEX +
+                         dairyintake_5y + breastfeeding + medu_5y + Socioeco_5y + BMI_5y,
+                       data = analytic_strict)
+v <- as.data.frame(car::vif(cox_A1_strict)); v$term <- rownames(v)
+write.csv(v, "VIF_ep_strict_A1.csv", row.names = FALSE)
+
+## A2 (AA − BMI)----
+cox_A2_loose <- coxph(Surv(ep_followup_time, ep_event) ~ probioticintake + B_SEX +
+                        dairyintake_5y + breastfeeding + medu_5y + Socioeco_5y,
+                      data = analytic_loose)
+v <- as.data.frame(car::vif(cox_A2_loose)); v$term <- rownames(v)
+write.csv(v, "VIF_ep_loose_AA.csv", row.names = FALSE)
+
+cox_A2_strict <- coxph(Surv(ep_followup_time, ep_event) ~ probioticintake + B_SEX +
+                         dairyintake_5y + breastfeeding + medu_5y + Socioeco_5y,
+                       data = analytic_strict)
+v <- as.data.frame(car::vif(cox_A2_strict)); v$term <- rownames(v)
+write.csv(v, "VIF_ep_strict_AA.csv", row.names = FALSE)
+#Stepwise----
+run_mystep <- function(dat, include_BMI = TRUE, tag){
+  vars <- c("probioticintake","B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y")
+  if (include_BMI) vars <- c(vars, "BMI_5y")
+  
+  d0 <- dat %>% select(ep_followup_time, ep_event, all_of(vars)) %>% na.omit()
+  f  <- as.formula(paste("~", paste(vars, collapse = " + ")))
+  mm <- model.matrix(f, data = d0)[, -1, drop = FALSE]
+  colnames(mm) <- make.names(colnames(mm))
+  d  <- data.frame(ep_followup_time = d0$ep_followup_time,
+                   ep_event         = d0$ep_event, mm, check.names = FALSE)
+  in_var <- grep("^probioticintake", colnames(mm), value = TRUE)
+  cand   <- setdiff(colnames(mm), in_var)
+  
+  #save to txt
+  proc <- capture.output(
+    My.stepwise.coxph(Time = "ep_followup_time", Status = "ep_event",
+                      variable.list = cand, in.variable = in_var,
+                      data = d, sle = 0.05, sls = 0.05))
+  writeLines(proc, paste0("Stepwise_ep_", tag, ".txt"))
+}
+
+run_mystep(analytic_loose,  include_BMI = TRUE,  "loose_A1")
+run_mystep(analytic_strict, include_BMI = TRUE,  "strict_A1")
+run_mystep(analytic_loose,  include_BMI = FALSE, "loose_A2")
+run_mystep(analytic_strict, include_BMI = FALSE, "strict_A2")
