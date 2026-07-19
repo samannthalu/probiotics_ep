@@ -1,8 +1,8 @@
 source("final_dataset.R")
-
 #Adjustment covariate sets---- 
 cov_A2 <- c("B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y")
 cov_A4 <- c("B_SEX","medu_5y","Socioeco_5y") #(no BMI:A2 adjusted all(AA)、adjusted 4(A4)
+
 #logistic regression----
 ##loose AA----
 dat <- analytic_loose %>%
@@ -25,13 +25,11 @@ dat %>% finalfit("EarlyPuberty", c("probioticintake", cov_A4), metric=TRUE) -> l
 write.csv(logit_strict_A4, "Table_logistic_strict_A4.csv", row.names=FALSE)
 
 #Probiotic grouping----
-# probiotic_group 已在 Finaldataset 編好(Never為對照),直接用
-
 ##loose A2----
 dat <- analytic_loose %>%
   mutate(EarlyPuberty = factor(EarlyPuberty_loose, levels=c(0,1), labels=c("No","Yes")))
 dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A2), metric=TRUE) -> pbgroup_loose_A2
-write.csv(pbgroup_loose_A2, "Table_probiotic_group_loose_A2.csv", row.names=FALSE)
+write.csv(pbgroup_loose_A2, "Table_probiotic_group_loose_AA.csv", row.names=FALSE)
 
 ##loose A4----
 dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A4), metric=TRUE) -> pbgroup_loose_A4
@@ -41,39 +39,31 @@ write.csv(pbgroup_loose_A4, "Table_probiotic_group_loose_A4.csv", row.names=FALS
 dat <- analytic_strict %>%
   mutate(EarlyPuberty = factor(EarlyPuberty_strict, levels=c(0,1), labels=c("No","Yes")))
 dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A2), metric=TRUE) -> pbgroup_strict_A2
-write.csv(pbgroup_strict_A2, "Table_probiotic_group_strict_A2.csv", row.names=FALSE)
+write.csv(pbgroup_strict_A2, "Table_probiotic_group_strict_AA.csv", row.names=FALSE)
 
 ##strict A4----
 dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A4), metric=TRUE) -> pbgroup_strict_A4
 write.csv(pbgroup_strict_A4, "Table_probiotic_group_strict_A4.csv", row.names=FALSE)
-#Main Cox Strata(sex)version (NoBMI)----
-cox_strata_noBMI <- coxph(
-  Surv(ep_followup_time, ep_event) ~ 
-    probioticintake.factor +
-    dairyintake.factor +
-    breastfeeding.factor +
-    socioeco.factor +
-    medu.factor +
-    strata(sex.factor),             
-  data = surv_data_labeled_ep)
 
-summary(cox_strata_noBMI)
+#Sex-stratified----
+run_sexstrat <- function(dat, covs, tag){
+  covs_nosex <- setdiff(covs, "B_SEX")
+  res <- bind_rows(lapply(c("Male","Female"), function(sx){
+    dat %>% filter(B_SEX == sx) %>%
+      finalfit("Surv(ep_followup_time, ep_event)", c("probioticintake", covs_nosex)) %>%
+      rename(Variable = 1) %>%
+      mutate(Variable = na_if(Variable, "")) %>%
+      fill(Variable, .direction = "down") %>%
+      filter(grepl("Probiotic", Variable, ignore.case = TRUE)) %>%
+      mutate(Subgroup = sx)
+  })) %>% select(Subgroup, everything())
+  write.csv(res, paste0("Table_sexstrat_HR_", tag, ".csv"), row.names = FALSE)
+}
 
-# check PH assumption
-cox.zph(cox_strata_noBMI)
-explanatory_strata <- c("probioticintake.factor",
-                        "dairyintake.factor",
-                        "breastfeeding.factor",
-                        "socioeco.factor",
-                        "medu.factor",
-                        "strata(sex.factor)")
-
-dependent_surv <- "Surv(ep_followup_time, ep_event)"
-
-surv_data_labeled_ep %>%
-  finalfit(dependent_surv, explanatory_strata) -> t_strata
-
-write.csv(t_strata, "Table_Cox_strata_sex_noBMI.csv", row.names = FALSE)
+run_sexstrat(analytic_loose,  cov_A2, "loose_A2")
+run_sexstrat(analytic_loose,  cov_A4, "loose_A4")
+run_sexstrat(analytic_strict, cov_A2, "strict_A2")
+run_sexstrat(analytic_strict, cov_A4, "strict_A4")
 
 #Negative control----
 ##OR----
