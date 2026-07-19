@@ -201,3 +201,31 @@ run_mystep(analytic_loose,  include_BMI = TRUE,  "loose_A1")
 run_mystep(analytic_strict, include_BMI = TRUE,  "strict_A1")
 run_mystep(analytic_loose,  include_BMI = FALSE, "loose_A2")
 run_mystep(analytic_strict, include_BMI = FALSE, "strict_A2")
+#Change-in-estimate----
+run_cie <- function(dat, tag){
+  covs <- c("B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y","BMI_5y")
+  key  <- "probioticintakeEverusers"
+  getrow <- function(m, label){
+    s <- summary(m)
+    data.frame(model = label,
+               HR    = round(s$conf.int[key, "exp(coef)"], 3),
+               CI    = paste0(round(s$conf.int[key, "lower .95"], 2), "-",
+                              round(s$conf.int[key, "upper .95"], 2)),
+               p     = signif(s$coefficients[key, "Pr(>|z|)"], 3))
+  }
+  res <- getrow(coxph(Surv(ep_followup_time, ep_event) ~ probioticintake, data = dat), "Crude")
+  for (cv in covs){
+    m <- coxph(as.formula(paste("Surv(ep_followup_time, ep_event) ~ probioticintake +", cv)),
+               data = dat)
+    res <- rbind(res, getrow(m, paste("+", cv)))
+  }
+  mf <- coxph(as.formula(paste("Surv(ep_followup_time, ep_event) ~ probioticintake +",
+                               paste(covs, collapse = " + "))), data = dat)
+  res <- rbind(res, getrow(mf, "Full adjusted"))
+  rownames(res) <- NULL
+  write.csv(res, paste0("ChangeInEstimate_probiotic_", tag, ".csv"), row.names = FALSE)
+  res
+}
+
+run_cie(analytic_loose,  "loose")
+run_cie(analytic_strict, "strict")
