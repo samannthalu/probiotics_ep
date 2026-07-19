@@ -1,266 +1,51 @@
-#Sort data for cox----
-##select survey date from each wave----
-surv_select<-TBCSstimu%>%
-  select(Sampleid,
-         y5_year,y5_month,y5_day,
-         y8_year,y8_month,y8_day)
-##select data from each dataset----
-surv_select2<-Finaldataset%>%
-  select(Sampleid,
-         B_SEX,
-         probioticintake,
-         EarlyPuberty_FUNC_DATE,
-         EarlyPuberty,
-         Appendicitis_FUNC_DATE,
-         Appendicitis,
-         dairyintake_5y,
-         breastfeeding,
-         medu_5y,
-         BMI_5y,
-         Socioeco_5y)
-#Combine selected data----
-surv_data<-surv_select%>%
-  full_join(surv_select2,by="Sampleid")
-##organize date----
-surv_data<-surv_data%>%
-  mutate(start_date=make_date(y5_year, y5_month, y5_day),
-         survey_date_8y=make_date(y8_year, y8_month, y8_day))
-##classify event and set up end date----
-###set cutoff date----
-surv_data<-surv_data%>%
-  mutate(cutoff_date = case_when(
-    B_SEX == "1" ~ start_date + years(4),  #boys end at 9y 
-    B_SEX == "2" ~ start_date + years(3))) #girls end at 8y
-###eliminate child had early puberty before 5y----
-surv_data_clean<-surv_data%>%
-  select(Sampleid,
-         B_SEX,
-         start_date,
-         probioticintake,
-         dairyintake_5y,
-         breastfeeding,
-         BMI_5y,
-         Socioeco_5y,
-         medu_5y,
-         EarlyPuberty,
-         EarlyPuberty_FUNC_DATE,
-         Appendicitis,
-         Appendicitis_FUNC_DATE,
-         cutoff_date,
-         survey_date_8y)
+source("final_dataset.R")
 
-surv_data_clean<-surv_data_clean%>%
-  filter(!(EarlyPuberty == 1 & EarlyPuberty_FUNC_DATE < start_date))
+#Adjustment covariate sets---- 
+cov_A2 <- c("B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y")
+cov_A4 <- c("B_SEX","medu_5y","Socioeco_5y") #(no BMI:A2 adjusted all(AA)、adjusted 4(A4)
+#logistic regression----
+##loose AA----
+dat <- analytic_loose %>%
+  mutate(EarlyPuberty = factor(EarlyPuberty_loose, levels=c(0,1), labels=c("No","Yes")))
+dat %>% finalfit("EarlyPuberty", c("probioticintake", cov_A2), metric=TRUE) -> logit_loose_A2
+write.csv(logit_loose_A2, "Table_logistic_loose_AA.csv", row.names=FALSE)
 
-surv_data_clean<-surv_data_clean%>% #appendicitis(negative control)
-  filter(!(Appendicitis == 1 & Appendicitis_FUNC_DATE < start_date))
-###define event----
-surv_data_clean<-surv_data_clean %>%
-  mutate(ep_event = case_when(
-    EarlyPuberty == 1 & EarlyPuberty_FUNC_DATE >= start_date &
-      EarlyPuberty_FUNC_DATE <= cutoff_date ~ 1,
-      TRUE ~ 0))
+##loose A4----
+dat %>% finalfit("EarlyPuberty", c("probioticintake", cov_A4), metric=TRUE) -> logit_loose_A4
+write.csv(logit_loose_A4, "Table_logistic_loose_A4.csv", row.names=FALSE)
 
-surv_data_clean<-surv_data_clean %>% #appendicitis(negative control)
-  mutate(ap_event = case_when(
-    Appendicitis == 1 & Appendicitis_FUNC_DATE >= start_date &
-      Appendicitis_FUNC_DATE <= cutoff_date ~ 1,
-    TRUE ~ 0))
-###calculate end date----
-surv_data_clean<-surv_data_clean%>%
-  mutate(ep_end_date = case_when(
-      ep_event == 1 ~ EarlyPuberty_FUNC_DATE,
-      TRUE ~ cutoff_date),
-    ep_followup_time = as.numeric(
-      ep_end_date - start_date) / 30)
+##strict AA----
+dat <- analytic_strict %>%
+  mutate(EarlyPuberty = factor(EarlyPuberty_strict, levels=c(0,1), labels=c("No","Yes")))
+dat %>% finalfit("EarlyPuberty", c("probioticintake", cov_A2), metric=TRUE) -> logit_strict_A2
+write.csv(logit_strict_A2, "Table_logistic_strict_AA.csv", row.names=FALSE)
 
-surv_data_clean<-surv_data_clean%>% #appendicitis(negative control)
-  mutate(ap_end_date = case_when(
-    ap_event == 1 ~ Appendicitis_FUNC_DATE,
-    TRUE ~ cutoff_date),
-    ap_followup_time = as.numeric(
-      ap_end_date - start_date) / 30)
-#Cox model(EarlyPuberty)----
-##Crude----
-cox_model_ep<-coxph(Surv(ep_followup_time, ep_event) ~ probioticintake,
-                 data = surv_data_clean)
-##adjusted Cox model----
-surv_data_labeled_ep<-surv_data_clean%>%
-  mutate(probioticintake.factor = factor(probioticintake,levels = c(0, 1),
-                                   labels = c("No","Yes")),
-         sex.factor = factor(B_SEX,levels = c("1", "2"),
-                             labels = c("Boy", "Girl")),
-         breastfeeding.factor = factor(breastfeeding,levels = c(0, 1),
-                                       labels = c("No breastfeeding","Breastfeeding")),
-         dairyintake.factor = factor(dairyintake_5y,levels = c(0,1,2,3,4,5,8,9),
-                                     labels = c("Never or less than 1 time a week",
-                                                "Never or less than 1 time a week",
-                                                "1-2 times a week",
-                                                "3 to 5 times a week",
-                                                "everyday/almost everyday",
-                                                "everyday/almost everyday",
-                                                "everyday/almost everyday",
-                                                "everyday/almost everyday")),
-         medu.factor = factor(medu_5y,levels = c(1,2,3),
-                              labels = c ("Junior High&below",
-                                         "Senior High/Vocational",
-                                         "University&above")),
-         socioeco.factor = factor(Socioeco_5y,levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
-                                  labels = c("30,000",
-                                             "30,000",
-                                             "30,000",
-                                             ">=30,000,<50,000",
-                                             ">=50,000,<70,000",
-                                             ">=70,000,<100,000",
-                                             ">=100,000,<150,000",
-                                             ">=150,000,<200,000",
-                                             ">=200,000",
-                                             ">=50,000,<70,000",
-                                             ">=50,000,<70,000",
-                                             ">=50,000,<70,000")),
-         BMI.numeric = as.numeric(BMI_5y))
+##strict A4----
+dat %>% finalfit("EarlyPuberty", c("probioticintake", cov_A4), metric=TRUE) -> logit_strict_A4
+write.csv(logit_strict_A4, "Table_logistic_strict_A4.csv", row.names=FALSE)
 
-explanatory=c("probioticintake.factor",
-              "sex.factor",
-              "dairyintake.factor",
-              "breastfeeding.factor",
-              "BMI.numeric",
-              "socioeco.factor",
-              "medu.factor")
-dependent = "Surv(ep_followup_time, ep_event)"
-surv_data_labeled_ep %>%
-  finalfit(dependent, explanatory) -> t4
-knitr::kable(t4, row.names=FALSE, align=c("l", "l", "r", "r", "r", "r"))
+#Probiotic grouping----
+# probiotic_group 已在 Finaldataset 編好(Never為對照),直接用
 
-write.csv(t4, "Table4_HR_results_ep.csv", row.names = FALSE)
+##loose A2----
+dat <- analytic_loose %>%
+  mutate(EarlyPuberty = factor(EarlyPuberty_loose, levels=c(0,1), labels=c("No","Yes")))
+dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A2), metric=TRUE) -> pbgroup_loose_A2
+write.csv(pbgroup_loose_A2, "Table_probiotic_group_loose_A2.csv", row.names=FALSE)
 
-#Schoenfeld residual tests----
-##cox for Schoenfeld residual tests----
-cox_schoenfeld_ep<-coxph(Surv(ep_followup_time, ep_event) ~ 
-                        probioticintake.factor +
-                        sex.factor +
-                        dairyintake.factor +
-                        breastfeeding.factor +
-                        BMI.numeric +
-                        socioeco.factor +
-                        medu.factor,
-                      data = surv_data_labeled_ep)
-##check PH assumption----
-cox.zph(cox_schoenfeld_ep)
-##plot----
-png("Cox_PH_Check_ep.png", width=8, height=6, units="in", res=400)
-plot(cox.zph(cox_schoenfeld_ep))
-dev.off()
+##loose A4----
+dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A4), metric=TRUE) -> pbgroup_loose_A4
+write.csv(pbgroup_loose_A4, "Table_probiotic_group_loose_A4.csv", row.names=FALSE)
 
-png("Cox_PH_Check_ep_V2.png", width = 8, height = 6, units = "in", res = 400)
-par(mfrow = c(2, 4))
-plot(cox.zph(cox_schoenfeld_ep), 
-     cex = 0.8,     #調整殘差點的大小
-     resid = TRUE)  #確保顯示殘差點
-abline(h = 0, col = "red", lty = 3) #y=0 reference
-dev.off()
-##HR plot----
-png("HR_plot_final_ep.png", width = 12, height = 10, units = "in", res = 400)
+##strict A2----
+dat <- analytic_strict %>%
+  mutate(EarlyPuberty = factor(EarlyPuberty_strict, levels=c(0,1), labels=c("No","Yes")))
+dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A2), metric=TRUE) -> pbgroup_strict_A2
+write.csv(pbgroup_strict_A2, "Table_probiotic_group_strict_A2.csv", row.names=FALSE)
 
-print(
-  surv_data_labeled_ep %>%
-    hr_plot(dependent = "Surv(ep_followup_time, ep_event)",
-            explanatory = c(
-              "probioticintake.factor",
-              "sex.factor",
-              "dairyintake.factor",
-              "breastfeeding.factor",
-              "BMI.numeric",
-              "socioeco.factor",
-              "medu.factor"),
-            dependent_label = "Early puberty"))
-dev.off()
-##adjusted Cox model(no BMI)----
-surv_data_labeled_ep<-surv_data_clean%>%
-  mutate(probioticintake.factor = factor(probioticintake,levels = c(0, 1),
-                                         labels = c("No","Yes")),
-         sex.factor = factor(B_SEX,levels = c("1", "2"),
-                             labels = c("Boy", "Girl")),
-         breastfeeding.factor = factor(breastfeeding,levels = c(0, 1),
-                                       labels = c("No breastfeeding","Breastfeeding")),
-         dairyintake.factor = factor(dairyintake_5y,levels = c(0,1,2,3,4,5,8,9),
-                                     labels = c("Never or less than 1 time a week",
-                                                "Never or less than 1 time a week",
-                                                "1-2 times a week",
-                                                "3 to 5 times a week",
-                                                "everyday/almost everyday",
-                                                "everyday/almost everyday",
-                                                "everyday/almost everyday",
-                                                "everyday/almost everyday")),
-         medu.factor = factor(medu_5y,levels = c(1,2,3),
-                              labels = c ("Junior High&below",
-                                          "Senior High/Vocational",
-                                          "University&above")),
-         socioeco.factor = factor(Socioeco_5y,levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
-                                  labels = c("30,000",
-                                             "30,000",
-                                             "30,000",
-                                             ">=30,000,<50,000",
-                                             ">=50,000,<70,000",
-                                             ">=70,000,<100,000",
-                                             ">=100,000,<150,000",
-                                             ">=150,000,<200,000",
-                                             ">=200,000",
-                                             ">=50,000,<70,000",
-                                             ">=50,000,<70,000",
-                                             ">=50,000,<70,000")))
-
-explanatory=c("probioticintake.factor",
-              "sex.factor",
-              "dairyintake.factor",
-              "breastfeeding.factor",
-              "socioeco.factor",
-              "medu.factor")
-dependent = "Surv(ep_followup_time, ep_event)"
-surv_data_labeled_ep %>%
-  finalfit(dependent, explanatory) -> t4_noBMI
-knitr::kable(t4_noBMI, row.names=FALSE, align=c("l", "l", "r", "r", "r", "r"))
-
-write.csv(t4_noBMI, "Table4_HR_results_ep_noBMI.csv", row.names = FALSE)
-###Schoenfeld residual tests(no BMI)----
-####cox for Schoenfeld residual tests----
-cox_schoenfeld_ep_noBMI<-coxph(Surv(ep_followup_time, ep_event) ~ 
-                           probioticintake.factor +
-                           sex.factor +
-                           dairyintake.factor +
-                           breastfeeding.factor +
-                           socioeco.factor +
-                           medu.factor,
-                         data = surv_data_labeled_ep)
-####check PH assumption----
-cox.zph(cox_schoenfeld_ep_noBMI)
-####plot----
-png("Cox_PH_Check_ep_noBMI.png", width=8, height=6, units="in", res=400)
-plot(cox.zph(cox_schoenfeld_ep_noBMI))
-dev.off()
-
-png("Cox_PH_Check_ep_V2_noBMI.png", width = 8, height = 6, units = "in", res = 400)
-par(mfrow = c(2, 4))
-plot(cox.zph(cox_schoenfeld_ep_noBMI), 
-     cex = 0.8,     #調整殘差點的大小
-     resid = TRUE)  #確保顯示殘差點
-abline(h = 0, col = "red", lty = 3) #y=0 reference
-dev.off()
-####HR plot----
-png("HR_plot_final_ep_noBMI.png", width = 12, height = 10, units = "in", res = 400)
-
-print(
-  surv_data_labeled_ep %>%
-    hr_plot(dependent = "Surv(ep_followup_time, ep_event)",
-            explanatory = c(
-              "probioticintake.factor",
-              "sex.factor",
-              "dairyintake.factor",
-              "breastfeeding.factor",
-              "socioeco.factor",
-              "medu.factor"),
-            dependent_label = "Early puberty"))
-dev.off()
+##strict A4----
+dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A4), metric=TRUE) -> pbgroup_strict_A4
+write.csv(pbgroup_strict_A4, "Table_probiotic_group_strict_A4.csv", row.names=FALSE)
 #Main Cox Strata(sex)version (NoBMI)----
 cox_strata_noBMI <- coxph(
   Surv(ep_followup_time, ep_event) ~ 
