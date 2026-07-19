@@ -102,8 +102,12 @@ label(Finaldataset$breastfeeding)   <- "Breastfeeding"
 #Exclusion flow----
 n_linked <- nrow(Finaldataset)
 
-##共用前兩步:排除 無5歲追蹤 / 益生菌無資料----
-base <- Finaldataset %>% filter(!is.na(start_date) & probiotic5y_available == 1)
+##Step1:排除 無5歲追蹤 / 益生菌無資料----
+step1 <- Finaldataset %>% filter(!is.na(start_date) & probiotic5y_available == 1)
+n_step1 <- nrow(step1)
+
+##Step2:排除 性別缺失----
+base <- step1 %>% filter(!is.na(B_SEX))
 n_base <- nrow(base)
 
 ##LOOSE 版:排除 5歲前性早熟(loose)----
@@ -118,15 +122,15 @@ n_strict <- nrow(analytic_strict)
 
 ##flowchart(loose)----
 exclusion_flow_loose <- tibble::tibble(
-  step        = c("成功連結健保","排除:無5歲追蹤/益生菌無資料","排除:5歲前性早熟 loose(最終)"),
-  n_remaining = c(n_linked, n_base, n_loose),
-  n_excluded  = c(NA, n_linked - n_base, n_base - n_loose))
+  step        = c("成功連結健保","排除:無5歲追蹤/益生菌無資料","排除:性別缺失","排除:5歲前性早熟 loose(最終)"),
+  n_remaining = c(n_linked, n_step1, n_base, n_loose),
+  n_excluded  = c(NA, n_linked - n_step1, n_step1 - n_base, n_base - n_loose))
 
 ##flowchart(strict)----
 exclusion_flow_strict <- tibble::tibble(
-  step        = c("成功連結健保","排除:無5歲追蹤/益生菌無資料","排除:5歲前性早熟 strict(最終)"),
-  n_remaining = c(n_linked, n_base, n_strict),
-  n_excluded  = c(NA, n_linked - n_base, n_base - n_strict))
+  step        = c("成功連結健保","排除:無5歲追蹤/益生菌無資料","排除:性別缺失","排除:5歲前性早熟 strict(最終)"),
+  n_remaining = c(n_linked, n_step1, n_base, n_strict),
+  n_excluded  = c(NA, n_linked - n_step1, n_step1 - n_base, n_base - n_strict))
 
 print(exclusion_flow_loose)
 print(exclusion_flow_strict)
