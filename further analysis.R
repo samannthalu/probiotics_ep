@@ -1,4 +1,15 @@
 source("final_dataset.R")
+#Survival variables (early puberty)----
+analytic_loose <- analytic_loose %>%
+  mutate(ep_event = case_when(EarlyPuberty_loose == 1 & EarlyPuberty_date >= start_date &
+                                EarlyPuberty_date <= cutoff_date ~ 1, TRUE ~ 0),
+         ep_end_date      = case_when(ep_event == 1 ~ EarlyPuberty_date, TRUE ~ cutoff_date),
+         ep_followup_time = as.numeric(ep_end_date - start_date) / 30)
+analytic_strict <- analytic_strict %>%
+  mutate(ep_event = case_when(EarlyPuberty_strict == 1 & EarlyPuberty_date >= start_date &
+                                EarlyPuberty_date <= cutoff_date ~ 1, TRUE ~ 0),
+         ep_end_date      = case_when(ep_event == 1 ~ EarlyPuberty_date, TRUE ~ cutoff_date),
+         ep_followup_time = as.numeric(ep_end_date - start_date) / 30)
 #Adjustment covariate sets---- 
 cov_A2 <- c("B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y")
 cov_A4 <- c("B_SEX","medu_5y","Socioeco_5y") #(no BMI:A2 adjusted all(AA)、adjusted 4(A4)
@@ -106,7 +117,7 @@ ap_strict <- analytic_strict %>%
 ## Cox (loose/strict × A2/A4)----
 depap <- "Surv(ap_followup_time, ap_event)"
 write.csv(ap_loose  %>% finalfit(depap, c("probioticintake", cov_A2)), "NCO_ap_Cox_loose_AA.csv",  row.names=FALSE)
-write.csv(ap_loose  %>% finalfit(depap, c("probioticintake", cov_A4)), "NCO_ap_Cox_loo se_A4.csv",  row.names=FALSE)
+write.csv(ap_loose  %>% finalfit(depap, c("probioticintake", cov_A4)), "NCO_ap_Cox_loose_A4.csv",  row.names=FALSE)
 write.csv(ap_strict %>% finalfit(depap, c("probioticintake", cov_A2)), "NCO_ap_Cox_strict_AA.csv", row.names=FALSE)
 write.csv(ap_strict %>% finalfit(depap, c("probioticintake", cov_A4)), "NCO_ap_Cox_strict_A4.csv", row.names=FALSE)
 
