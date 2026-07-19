@@ -71,6 +71,34 @@ Finaldataset<-TBCSstimu5y%>%
                   Appendicitis_loose,Appendicitis_strict,
                   OtitisMedia_loose, OtitisMedia_strict),
                 ~ replace_na(.,0L)))
+##change factor----
+Finaldataset <- Finaldataset %>%
+  mutate(
+    probioticintake = factor(probioticintake, levels = c(0,1), labels = c("Neverusers","Everusers")),
+    B_SEX = factor(B_SEX, levels = c(1,2), labels = c("Male","Female")),
+    breastfeeding = factor(breastfeeding, levels = c(0,1), labels = c("No breastfeeding","breastfeeding")),
+    dairyintake_5y = factor(dairyintake_5y, levels = c(0,1,2,3,4,5,8,9),
+                            labels = c("Never or less than 1 time a week","Never or less than 1 time a week",
+                                       "1-2 times a week","3 to 5 times a week",
+                                       "everyday/almost everyday","everyday/almost everyday",
+                                       "everyday/almost everyday","everyday/almost everyday")),
+    medu_5y = factor(medu_5y, levels = c(1,2,3),
+                     labels = c("Junior High&below","Senior High/Vocational","University&above")),
+    Socioeco_5y = factor(Socioeco_5y, levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
+                         labels = c("30,000","30,000","30,000",">=30,000,<50,000",">=50,000,<70,000",
+                                    ">=70,000,<100,000",">=100,000,<150,000",">=150,000,<200,000",">=200,000",
+                                    ">=50,000,<70,000",">=50,000,<70,000",">=50,000,<70,000")),
+    gastroenteritis = factor(gastroenteritis, levels = c(0,1), labels = c("No","Yes")),
+    AD              = factor(AD, levels = c(0,1), labels = c("No","Yes")))
+
+label(Finaldataset$probioticintake) <- "Probiotic intake"
+label(Finaldataset$B_SEX)           <- "Sex"
+label(Finaldataset$BMI_5y)          <- "BMI at age 5 (kg/m²)"
+label(Finaldataset$dairyintake_5y)  <- "Dairy intake at age 5"
+label(Finaldataset$medu_5y)         <- "Maternal education level"
+label(Finaldataset$Socioeco_5y)     <- "Average month family income(NT$)"
+label(Finaldataset$breastfeeding)   <- "Breastfeeding"
+
 #Exclusion flow----
 n_linked <- nrow(Finaldataset)
 
@@ -104,34 +132,6 @@ print(exclusion_flow_loose)
 print(exclusion_flow_strict)
 write.csv(exclusion_flow_loose,  "exclusion_flow_loose.csv",  row.names = FALSE)
 write.csv(exclusion_flow_strict, "exclusion_flow_strict.csv", row.names = FALSE)
-
-##change factor----
-Finaldataset <- Finaldataset %>%
-  mutate(
-    probioticintake = factor(probioticintake, levels = c(0,1), labels = c("Neverusers","Everusers")),
-    B_SEX = factor(B_SEX, levels = c(1,2), labels = c("Male","Female")),
-    breastfeeding = factor(breastfeeding, levels = c(0,1), labels = c("No breastfeeding","breastfeeding")),
-    dairyintake_5y = factor(dairyintake_5y, levels = c(0,1,2,3,4,5,8,9),
-                            labels = c("Never or less than 1 time a week","Never or less than 1 time a week",
-                                       "1-2 times a week","3 to 5 times a week",
-                                       "everyday/almost everyday","everyday/almost everyday",
-                                       "everyday/almost everyday","everyday/almost everyday")),
-    medu_5y = factor(medu_5y, levels = c(1,2,3),
-                     labels = c("Junior High&below","Senior High/Vocational","University&above")),
-    Socioeco_5y = factor(Socioeco_5y, levels = c(1,2,3,4,5,6,7,8,9,88,98,99),
-                         labels = c("30,000","30,000","30,000",">=30,000,<50,000",">=50,000,<70,000",
-                                    ">=70,000,<100,000",">=100,000,<150,000",">=150,000,<200,000",">=200,000",
-                                    ">=50,000,<70,000",">=50,000,<70,000",">=50,000,<70,000")),
-    gastroenteritis = factor(gastroenteritis, levels = c(0,1), labels = c("No","Yes")),
-    AD              = factor(AD, levels = c(0,1), labels = c("No","Yes")))
-
-label(Finaldataset$probioticintake) <- "Probiotic intake"
-label(Finaldataset$B_SEX)           <- "Sex"
-label(Finaldataset$BMI_5y)          <- "BMI at age 5 (kg/m²)"
-label(Finaldataset$dairyintake_5y)  <- "Dairy intake at age 5"
-label(Finaldataset$medu_5y)         <- "Maternal education level"
-label(Finaldataset$Socioeco_5y)     <- "Average month family income(NT$)"
-label(Finaldataset$breastfeeding)   <- "Breastfeeding"
 
 #Missing pattern (loose)----
 missing_loose <- analytic_loose %>%
