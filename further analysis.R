@@ -25,7 +25,7 @@ dat %>% finalfit("EarlyPuberty", c("probioticintake", cov_A4), metric=TRUE) -> l
 write.csv(logit_strict_A4, "Table_logistic_strict_A4.csv", row.names=FALSE)
 
 #Probiotic grouping----
-##loose A2----
+##loose AA----
 dat <- analytic_loose %>%
   mutate(EarlyPuberty = factor(EarlyPuberty_loose, levels=c(0,1), labels=c("No","Yes")))
 dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A2), metric=TRUE) -> pbgroup_loose_A2
@@ -35,7 +35,7 @@ write.csv(pbgroup_loose_A2, "Table_probiotic_group_loose_AA.csv", row.names=FALS
 dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A4), metric=TRUE) -> pbgroup_loose_A4
 write.csv(pbgroup_loose_A4, "Table_probiotic_group_loose_A4.csv", row.names=FALSE)
 
-##strict A2----
+##strict AA----
 dat <- analytic_strict %>%
   mutate(EarlyPuberty = factor(EarlyPuberty_strict, levels=c(0,1), labels=c("No","Yes")))
 dat %>% finalfit("EarlyPuberty", c("probiotic_group", cov_A2), metric=TRUE) -> pbgroup_strict_A2
@@ -87,4 +87,65 @@ run_iv(analytic_loose,  "EarlyPuberty_loose",  "AD", cov_A4, "AD_loose_A4")
 run_iv(analytic_strict, "EarlyPuberty_strict", "AD", cov_A2, "AD_strict_AA")
 run_iv(analytic_strict, "EarlyPuberty_strict", "AD", cov_A4, "AD_strict_A4")
 
-#Negative control----
+#Negative control(appendicitis)----
+##exclude prevalent appendicitis----
+ap_loose <- analytic_loose %>%
+  mutate(ap_event = case_when(Appendicitis_loose == 1 & Appendicitis_date >= start_date &
+                                Appendicitis_date <= cutoff_date ~ 1, TRUE ~ 0),
+         ap_end_date      = case_when(ap_event == 1 ~ Appendicitis_date, TRUE ~ cutoff_date),
+         ap_followup_time = as.numeric(ap_end_date - start_date) / 30) %>%
+  filter(!(Appendicitis_loose == 1 & Appendicitis_date < start_date))   # 排 prevalent
+
+ap_strict <- analytic_strict %>%
+  mutate(ap_event = case_when(Appendicitis_strict == 1 & Appendicitis_date >= start_date &
+                                Appendicitis_date <= cutoff_date ~ 1, TRUE ~ 0),
+         ap_end_date      = case_when(ap_event == 1 ~ Appendicitis_date, TRUE ~ cutoff_date),
+         ap_followup_time = as.numeric(ap_end_date - start_date) / 30) %>%
+  filter(!(Appendicitis_strict == 1 & Appendicitis_date < start_date))
+
+## Cox (loose/strict × A2/A4)----
+depap <- "Surv(ap_followup_time, ap_event)"
+write.csv(ap_loose  %>% finalfit(depap, c("probioticintake", cov_A2)), "NCO_ap_Cox_loose_AA.csv",  row.names=FALSE)
+write.csv(ap_loose  %>% finalfit(depap, c("probioticintake", cov_A4)), "NCO_ap_Cox_loo se_A4.csv",  row.names=FALSE)
+write.csv(ap_strict %>% finalfit(depap, c("probioticintake", cov_A2)), "NCO_ap_Cox_strict_AA.csv", row.names=FALSE)
+write.csv(ap_strict %>% finalfit(depap, c("probioticintake", cov_A4)), "NCO_ap_Cox_strict_A4.csv", row.names=FALSE)
+
+#Otitis media----
+##exclude prevalent otitis media----
+om_loose <- analytic_loose %>%
+  mutate(om_event = case_when(OtitisMedia_loose == 1 & OtitisMedia_date >= start_date &
+                                OtitisMedia_date <= cutoff_date ~ 1, TRUE ~ 0),
+         om_end_date      = case_when(om_event == 1 ~ OtitisMedia_date, TRUE ~ cutoff_date),
+         om_followup_time = as.numeric(om_end_date - start_date) / 30) %>%
+  filter(!(OtitisMedia_loose == 1 & OtitisMedia_date < start_date))   # 排 prevalent
+
+om_strict <- analytic_strict %>%
+  mutate(om_event = case_when(OtitisMedia_strict == 1 & OtitisMedia_date >= start_date &
+                                OtitisMedia_date <= cutoff_date ~ 1, TRUE ~ 0),
+         om_end_date      = case_when(om_event == 1 ~ OtitisMedia_date, TRUE ~ cutoff_date),
+         om_followup_time = as.numeric(om_end_date - start_date) / 30) %>%
+  filter(!(OtitisMedia_strict == 1 & OtitisMedia_date < start_date))
+
+## Cox (loose/strict × A2/A4)----
+depom <- "Surv(om_followup_time, om_event)"
+write.csv(om_loose  %>% finalfit(depom, c("probioticintake", cov_A2)), "NCO_om_Cox_loose_AA.csv",  row.names=FALSE)
+write.csv(om_loose  %>% finalfit(depom, c("probioticintake", cov_A4)), "NCO_om_Cox_loose_A4.csv",  row.names=FALSE)
+write.csv(om_strict %>% finalfit(depom, c("probioticintake", cov_A2)), "NCO_om_Cox_strict_AA.csv", row.names=FALSE)
+write.csv(om_strict %>% finalfit(depom, c("probioticintake", cov_A4)), "NCO_om_Cox_strict_A4.csv", row.names=FALSE)
+
+#NCO/IV event number----
+count_table <- tibble::tibble(
+  Variable = c("Appendicitis (loose)", "Appendicitis (strict)",
+               "Otitis media (loose)", "Otitis media (strict)",
+               "Gastroenteritis", "Atopic dermatitis (AD)"),
+  N_yes = c(sum(analytic_loose$Appendicitis_loose  == 1),
+            sum(analytic_loose$Appendicitis_strict == 1),
+            sum(analytic_loose$OtitisMedia_loose   == 1),
+            sum(analytic_loose$OtitisMedia_strict  == 1),
+            sum(analytic_loose$gastroenteritis == "Yes", na.rm = TRUE),
+            sum(analytic_loose$AD              == "Yes", na.rm = TRUE)),
+  Total = nrow(analytic_loose))
+count_table$Percent <- round(count_table$N_yes / count_table$Total * 100, 1)
+
+print(count_table)
+write.csv(count_table, "NCO_IV_counts.csv", row.names = FALSE)
