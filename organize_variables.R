@@ -72,13 +72,13 @@ threeydata_fixed<-threeydata_fixed%>%
          doc_AD_3y=E4c_6)
 ##5year-old----
 fiveydata_fixed<-fiveydata%>%
-  select(Sampleid,D5ad,A2_2L,A2_2W,D4_8,MEDU_5Y,G13,E4a2,E4b2_b,E5c_4,C_Y_5Y,C_M_5Y,C_D_5Y)
+  select(Sampleid,D5ad,A2_4L,A2_4W,D4_8,MEDU_5Y,G13,E4a2,E4b2_b,E5c_4,C_Y_5Y,C_M_5Y,C_D_5Y)
 
 fiveydata_fixed<-fiveydata_fixed%>%
   rename(probioticintake_5y=D5ad,
          dairyintake_5y=D4_8,
-         weight_5y=A2_2W,
-         height_5y=A2_2L,
+         weight_5y=A2_4W,
+         height_5y=A2_4L,
          medu_5y=MEDU_5Y,
          Socioeco_5y=G13,
          physician_diagnosis_5y=E4a2,
