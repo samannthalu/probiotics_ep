@@ -86,7 +86,7 @@ run_iv <- function(dat, outcome, instrument, covs, tag){
   capture.output(summary(m, diagnostics = TRUE), file = paste0("IV_", tag, ".txt"))
 }
 
-##gastroenteritis----
+##Gastroenteritis----
 run_iv(analytic_loose,  "EarlyPuberty_loose",  "gastroenteritis", cov_A2, "gastro_loose_AA")
 run_iv(analytic_loose,  "EarlyPuberty_loose",  "gastroenteritis", cov_A4, "gastro_loose_A4")
 run_iv(analytic_strict, "EarlyPuberty_strict", "gastroenteritis", cov_A2, "gastro_strict_AA")
@@ -114,14 +114,14 @@ ap_strict <- analytic_strict %>%
          ap_followup_time = as.numeric(ap_end_date - start_date) / 30) %>%
   filter(!(Appendicitis_strict == 1 & Appendicitis_date < start_date))
 
-## Cox (loose/strict × A2/A4)----
+## Cox----
 depap <- "Surv(ap_followup_time, ap_event)"
 write.csv(ap_loose  %>% finalfit(depap, c("probioticintake", cov_A2)), "NCO_ap_Cox_loose_AA.csv",  row.names=FALSE)
 write.csv(ap_loose  %>% finalfit(depap, c("probioticintake", cov_A4)), "NCO_ap_Cox_loose_A4.csv",  row.names=FALSE)
 write.csv(ap_strict %>% finalfit(depap, c("probioticintake", cov_A2)), "NCO_ap_Cox_strict_AA.csv", row.names=FALSE)
 write.csv(ap_strict %>% finalfit(depap, c("probioticintake", cov_A4)), "NCO_ap_Cox_strict_A4.csv", row.names=FALSE)
 
-#Otitis media----
+#Negative control(otitis media)----
 ##exclude prevalent otitis media----
 om_loose <- analytic_loose %>%
   mutate(om_event = case_when(OtitisMedia_loose == 1 & OtitisMedia_date >= start_date &
@@ -137,7 +137,7 @@ om_strict <- analytic_strict %>%
          om_followup_time = as.numeric(om_end_date - start_date) / 30) %>%
   filter(!(OtitisMedia_strict == 1 & OtitisMedia_date < start_date))
 
-## Cox (loose/strict × A2/A4)----
+## Cox----
 depom <- "Surv(om_followup_time, om_event)"
 write.csv(om_loose  %>% finalfit(depom, c("probioticintake", cov_A2)), "NCO_om_Cox_loose_AA.csv",  row.names=FALSE)
 write.csv(om_loose  %>% finalfit(depom, c("probioticintake", cov_A4)), "NCO_om_Cox_loose_A4.csv",  row.names=FALSE)
