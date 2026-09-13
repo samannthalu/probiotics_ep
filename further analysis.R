@@ -187,31 +187,32 @@ cox_A2_strict <- coxph(Surv(ep_followup_time, ep_event) ~ probioticintake + B_SE
 v <- as.data.frame(car::vif(cox_A2_strict)); v$term <- rownames(v)
 write.csv(v, "VIF_ep_strict_AA.csv", row.names = FALSE)
 #Stepwise----
-run_mystep <- function(dat, include_BMI = TRUE, tag){
-  vars <- c("probioticintake","B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y")
-  if (include_BMI) vars <- c(vars, "BMI_5y")
+run_step <- function(dat, include_BMI = TRUE, tag){
+  rhs <- c("B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y")
+  if (include_BMI) rhs <- c(rhs, "BMI_5y")
+  d <- dat %>% select(ep_followup_time, ep_event, probioticintake, all_of(rhs)) %>% na.omit()
   
-  d0 <- dat %>% select(ep_followup_time, ep_event, all_of(vars)) %>% na.omit()
-  f  <- as.formula(paste("~", paste(vars, collapse = " + ")))
-  mm <- model.matrix(f, data = d0)[, -1, drop = FALSE]
-  colnames(mm) <- make.names(colnames(mm))
-  d  <- data.frame(ep_followup_time = d0$ep_followup_time,
-                   ep_event         = d0$ep_event, mm, check.names = FALSE)
-  in_var <- grep("^probioticintake", colnames(mm), value = TRUE)
-  cand   <- setdiff(colnames(mm), in_var)
+  null     <- coxph(Surv(ep_followup_time, ep_event) ~ probioticintake, data = d)   #only start with probiotic
+  fullform <- as.formula(paste("~ probioticintake +", paste(rhs, collapse = " + ")))
   
-  #save to txt
-  proc <- capture.output(
-    My.stepwise.coxph(Time = "ep_followup_time", Status = "ep_event",
-                      variable.list = cand, in.variable = in_var,
-                      data = d, sle = 0.05, sls = 0.05))
-  writeLines(proc, paste0("Stepwise_ep_", tag, ".txt"))
+  proc <- capture.output(                                       #every step of AIC
+    st <- step(null, scope = list(lower = ~ probioticintake, upper = fullform),
+               direction = "forward", trace = TRUE))
+  writeLines(proc, paste0("Stepwise_ep_", tag, "_process.txt"))
+  
+  s <- summary(st)                                              #final model HR
+  out <- data.frame(term  = rownames(s$conf.int),
+                    HR    = round(s$conf.int[, "exp(coef)"], 3),
+                    lower = round(s$conf.int[, "lower .95"], 3),
+                    upper = round(s$conf.int[, "upper .95"], 3),
+                    p     = signif(s$coefficients[, "Pr(>|z|)"], 3))
+  write.csv(out, paste0("Stepwise_ep_", tag, "_final.csv"), row.names = FALSE)
 }
 
-run_mystep(analytic_loose,  include_BMI = TRUE,  "loose_A1")
-run_mystep(analytic_strict, include_BMI = TRUE,  "strict_A1")
-run_mystep(analytic_loose,  include_BMI = FALSE, "loose_A2")
-run_mystep(analytic_strict, include_BMI = FALSE, "strict_A2")
+run_step(analytic_loose,  TRUE,  "loose_A1")
+run_step(analytic_strict, TRUE,  "strict_A1")
+run_step(analytic_loose,  FALSE, "loose_A2")
+run_step(analytic_strict, FALSE, "strict_A2")
 #Change-in-estimate----
 run_cie <- function(dat, tag){
   covs <- c("B_SEX","dairyintake_5y","breastfeeding","medu_5y","Socioeco_5y","BMI_5y")
